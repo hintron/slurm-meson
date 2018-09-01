@@ -1,19 +1,38 @@
-project('slurm', 'c', version : '0x130500')
-# TODO: Get version from META file?
+project('slurm', 'c')
 
 ##########################
 # Configure Section
 ##########################
-
-slurm_version = meson.project_version() # set in project() below
-# ver_arr = as_version.split('.')
-# as_major_version = ver_arr[0]
-# as_minor_version = ver_arr[1]
-# as_micro_version = ver_arr[2]
-
 conf_data = configuration_data()
 
-# TODO: Use a config.h.in.meson file? Or generate it on the fly?
+version = run_command('perl', '-ne', 'print,exit if s/^\s*VERSION:\s*(\S*).*/\1/i', 'META').stdout().strip()
+slurm_major = run_command('perl', '-ne', 'print,exit if s/^\s*MAJOR:\s*(\S*).*/\1/i', 'META').stdout().strip()
+slurm_minor = run_command('perl', '-ne', 'print,exit if s/^\s*MINOR:\s*(\S*).*/\1/i', 'META').stdout().strip()
+slurm_micro = run_command('perl', '-ne', 'print,exit if s/^\s*MICRO:\s*(\S*).*/\1/i', 'META').stdout().strip()
+release = run_command('perl', '-ne', 'print,exit if s/^\s*RELEASE:\s*(\S*).*/\1/i', 'META').stdout().strip()
+conf_data.set_quoted('VERSION', version, description: 'Define the project\'s version.')
+conf_data.set_quoted('SLURM_MAJOR', slurm_major, description: 'Define the project\'s major version.')
+conf_data.set_quoted('SLURM_MINOR', slurm_minor, description: 'Define the project\'s minor version.')
+conf_data.set_quoted('SLURM_MICRO', slurm_micro, description: 'Define the project\'s micro version.')
+conf_data.set_quoted('RELEASE', release, description: 'Define the project\'s release.')
+
+slurm_version_number = run_command('printf', '0x%02x%02x%02x', slurm_major, slurm_minor, slurm_micro).stdout().strip()
+conf_data.set('SLURM_VERSION_NUMBER', slurm_version_number, description: 'Slurm Version Number')
+
+if slurm_major + '.' + slurm_minor + '.' + slurm_micro != version
+    error('META information is inconsistent: $VERSION != $SLURM_MAJOR.$SLURM_MINOR.$SLURM_MICRO!')
+endif
+
+conf_data.set_quoted('SLURM_VERSION_STRING', '19.05.0-0pre0', description: 'Define the project\'s version string')
+conf_data.set_quoted('PACKAGE_NAME', 'slurm', description: 'Define to the full name of this package')
+
+# Check to see if this architecture should use slurm_* prefix function aliases for plugins.
+use_alias_desc = 'Define slurm_ prefix function aliases for plugins'
+if host_machine.system() == 'darwin'
+    conf_data.set('USE_ALIAS', 0, description: use_alias_desc)
+else
+    conf_data.set('USE_ALIAS', 1, description: use_alias_desc)
+endif
 
 
 
@@ -23,9 +42,6 @@ conf_data.set('SLURMD_PORT', 6818, description: 'Define the default port number 
 conf_data.set('SLURMDBD_PORT', 6819, description: 'Define the default port number for slurmdbd')
 conf_data.set('SLURMCTLD_PORT_COUNT', 1, description: 'Define the default port count for slurmctld')
 
-# TODO: Pull from the META file
-conf_data.set_quoted('SLURM_VERSION_STRING', '19.05.0-0pre0', description: 'Define the project\'s version string')
-conf_data.set_quoted('PACKAGE_NAME', 'slurm', description: 'Define to the full name of this package')
 
 
 
