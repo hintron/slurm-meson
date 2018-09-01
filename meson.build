@@ -6,6 +6,11 @@ cc = meson.get_compiler('c')
 ##########################
 conf_data = configuration_data()
 
+# https://mesonbuild.com/Adding-arguments.html
+add_project_arguments('-DHAVE_CONFIG_H', language : 'c')
+
+
+
 # X_AC_SLURM_VERSION
 version = run_command('perl', '-ne', 'print,exit if s/^\s*VERSION:\s*(\S*).*/\1/i', 'META').stdout().strip()
 slurm_major = run_command('perl', '-ne', 'print,exit if s/^\s*MAJOR:\s*(\S*).*/\1/i', 'META').stdout().strip()
@@ -28,6 +33,8 @@ endif
 conf_data.set_quoted('SLURM_VERSION_STRING', '19.05.0-0pre0', description: 'Define the project\'s version string')
 conf_data.set_quoted('PACKAGE_NAME', 'slurm', description: 'Define to the full name of this package')
 
+
+
 # TODO:
 # X_AC_RPATH
 # X_AC_DATABASES
@@ -42,7 +49,67 @@ endif
 
 # TODO: Check for programs
 # TODO: Check for libraries
-# TODO: Check for header files
+
+# Check for header files
+check_headers = [
+    ['HAVE_MCHECK_H', 'mcheck.h'],
+    ['HAVE_VALUES_H', 'values.h'],
+    ['HAVE_SOCKET_H', 'socket.h'],
+    ['HAVE_SYS_SOCKET_H', 'sys/socket.h'],
+    ['HAVE_STDBOOL_H', 'stdbool.h'],
+    ['HAVE_SYS_IPC_H', 'sys/ipc.h'],
+    ['HAVE_SYS_SHM_H', 'sys/shm.h'],
+    ['HAVE_SYS_SEM_H', 'sys/sem.h'],
+    ['HAVE_ERRNO_H', 'errno.h'],
+    ['HAVE_STDLIB_H', 'stdlib.h'],
+    ['HAVE_DIRENT_H', 'dirent.h'],
+    ['HAVE_PTHREAD_H', 'pthread.h'],
+    ['HAVE_SYS_PRCTL_H', 'sys/prctl.h'],
+    ['HAVE_SYSINT_H', 'sysint.h'],
+    ['HAVE_INTTYPES_H', 'inttypes.h'],
+    ['HAVE_TERMCAP_H', 'termcap.h'],
+    ['HAVE_NETDB_H', 'netdb.h'],
+    ['HAVE_SYS_SYSTEMCFG_H', 'sys/systemcfg.h'],
+    ['HAVE_NCURSES_H', 'ncurses.h'],
+    ['HAVE_CURSES_H', 'curses.h'],
+    ['HAVE_SYS_DR_H', 'sys/dr.h'],
+    ['HAVE_SYS_VFS_H', 'sys/vfs.h'],
+    ['HAVE_PAM_APPL_H', 'pam/pam_appl.h'],
+    ['HAVE_SECURITY_PAM_APPL_H', 'security/pam_appl.h'],
+    ['HAVE_SYS_SYSCTL_H', 'sys/sysctl.h'],
+    ['HAVE_PTY_H', 'pty.h'],
+    ['HAVE_UTMP_H', 'utmp.h'],
+    ['HAVE_SYS_SYSLOG_H', 'sys/syslog.h'],
+    ['HAVE_LINUX_SCHED_H', 'linux/sched.h'],
+    ['HAVE_KSTAT_H', 'kstat.h'],
+    ['HAVE_PATHS_H', 'paths.h'],
+    ['HAVE_LIMITS_H', 'limits.h'],
+    ['HAVE_SYS_STATFS_H', 'sys/statfs.h'],
+    ['HAVE_SYS_PTRACE_H', 'sys/ptrace.h'],
+    ['HAVE_FLOAT_H', 'float.h'],
+    ['HAVE_SYS_STATVFS_H', 'sys/statvfs.h'],
+    ['HAVE_SYS_STATVFS_H', 'sys/sysmacros.h'],
+]
+
+foreach h : check_headers
+    if cc.has_header(h.get(1))
+        desc = 'Define to 1 if you have the <' + h.get(1) + '> header file'
+        conf_data.set(h.get(0), 1, description: desc)
+    endif
+endforeach
+
+
+# TODO: AC_HEADER_MAJOR
+# https://www.gnu.org/software/autoconf/manual/autoconf-2.67/html_node/Particular-Headers.html
+# https://github.com/mozilla/rr/commit/5a16d15ef348c069b82449dcdeaeea3c1eb8639b
+# NOTE: To get rid of warnings, explicitly force sys/sysmacros.h to be included, rather than rely on sys/types.h to include it implicitly
+# if cc.has_header_symbol('sys/types.h', 'major') and cc.has_header_symbol('sys/types.h', 'minor') and cc.has_header_symbol('sys/types.h', 'makedev')
+#     message('`major`, `minor`, and `makedev` are in sys/types.h')
+if cc.has_header_symbol('sys/makedev.h', 'major') and cc.has_header_symbol('sys/makedev.h', 'minor') and cc.has_header_symbol('sys/makedev.h', 'makedev')
+    conf_data.set('MAJOR_IN_MKDEV', 1, description: '`major`, `minor`, and `makedev` are declared in sys/makedev.h')
+elif cc.has_header_symbol('sys/sysmacros.h', 'major') and cc.has_header_symbol('sys/sysmacros.h', 'minor') and cc.has_header_symbol('sys/sysmacros.h', 'makedev')
+    conf_data.set('MAJOR_IN_SYSMACROS', 1, description: '`major`, `minor`, and `makedev` are declared in sys/sysmacros.h')
+endif
 
 # TODO: X_AC__SYSTEM_CONFIGURATION
 
@@ -50,9 +117,10 @@ endif
 # TODO: X_AC_SLURM_PROGRAM_INVOCATION_NAME
 # TODO: X_AC_PTRACE
 
-# X_AC_AFFINITY
+# TODO: Finish X_AC_AFFINITY
 
 # For test code compilation:
+# https://mesonbuild.com/Compiler-properties.html#does-code-compile
 # https://mesonbuild.com/Reference-manual.html#compiler-object
 # https://mesonbuild.com/Syntax.html#strings
 # https://mesonbuild.com/Reference-manual.html#run-result-object
@@ -70,25 +138,40 @@ int main (int argc, char ** argv) {
     sched_getaffinity(0, &mask);
 }'''
 
-if cc.run(code_affinity_3).compiled()
+if cc.compiles(code_affinity_3, name: 'sched_getaffinity() 3 arguments')
     conf_data.set('SCHED_GETAFFINITY_THREE_ARGS', 1, description: 'Define to 1 if sched_getaffinity takes three arguments')
 endif
-if cc.run(code_affinity_2).compiled()
+if cc.compiles(code_affinity_2, name: 'sched_getaffinity() 2 arguments')
     conf_data.set('SCHED_GETAFFINITY_TWO_ARGS', 1, description: 'Define to 1 if sched_getaffinity takes two arguments')
 endif
 
-  # AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#define _GNU_SOURCE
-  #   #include <sched.h>]], [[cpu_set_t mask;
-  #   sched_getaffinity(0, sizeof(cpu_set_t), &mask);]])],[AC_DEFINE(SCHED_GETAFFINITY_THREE_ARGS, 1,
-  #            [Define to 1 if sched_getaffinity takes three arguments.])],[])
 
-  # AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#define _GNU_SOURCE
-  #   #include <sched.h>]], [[cpu_set_t mask;
-  #   sched_getaffinity(0, &mask);]])],[AC_DEFINE(SCHED_GETAFFINITY_TWO_ARGS, 1,
-  #            [Define to 1 if sched_getaffinity takes two arguments.])],[])
+# TODO: X_AC_LZ4
+# TODO: X_AC_HWLOC
+# TODO: X_AC_PMIX
+# TODO: X_AC_FREEIPMI
+# TODO: X_AC_RRDTOOL
+# TODO: X_AC_UCX
+# TODO: X_AC_SSH2
+
+# TODO: X_AC_CRAY
+
+# TODO: checks for system services.
 
 
+# TODO: checks for system-specific stuff.
 
+# TODO: check for how to emulate setproctitle
+
+# TODO: X_AC_SETPROCTITLE
+
+# TODO: check for debug compilation, must follow X_AC_CRAY
+
+# TODO: X_AC_DEBUG
+
+
+# Check for slurmctld, slurmd and slurmdbd default ports,
+# and default number of slurmctld ports
 # TODO: Support --with-slurmctld-port option to set defaults
 conf_data.set('SLURMCTLD_PORT', 6817, description: 'Define the default port number for slurmctld')
 conf_data.set('SLURMD_PORT', 6818, description: 'Define the default port number for slurmd')
@@ -96,7 +179,7 @@ conf_data.set('SLURMDBD_PORT', 6819, description: 'Define the default port numbe
 conf_data.set('SLURMCTLD_PORT_COUNT', 1, description: 'Define the default port count for slurmctld')
 
 
-
+# TODO: add SLURM_PREFIX to config.h
 
 
 
