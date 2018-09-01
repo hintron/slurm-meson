@@ -1,20 +1,22 @@
 project('slurm', 'c')
 
+cc = meson.get_compiler('c')
 ##########################
 # Configure Section
 ##########################
 conf_data = configuration_data()
 
+# X_AC_SLURM_VERSION
 version = run_command('perl', '-ne', 'print,exit if s/^\s*VERSION:\s*(\S*).*/\1/i', 'META').stdout().strip()
 slurm_major = run_command('perl', '-ne', 'print,exit if s/^\s*MAJOR:\s*(\S*).*/\1/i', 'META').stdout().strip()
 slurm_minor = run_command('perl', '-ne', 'print,exit if s/^\s*MINOR:\s*(\S*).*/\1/i', 'META').stdout().strip()
 slurm_micro = run_command('perl', '-ne', 'print,exit if s/^\s*MICRO:\s*(\S*).*/\1/i', 'META').stdout().strip()
 release = run_command('perl', '-ne', 'print,exit if s/^\s*RELEASE:\s*(\S*).*/\1/i', 'META').stdout().strip()
-conf_data.set_quoted('VERSION', version, description: 'Define the project\'s version.')
-conf_data.set_quoted('SLURM_MAJOR', slurm_major, description: 'Define the project\'s major version.')
-conf_data.set_quoted('SLURM_MINOR', slurm_minor, description: 'Define the project\'s minor version.')
-conf_data.set_quoted('SLURM_MICRO', slurm_micro, description: 'Define the project\'s micro version.')
-conf_data.set_quoted('RELEASE', release, description: 'Define the project\'s release.')
+conf_data.set_quoted('VERSION', version, description: 'Define the project\'s version')
+conf_data.set_quoted('SLURM_MAJOR', slurm_major, description: 'Define the project\'s major version')
+conf_data.set_quoted('SLURM_MINOR', slurm_minor, description: 'Define the project\'s minor version')
+conf_data.set_quoted('SLURM_MICRO', slurm_micro, description: 'Define the project\'s micro version')
+conf_data.set_quoted('RELEASE', release, description: 'Define the project\'s release')
 
 slurm_version_number = run_command('printf', '0x%02x%02x%02x', slurm_major, slurm_minor, slurm_micro).stdout().strip()
 conf_data.set('SLURM_VERSION_NUMBER', slurm_version_number, description: 'Slurm Version Number')
@@ -26,13 +28,64 @@ endif
 conf_data.set_quoted('SLURM_VERSION_STRING', '19.05.0-0pre0', description: 'Define the project\'s version string')
 conf_data.set_quoted('PACKAGE_NAME', 'slurm', description: 'Define to the full name of this package')
 
-# Check to see if this architecture should use slurm_* prefix function aliases for plugins.
+# TODO:
+# X_AC_RPATH
+# X_AC_DATABASES
+
+# Check to see if this architecture should use slurm_* prefix function aliases for plugins
 use_alias_desc = 'Define slurm_ prefix function aliases for plugins'
 if host_machine.system() == 'darwin'
     conf_data.set('USE_ALIAS', 0, description: use_alias_desc)
 else
     conf_data.set('USE_ALIAS', 1, description: use_alias_desc)
 endif
+
+# TODO: Check for programs
+# TODO: Check for libraries
+# TODO: Check for header files
+
+# TODO: X_AC__SYSTEM_CONFIGURATION
+
+# TODO: X_AC_DLFCN
+# TODO: X_AC_SLURM_PROGRAM_INVOCATION_NAME
+# TODO: X_AC_PTRACE
+
+# X_AC_AFFINITY
+
+# For test code compilation:
+# https://mesonbuild.com/Reference-manual.html#compiler-object
+# https://mesonbuild.com/Syntax.html#strings
+# https://mesonbuild.com/Reference-manual.html#run-result-object
+code_affinity_3 = '''#define _GNU_SOURCE
+#include <sched.h>
+int main (int argc, char ** argv) {
+    cpu_set_t mask;
+    sched_getaffinity(0, sizeof(cpu_set_t), &mask);
+}'''
+
+code_affinity_2 = '''#define _GNU_SOURCE
+#include <sched.h>
+int main (int argc, char ** argv) {
+    cpu_set_t mask;
+    sched_getaffinity(0, &mask);
+}'''
+
+if cc.run(code_affinity_3).compiled()
+    conf_data.set('SCHED_GETAFFINITY_THREE_ARGS', 1, description: 'Define to 1 if sched_getaffinity takes three arguments')
+endif
+if cc.run(code_affinity_2).compiled()
+    conf_data.set('SCHED_GETAFFINITY_TWO_ARGS', 1, description: 'Define to 1 if sched_getaffinity takes two arguments')
+endif
+
+  # AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#define _GNU_SOURCE
+  #   #include <sched.h>]], [[cpu_set_t mask;
+  #   sched_getaffinity(0, sizeof(cpu_set_t), &mask);]])],[AC_DEFINE(SCHED_GETAFFINITY_THREE_ARGS, 1,
+  #            [Define to 1 if sched_getaffinity takes three arguments.])],[])
+
+  # AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#define _GNU_SOURCE
+  #   #include <sched.h>]], [[cpu_set_t mask;
+  #   sched_getaffinity(0, &mask);]])],[AC_DEFINE(SCHED_GETAFFINITY_TWO_ARGS, 1,
+  #            [Define to 1 if sched_getaffinity takes two arguments.])],[])
 
 
 
@@ -61,12 +114,12 @@ endif
 
 
 if find_program('sleep').found()
-    conf_data.set('SLEEP_CMD', '"/bin/sleep"', description: 'Define path to sleep command')
+    conf_data.set_quoted('SLEEP_CMD', '/bin/sleep', description: 'Define path to sleep command')
 endif
 
 sucmd_desc = 'Define path to su command'
 if find_program('su').found()
-    conf_data.set('SUCMD', '"/bin/su"', description: sucmd_desc)
+    conf_data.set_quoted('SUCMD', '/bin/su', description: sucmd_desc)
 endif
 
 
@@ -104,6 +157,32 @@ endif
 
 
 
+# Derived from the helper script ac_converter.py
+check_functions = [
+  ['HAVE_FACCESSAT', 'faccessat', '#include<unistd.h>'],
+  ['HAVE_FDATASYNC', 'fdatasync', '#include<unistd.h>'],
+  ['HAVE_HSTRERROR', 'hstrerror', '#include<netdb.h>'],
+  ['HAVE_INET_ATON', 'inet_aton', '#include<arpa/inet.h>'],
+  ['HAVE_INET_PTON', 'inet_pton', '#include<arpa/inet.h>'],
+  ['HAVE_MALLOC', 'malloc', '#include<stdlib.h>'],
+  ['HAVE_SCHED_SETAFFINITY', 'sched_setaffinity', '#include<sched.h>'],
+  ['HAVE_SETRESUID', 'setresuid', '#include<unistd.h>'],
+  ['HAVE_STATFS', 'statfs', '#include<mount.h>'],
+  ['HAVE_STATVFS', 'statvfs', '#include<sys/statvfs.h>'],
+  ['HAVE_STRERROR', 'strerror', '#include<string.h>'],
+  ['HAVE_STRERROR_R', 'strerror_r', '#include<string.h>'],
+  ['HAVE_STRLCPY', 'strlcpy', '#include<string.h>'],
+  ['HAVE_STRNDUP', 'strndup', '#include<string.h>'],
+  ['HAVE_STRSIGNAL', 'strsignal', '#include<signal.h>'],
+  ['HAVE_SYSCTLBYNAME', 'sysctlbyname', '#include<sys/sysctl.h>'],
+]
+
+foreach f : check_functions
+  if cc.has_function(f.get(1), prefix : f.get(2))
+    conf_data.set(f.get(0), 1)
+  endif
+endforeach
+
 
 
 
@@ -113,11 +192,12 @@ configure_file(
     configuration : conf_data
 )
 
+##########################
+# Build Section
+##########################
+
 
 configuration_inc = include_directories('.')
-
-
-
 
 
 # TODO: First compile libslurm, slurmctld, slurmd
