@@ -1,0 +1,69 @@
+Meson Presentation
+
+See https://mesonbuild.com/Comparisons.html
+
+Meson
+========
+Pros
+--------
++ Fast build times with Ninja
+    * https://mesonbuild.com/Performance-comparison.html
+    * 'empty build' or 'nothing needed' build times are instantaneous
++ Can do everything that Autotools can (as far as I can tell)
++ Easier maintenance due to simplicity and explicitness
+    * Python-like simple syntax
+    * Easy to use
++ Well documented
++ Open Source
++ Actively developed
++ Guides to port from Autotools to Meson
+    * https://mesonbuild.com/Porting-from-autotools.html#porting-from-autotools
+    * https://wiki.gnome.org/Initiatives/GnomeGoals/MesonPorting
++ Backed by GNOME
+    * Will be or currently is used by all GNOME projects
++ It's a joy to use compared to Autotools
++ Native support for modern tools (coverage, Valgrind, static analyzers)
++ Does not use Make or shell scripts
+    * It can still call external scripts and programs if needed
+
+
+Cons
+--------
+- Relatively new
+- Does not yet have a very large user base
+- Unfamiliar to the team; yet another thing to learn
+- Because of active development, meson OS packages are old
+- Requires python3, pip3, and installing meson via pip3
+- Slightly different command line syntax to build and configure a project
+- Mainly developed by one guy, with only a small supplementary development team
+    * If that guy disappears, then there could be a support problem
+
+Autotools
+===========
+Pros
+--------
++ Stable
++ De facto standard - Used by many people
++ Understood by a lot of people
++ Understood(?) by our team
++ Can do everything
+
+Cons
+--------
+- Difficult to understand
+    * Harder to maintain build scripts
+    * Easier to introduce bugs and errors
+    * Harder to track down build/link bugs
+- Slower
+    * Reduces programmer productivity waiting for builds
+- Relies on shell scripts and Make
+- Possibly not as portable to Windows
+
+
+
+Conclusion
+===========
+I believe that moving to Meson will reduce our technical debt.
+It will save debugging time when we have issues figuring out random linking errors.
+It will also save developer time with the faster build times.
+Maintaining and editing the build scripts will also be easier and less error-prone.

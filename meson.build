@@ -1,6 +1,11 @@
 project('slurm', 'c')
 
 cc = meson.get_compiler('c')
+
+# For porting from autotools, see:
+# https://wiki.gnome.org/Initiatives/GnomeGoals/MesonPorting
+# http://mesonbuild.com/Porting-from-autotools.html
+
 ##########################
 # Configure Section
 ##########################
