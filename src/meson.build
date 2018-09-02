@@ -1,2 +1,10 @@
-# TODO:
 subdir('common')
+subdir('slurmctld')
+# TODO:
+# subdir('slurmd')
+# subdir('slurmdbd')
+# subdir('srun')
+# subdir('sinfo')
+# subdir('squeue')
+# subdir('scontrol')
+# subdir('sacctmgr')

@@ -1,3 +1,22 @@
+
+# TODO: Use vcs_tag() to get vcs commit info easily!
+
+
+# Generate a file on the fly
+# Seee https://mesonbuild.com/Generating-sources.html#generating-sources
+# https://mesonbuild.com/Reference-manual.html#custom_target
+
+
+generate_global_defaults = join_paths(meson.current_source_dir(), 'generate_global_defaults_c.sh')
+global_defaults_src = custom_target(
+    'global_defaults',
+    output : ['global_defaults.c'],
+    command : [generate_global_defaults, pkglibdir, sysconfdir],
+    capture: true
+)
+
+
+
 libcommon_sources = [
     'assoc_mgr.c', 'assoc_mgr.h',
     'cpu_frequency.c', 'cpu_frequency.h',
@@ -83,8 +102,7 @@ libcommon_sources = [
     'job_resources.c', 'job_resources.h',
     'parse_time.c', 'parse_time.h',
     'job_options.c', 'job_options.h',
-    # TODO: How to handle generation of global_defaults.c?
-    # 'global_defaults.c',
+    global_defaults_src,
     'timers.c', 'timers.h',
     'slurm_xlator.h',
     'stepd_api.c', 'stepd_api.h',

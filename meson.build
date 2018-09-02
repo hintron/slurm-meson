@@ -6,6 +6,13 @@ cc = meson.get_compiler('c')
 # https://wiki.gnome.org/Initiatives/GnomeGoals/MesonPorting
 # http://mesonbuild.com/Porting-from-autotools.html
 
+prefix = get_option('prefix')
+sysconfdir = join_paths(prefix, get_option('sysconfdir'))
+libdir = join_paths(prefix, get_option('libdir'))
+pkglibdir = join_paths(libdir, 'slurm')
+
+
+
 ##########################
 # Configure Section
 ##########################
