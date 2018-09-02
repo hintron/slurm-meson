@@ -1,4 +1,5 @@
 subdir('common')
+subdir('api')
 subdir('slurmctld')
 # TODO:
 # subdir('slurmd')

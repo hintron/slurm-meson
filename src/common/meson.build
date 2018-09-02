@@ -190,9 +190,9 @@ libspank_sources = [
 libspank = build_target(
     'libspank', # executable name
     libspank_sources, # source files
-    include_directories : configuration_inc,
-    # dependencies : server_libs,
-    # install : true,
-    target_type : libtype,
+    include_directories: configuration_inc,
+    # dependencies: server_libs,
+    # install: true,
+    target_type: libtype,
 )
 
