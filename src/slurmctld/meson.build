@@ -74,4 +74,6 @@ slurmctld = executable(
     include_directories: [configuration_inc],
     dependencies : [pthread_libs, dl_libs],
     link_with: [libcommon, libslurm, libdaemonize],
+    install: true,
+    install_dir: get_option('sbindir'),
 )

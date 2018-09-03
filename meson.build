@@ -61,8 +61,18 @@ if slurm_major + '.' + slurm_minor + '.' + slurm_micro != version
 endif
 
 conf_data.set_quoted('SLURM_VERSION_STRING', '19.05.0-0pre0', description: 'Define the project\'s version string')
-conf_data.set_quoted('PACKAGE_NAME', 'slurm', description: 'Define to the full name of this package')
 
+
+# AC_INIT and PACKAGE_* shenanigans
+package = 'slurm'
+package_version = '@0@.@1@'.format(slurm_major, slurm_minor)
+package_string = '@0@ @1@'.format(package, package_version)
+conf_data.set_quoted('PACKAGE_NAME', package, description: 'Define to the full name of this package')
+conf_data.set_quoted('PACKAGE_VERSION', package_version, description: 'Define to the version of this package')
+conf_data.set_quoted('PACKAGE_STRING', package_string, description: 'Define to the full name of this package')
+conf_data.set_quoted('PACKAGE_TARNAME', package, description: 'Define to the one symbol short name of this package')
+conf_data.set_quoted('PACKAGE_URL', 'https://slurm.schedmd.com', description: 'Define to the home page for this package')
+conf_data.set_quoted('PACKAGE_BUGREPORT', 'https://bugs.schedmd.com/', description: 'Define to the address where bug reports for this package should be sent')
 
 
 # TODO:
@@ -71,7 +81,8 @@ conf_data.set_quoted('PACKAGE_NAME', 'slurm', description: 'Define to the full n
 
 # Check to see if this architecture should use slurm_* prefix function aliases for plugins
 use_alias_desc = 'Define slurm_ prefix function aliases for plugins'
-if host_machine.system() == 'darwin'
+host = host_machine.system()
+if host == 'darwin'
     conf_data.set('USE_ALIAS', 0, description: use_alias_desc)
 else
     conf_data.set('USE_ALIAS', 1, description: use_alias_desc)
@@ -144,6 +155,7 @@ endif
 # TODO: X_AC__SYSTEM_CONFIGURATION
 
 # X_AC_DLFCN
+# See https://github.com/mesonbuild/meson/commit/192c96acefbff35044df19ad6f764d6ff28e4bce
 dl_libs = cc.find_library('dl', required: false)
 
 # TODO: Figure out dlopen trickery? Needed?
@@ -169,6 +181,7 @@ dl_libs = cc.find_library('dl', required: false)
 # TODO: X_AC_SLURM_PROGRAM_INVOCATION_NAME
 # TODO: X_AC_PTRACE
 
+# X_AC_AFFINITY
 # TODO: Finish X_AC_AFFINITY
 
 # For test code compilation:
@@ -196,6 +209,31 @@ endif
 if cc.compiles(code_affinity_2, name: 'sched_getaffinity() 2 arguments')
     conf_data.set('SCHED_GETAFFINITY_TWO_ARGS', 1, description: 'Define to 1 if sched_getaffinity takes two arguments')
 endif
+
+
+# cc.find_library checks in a similar way to AC_CHECK_LIB
+# See https://github.com/mesonbuild/meson/issues/217
+numa_libs = cc.find_library('numa', required: false)
+# See https://mesonbuild.com/Reference-manual.html#external-library-object
+if numa_libs.found()
+    conf_data.set('HAVE_NUMA', 1, description: 'Define if numa library installed')
+endif
+
+# TODO: What about checking for numa_available function in ac_check_lib?
+
+# AC_CHECK_LIB([numa],
+#       [numa_available],
+#       [ac_have_numa=yes; NUMA_LIBS="-lnuma"])
+
+# AC_SUBST(NUMA_LIBS)
+# AM_CONDITIONAL(HAVE_NUMA, test "x$ac_have_numa" = "xyes")
+# if test "x$ac_have_numa" = "xyes"; then
+#   AC_DEFINE(HAVE_NUMA, 1, [define if numa library installed])
+#   CFLAGS="-DNUMA_VERSION1_COMPATIBILITY $CFLAGS"
+# else
+#   AC_MSG_WARN([unable to locate NUMA memory affinity functions])
+# fi
+
 
 # X_AC_PAM
 # X_AC_LIBSLURM
@@ -263,7 +301,28 @@ pthread_libs = dependency('threads')
 
 # TODO: check for how to emulate setproctitle
 
-# TODO: X_AC_SETPROCTITLE
+# X_AC_SETPROCTITLE
+
+setproc_strat_desc = 'Define to the setproctitle() emulation type'
+if host == 'linux'
+    conf_data.set('SETPROCTITLE_STRATEGY', 'PS_USE_CLOBBER_ARGV', description: setproc_strat_desc)
+else
+    conf_data.set('SETPROCTITLE_STRATEGY', 'PS_USE_NONE', description: setproc_strat_desc)
+endif
+conf_data.set('SETPROCTITLE_PS_PADDING', '\'\0\'', description: 'Define if you need setproctitle padding')
+
+
+# TODO: HAVE__PROGNAME
+
+# AC_MSG_CHECKING([for __progname])
+# AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdio.h>]], [[extern char *__progname; puts(__progname);]])],[ac_have__progname=yes
+# ],[])
+# AC_MSG_RESULT(${ac_have__progname=no})
+# if test "$ac_have__progname" = "yes"; then
+#   AC_DEFINE([HAVE__PROGNAME], 1, [Define if you have __progname.])
+# fi
+
+# ])
 
 # TODO: check for debug compilation, must follow X_AC_CRAY
 
@@ -286,11 +345,10 @@ conf_data.set('SLURMCTLD_PORT_COUNT', 1, description: 'Define the default port c
 conf_data.set_quoted('SLURM_PREFIX', get_option('prefix'), description: 'Define Slurm installation prefix')
 
 message('Checking whether to enable multiple-slurmd support... ')
-if get_option('enable-multiple-slurmd')
+if get_option('multiple-slurmd')
     # conf_data.set('MULTIPLE_SLURMD', true)
     conf_data.set('MULTIPLE_SLURMD', true, description: 'Enable multiple slurmd on one node')
     message('Yes')
-    message(get_option('enable-multiple-slurmd'))
 else
     message('No')
 endif
@@ -308,12 +366,12 @@ endif
 
 
 message('Checking whether to link to libslurm.so instead of libslurm.o... ')
-if get_option('without-shared-libslurm')
+if get_option('static-libslurm')
     shared_libslurm = false
-    message('No')
+    message('Yes')
 else
     shared_libslurm = true
-    message('Yes')
+    message('No')
 endif
 
 

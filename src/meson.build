@@ -1,8 +1,9 @@
 subdir('common')
 subdir('api')
+subdir('bcast')
 subdir('slurmctld')
+subdir('slurmd')
 # TODO:
-# subdir('slurmd')
 # subdir('slurmdbd')
 # subdir('srun')
 # subdir('sinfo')

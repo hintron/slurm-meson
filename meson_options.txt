@@ -1,15 +1,10 @@
-option('enable-multiple-slurmd', type: 'boolean', value: false, description: 'enable multiple-slurmd support')
-option('without-shared-libslurm', type: 'boolean', value: false, description: 'statically link to libslurm.o instead of the shared libslurm lib - can dramatically increase the footprint of Slurm.')
+# Remove all 'enable-' and 'with-' prefixes, since meson does explicit =true
+# https://wiki.gnome.org/Initiatives/GnomeGoals/MesonPorting
 
+option('multiple-slurmd', type: 'boolean', value: false, description: 'enable multiple-slurmd support')
+option('static-libslurm', type: 'boolean', value: false, description: 'statically link to libslurm.o instead of the shared libslurm lib; can dramatically increase the footprint of Slurm.')
 
-# option('enable-dep11', type : 'boolean', value : true, description : 'enable DEP-11')
-# option('someoption', type : 'string', value : 'optval', description : 'An option')
-# option('other_one', type : 'boolean', value : false)
-# option('combo_opt', type : 'combo', choices : ['one', 'two', 'three'], value : 'three')
-# option('integer_opt', type : 'integer', min : 0, max : 5, value : 3) # Since 0.45.0
-# option('free_array_opt', type : 'array', value : ['one', 'two'])
-# option('array_opt', type : 'array', choices : ['one', 'two', 'three'], value : ['one', 'two'])
-# option('some_feature', type : 'feature', value : 'enabled')
+# Example: meson ../meson_build -Dmultiple-slurmd=true --werror --prefix=$HOME/slurm/19.05/my_machine/build
 
 # References
 ########################3
