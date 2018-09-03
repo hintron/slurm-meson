@@ -4,7 +4,8 @@
 option('multiple-slurmd', type: 'boolean', value: false, description: 'enable multiple-slurmd support')
 option('static-libslurm', type: 'boolean', value: false, description: 'statically link to libslurm.o instead of the shared libslurm lib; can dramatically increase the footprint of Slurm.')
 
-# Example: meson ../meson_build -Dmultiple-slurmd=true --werror --prefix=$HOME/slurm/19.05/my_machine/build
+# Example (from the slurm source directory):
+# meson ../meson_build/build -Dmultiple-slurmd=true --werror --prefix=$HOME/slurm/slurm_fork/meson_build
 
 # References
 ########################3

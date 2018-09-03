@@ -294,15 +294,16 @@ pthread_libs = dependency('threads')
 
 # TODO: X_AC_CRAY
 
-# TODO: checks for system services.
+
+# checks for system services.
+
+# checks for system-specific stuff.
 
 
-# TODO: checks for system-specific stuff.
 
-# TODO: check for how to emulate setproctitle
 
 # X_AC_SETPROCTITLE
-
+# check for how to emulate setproctitle
 setproc_strat_desc = 'Define to the setproctitle() emulation type'
 if host == 'linux'
     conf_data.set('SETPROCTITLE_STRATEGY', 'PS_USE_CLOBBER_ARGV', description: setproc_strat_desc)
@@ -324,29 +325,23 @@ conf_data.set('SETPROCTITLE_PS_PADDING', '\'\0\'', description: 'Define if you n
 
 # ])
 
-# TODO: check for debug compilation, must follow X_AC_CRAY
+# X_AC_DEBUG
+# TODO:
 
-# TODO: X_AC_DEBUG
-
-
+# X_AC_SLURM_PORTS
 # Check for slurmctld, slurmd and slurmdbd default ports,
 # and default number of slurmctld ports
-# TODO: Support --with-slurmctld-port option to set defaults
 conf_data.set('SLURMCTLD_PORT', 6817, description: 'Define the default port number for slurmctld')
 conf_data.set('SLURMD_PORT', 6818, description: 'Define the default port number for slurmd')
 conf_data.set('SLURMDBD_PORT', 6819, description: 'Define the default port number for slurmdbd')
 conf_data.set('SLURMCTLD_PORT_COUNT', 1, description: 'Define the default port count for slurmctld')
+# TODO: Support --with-slurmctld-port option to set defaults
 
-
-# TODO: add SLURM_PREFIX to config.h
-
-
-
+# Add SLURM_PREFIX to config.h
 conf_data.set_quoted('SLURM_PREFIX', get_option('prefix'), description: 'Define Slurm installation prefix')
 
 message('Checking whether to enable multiple-slurmd support... ')
 if get_option('multiple-slurmd')
-    # conf_data.set('MULTIPLE_SLURMD', true)
     conf_data.set('MULTIPLE_SLURMD', true, description: 'Enable multiple slurmd on one node')
     message('Yes')
 else
@@ -374,6 +369,77 @@ else
     message('No')
 endif
 
+
+# TODO:
+# X_AC_NRT
+# X_AC_SGI_JOB
+# X_AC_NETLOC
+# X_AC_LUA
+# X_AC_MAN2HTML
+# X_AC_PRINTF_NULL
+# X_AC_READLINE
+# X_AC_SLURM_WITH_SSL
+# X_AC_SYSTEMD
+# X_AC_MUNGE
+munge_libs = cc.find_library('munge')
+
+# TODO: What other munge stuff needs to be ported?
+# _x_ac_munge_dirs="/usr /usr/local /opt/freeware /opt/munge"
+# _x_ac_munge_libs="lib64 lib"
+
+# AC_ARG_WITH(
+#   [munge],
+#   AS_HELP_STRING(--with-munge=PATH,Specify path to munge installation),
+#   [AS_IF([test "x$with_munge" != xno],[_x_ac_munge_dirs="$with_munge $_x_ac_munge_dirs"])])
+
+# if [test "x$with_munge" = xno]; then
+#   AC_MSG_WARN([support for munge disabled])
+# else
+#   AC_CACHE_CHECK(
+#     [for munge installation],
+#     [x_ac_cv_munge_dir],
+#     [
+#       for d in $_x_ac_munge_dirs; do
+#         test -d "$d" || continue
+#         test -d "$d/include" || continue
+#         test -f "$d/include/munge.h" || continue
+#         for bit in $_x_ac_munge_libs; do
+#           test -d "$d/$bit" || continue
+#           _x_ac_munge_libs_save="$LIBS"
+#           LIBS="-L$d/$bit -lmunge $LIBS"
+#           AC_LINK_IFELSE(
+#             [AC_LANG_CALL([], munge_encode)],
+#             AS_VAR_SET(x_ac_cv_munge_dir, $d))
+#           LIBS="$_x_ac_munge_libs_save"
+#           test -n "$x_ac_cv_munge_dir" && break
+#         done
+#         test -n "$x_ac_cv_munge_dir" && break
+#       done
+#     ])
+
+#   if test -z "$x_ac_cv_munge_dir"; then
+#     AC_MSG_WARN([unable to locate munge installation])
+#   else
+#     MUNGE_LIBS="-lmunge"
+#     MUNGE_CPPFLAGS="-I$x_ac_cv_munge_dir/include"
+#     MUNGE_DIR="$x_ac_cv_munge_dir"
+#     if test "$ac_with_rpath" = "yes"; then
+#       MUNGE_LDFLAGS="-Wl,-rpath -Wl,$x_ac_cv_munge_dir/$bit -L$x_ac_cv_munge_dir/$bit"
+#     else
+#       MUNGE_LDFLAGS="-L$x_ac_cv_munge_dir/$bit"
+#     fi
+#   fi
+
+#   AC_SUBST(MUNGE_LIBS)
+#   AC_SUBST(MUNGE_CPPFLAGS)
+#   AC_SUBST(MUNGE_LDFLAGS)
+#   AC_SUBST(MUNGE_DIR)
+# fi
+
+# X_AC_BLCR
+# LIBCURL_CHECK_CONFIG
+# AM_CONDITIONAL(BUILD_SMAP, test "x$ac_build_smap" = "xyes")
+# X_AC_DEPRECATED
 
 
 # Derived from the helper script ac_converter.py
