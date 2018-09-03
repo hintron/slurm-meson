@@ -66,6 +66,11 @@ slurmctld_sources = [
 # common_inc = include_directories(join_paths('..','common'))
 
 
+# Note: Make sure export_dynamic and implib are set, so that plugins can easily
+# access slurmctld functions (symbols).
+# https://stackoverflow.com/a/17083153 (-Wl,--export-dynamic flag)
+# https://mesonbuild.com/Reference-manual.html#shared_module
+
 slurmctld = executable(
     'slurmctld', # executable name
     slurmctld_sources, # source files
@@ -76,4 +81,7 @@ slurmctld = executable(
     link_with: [libcommon, libslurm, libdaemonize],
     install: true,
     install_dir: get_option('sbindir'),
+    # Either implib and/or export_dynamic need to be set for plugins to access slurmctld functions
+    export_dynamic: true,
+    # implib: true,
 )

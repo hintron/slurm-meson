@@ -1,4 +1,5 @@
 subdir('crypto')
+subdir('select')
 
 # TODO:
 # subdir('accounting_storage')
@@ -26,7 +27,6 @@ subdir('crypto')
 # subdir('proctrack')
 # subdir('route')
 # subdir('sched')
-# subdir('select')
 # subdir('slurmctld')
 # subdir('switch')
 # subdir('task')

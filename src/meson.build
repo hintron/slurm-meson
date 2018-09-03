@@ -2,9 +2,9 @@
 subdir('common')
 subdir('api')
 subdir('bcast')
-subdir('plugins')
 subdir('slurmctld')
 subdir('slurmd')
+subdir('plugins')
 
 
 # TODO:
