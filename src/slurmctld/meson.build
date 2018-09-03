@@ -61,7 +61,6 @@ slurmctld_sources = [
     'step_mgr.c',
     'trigger_mgr.c',
     'trigger_mgr.h',
-    # libcommon
 ]
 
 # common_inc = include_directories(join_paths('..','common'))
@@ -73,8 +72,6 @@ slurmctld = executable(
     # include_directories : [configuration_inc, slurm_h_inc, common_inc],
     # include_directories: [configuration_inc, slurm_h_inc],
     include_directories: [configuration_inc],
-    # dependencies : [dependency('threads')],
     dependencies : [pthread_libs, dl_libs],
-    link_with: [libcommon],
-    # link_with: [libdaemonize],
+    link_with: [libcommon, libslurm, libdaemonize],
 )
