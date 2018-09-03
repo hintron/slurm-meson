@@ -23,12 +23,31 @@ add_project_arguments('-DHAVE_CONFIG_H', language : 'c')
 
 
 
-# X_AC_SLURM_VERSION
+# X_AC_SLURM_VERSION from slurm.m4
+project = run_command('perl', '-ne', 'print,exit if s/^\s*NAME:\s*(\S*).*/\1/i', 'META').stdout().strip()
+conf_data.set_quoted('PROJECT', project, description: 'Define the project\'s name')
+
+
+api_current = run_command('perl', '-ne', 'print,exit if s/^\s*API_CURRENT:\s*(\S*).*/\1/i', 'META').stdout().strip()
+api_age = run_command('perl', '-ne', 'print,exit if s/^\s*API_AGE:\s*(\S*).*/\1/i', 'META').stdout().strip()
+api_revision = run_command('perl', '-ne', 'print,exit if s/^\s*API_REVISION:\s*(\S*).*/\1/i', 'META').stdout().strip()
+
+api_major = api_current.to_int() - api_age.to_int()
+api_version = run_command('printf', '0x%02x%02x%02x', api_major.to_string(), api_age, api_revision).stdout().strip()
+
+conf_data.set('SLURM_API_VERSION', api_version, description: 'Define the API\'s version')
+conf_data.set('SLURM_API_CURRENT', api_current, description: 'API current version')
+conf_data.set('SLURM_API_MAJOR', api_major, description: 'API current major')
+conf_data.set('SLURM_API_AGE', api_age, description: 'API current age')
+conf_data.set('SLURM_API_REVISION', api_revision, description: 'API current rev')
+
+
 version = run_command('perl', '-ne', 'print,exit if s/^\s*VERSION:\s*(\S*).*/\1/i', 'META').stdout().strip()
 slurm_major = run_command('perl', '-ne', 'print,exit if s/^\s*MAJOR:\s*(\S*).*/\1/i', 'META').stdout().strip()
 slurm_minor = run_command('perl', '-ne', 'print,exit if s/^\s*MINOR:\s*(\S*).*/\1/i', 'META').stdout().strip()
 slurm_micro = run_command('perl', '-ne', 'print,exit if s/^\s*MICRO:\s*(\S*).*/\1/i', 'META').stdout().strip()
 release = run_command('perl', '-ne', 'print,exit if s/^\s*RELEASE:\s*(\S*).*/\1/i', 'META').stdout().strip()
+
 conf_data.set_quoted('VERSION', version, description: 'Define the project\'s version')
 conf_data.set_quoted('SLURM_MAJOR', slurm_major, description: 'Define the project\'s major version')
 conf_data.set_quoted('SLURM_MINOR', slurm_minor, description: 'Define the project\'s minor version')
@@ -126,6 +145,31 @@ endif
 # TODO: X_AC__SYSTEM_CONFIGURATION
 
 # TODO: X_AC_DLFCN
+# AC_DEFUN([X_AC_DLFCN], [
+#   AC_MSG_CHECKING([library containing dlopen])
+#   AC_CHECK_LIB([], [dlopen], [ac_have_dlopen=yes; DL_LIBS=""],
+#     [AC_CHECK_LIB([dl], [dlopen], [ac_have_dlopen=yes; DL_LIBS="-ldl"],
+#       [AC_CHECK_LIB([svdl], [dlopen], [ac_have_dlopen=yes; DL_LIBS="-lsvdl"])])])
+
+#   AC_SUBST(DL_LIBS)
+# ])
+code_dlfcn = '''#include <dlfcn.h>
+int main (int argc, char ** argv) {
+    dlopen("fake", 0);
+}'''
+
+if cc.links(code_dlfcn, name: 'dl library is implicitly in system')
+    dl_libs = dependency('', required: false)
+elif cc.links(code_dlfcn, name: 'dl library is `dl`', flags: '-ldl')
+    dl_libs = dependency('dl', required: false)
+elif cc.links(code_dlfcn, name: 'dl library is `svdl`', flags: '-lsvdl')
+    dl_libs = dependency('svdl', required: false)
+else
+    dl_libs = dependency('', required: false)
+endif
+
+
+
 # TODO: X_AC_SLURM_PROGRAM_INVOCATION_NAME
 # TODO: X_AC_PTRACE
 

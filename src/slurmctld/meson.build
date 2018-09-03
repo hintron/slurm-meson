@@ -71,7 +71,10 @@ slurmctld = executable(
     'slurmctld', # executable name
     slurmctld_sources, # source files
     # include_directories : [configuration_inc, slurm_h_inc, common_inc],
-    include_directories: [configuration_inc, slurm_h_inc],
-    # link_with: [libcommon],
-    link_with: [libdaemonize],
+    # include_directories: [configuration_inc, slurm_h_inc],
+    include_directories: [configuration_inc],
+    # dependencies : [dependency('threads')],
+    dependencies : [dependency('threads'), dl_libs],
+    link_with: [libcommon],
+    # link_with: [libdaemonize],
 )
