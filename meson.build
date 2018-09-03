@@ -31,7 +31,6 @@ conf_data.set_quoted('PROJECT', project, description: 'Define the project\'s nam
 api_current = run_command('perl', '-ne', 'print,exit if s/^\s*API_CURRENT:\s*(\S*).*/\1/i', 'META').stdout().strip()
 api_age = run_command('perl', '-ne', 'print,exit if s/^\s*API_AGE:\s*(\S*).*/\1/i', 'META').stdout().strip()
 api_revision = run_command('perl', '-ne', 'print,exit if s/^\s*API_REVISION:\s*(\S*).*/\1/i', 'META').stdout().strip()
-
 api_major = api_current.to_int() - api_age.to_int()
 api_version = run_command('printf', '0x%02x%02x%02x', api_major.to_string(), api_age, api_revision).stdout().strip()
 
@@ -144,29 +143,26 @@ endif
 
 # TODO: X_AC__SYSTEM_CONFIGURATION
 
-# TODO: X_AC_DLFCN
-# AC_DEFUN([X_AC_DLFCN], [
-#   AC_MSG_CHECKING([library containing dlopen])
-#   AC_CHECK_LIB([], [dlopen], [ac_have_dlopen=yes; DL_LIBS=""],
-#     [AC_CHECK_LIB([dl], [dlopen], [ac_have_dlopen=yes; DL_LIBS="-ldl"],
-#       [AC_CHECK_LIB([svdl], [dlopen], [ac_have_dlopen=yes; DL_LIBS="-lsvdl"])])])
+# X_AC_DLFCN
+dl_libs = cc.find_library('dl', required: false)
 
-#   AC_SUBST(DL_LIBS)
-# ])
-code_dlfcn = '''#include <dlfcn.h>
-int main (int argc, char ** argv) {
-    dlopen("fake", 0);
-}'''
+# TODO: Figure out dlopen trickery? Needed?
+# See libtool.m4 @ 1821
 
-if cc.links(code_dlfcn, name: 'dl library is implicitly in system')
-    dl_libs = dependency('', required: false)
-elif cc.links(code_dlfcn, name: 'dl library is `dl`', flags: '-ldl')
-    dl_libs = dependency('dl', required: false)
-elif cc.links(code_dlfcn, name: 'dl library is `svdl`', flags: '-lsvdl')
-    dl_libs = dependency('svdl', required: false)
-else
-    dl_libs = dependency('', required: false)
-endif
+# Do we need to do this? Doesn't really work anyways
+# code_dlfcn = '''#include <dlfcn.h>
+# int main (int argc, char ** argv) {
+#     dlopen("fake", 0);
+# }'''
+
+# if cc.links(code_dlfcn, name: 'dl library is implicitly in system')
+#     dl_libs = dependency('', required: false)
+# elif cc.links(code_dlfcn, name: 'dl library is `dl`', flags: '-ldl')
+#     dl_libs = dependency('dl', required: false)
+# elif cc.links(code_dlfcn, name: 'dl library is `svdl`', flags: '-lsvdl')
+#     dl_libs = dependency('svdl', required: false)
+# endif
+
 
 
 
@@ -201,6 +197,54 @@ if cc.compiles(code_affinity_2, name: 'sched_getaffinity() 2 arguments')
     conf_data.set('SCHED_GETAFFINITY_TWO_ARGS', 1, description: 'Define to 1 if sched_getaffinity takes two arguments')
 endif
 
+# X_AC_PAM
+# X_AC_LIBSLURM
+# X_AC_ISO
+# X_AC_ENV_LOGIC
+# X_AC_SLURM_BIGENDIAN
+# X_AC_UID_GID_SIZE_CHECK
+# X_AC_JSON
+# AC_PROG_GCC_TRADITIONAL([])
+# AX_GCC_BUILTIN(__builtin_clzll)
+# AX_GCC_BUILTIN(__builtin_ctzll)
+# AX_GCC_BUILTIN(__builtin_popcountll)
+# AC_FUNC_MALLOC
+# AC_FUNC_STRERROR_R
+
+# AC_CHECK_FUNCS( \
+#    fdatasync \
+#    hstrerror \
+#    strerror  \
+#    mtrace    \
+#    strndup   \
+#    strlcpy   \
+#    strsignal \
+#    inet_aton \
+#    inet_ntop \
+#    inet_pton \
+#    setproctitle \
+#    sysctlbyname \
+#    cfmakeraw \
+#    setresuid \
+#    get_current_dir_name \
+#    faccessat \
+#    eaccess \
+#    statvfs \
+#    statfs \
+# )
+
+# AC_CHECK_DECLS([hstrerror, strsignal, sys_siglist])
+
+# ACX_PTHREAD([], AC_MSG_ERROR([Error: Cannot figure out how to use pthreads!]))
+pthread_libs = dependency('threads')
+
+# X_AC_DIMENSIONS
+
+# X_AC_OFED
+
+# AX_LIB_HDF5()
+# AM_CONDITIONAL(BUILD_HDF5, test "$with_hdf5" = "yes")
+# AC_DEFINE([H5_NO_DEPRECATED_SYMBOLS], [1], [Make sure we get the 1.8 HDF5 API])
 
 # TODO: X_AC_LZ4
 # TODO: X_AC_HWLOC
@@ -271,28 +315,6 @@ else
     shared_libslurm = true
     message('Yes')
 endif
-
-
-
-
-# message('Checking library containing dlopen... ')
-# DL_LIBS = dependency('dl')
-# if DL_LIBS.is_found()
-#     message('Found')
-# else
-#     message('Not found')
-# endif
-# # TODO: How to check for DL_LIBS? Or do I just specify it as a dependency?
-# # AC_DEFUN([X_AC_DLFCN], [
-# #   AC_MSG_CHECKING([library containing dlopen])
-# #   AC_CHECK_LIB([], [dlopen], [ac_have_dlopen=yes; DL_LIBS=""],
-# #     [AC_CHECK_LIB([dl], [dlopen], [ac_have_dlopen=yes; DL_LIBS="-ldl"],
-# #       [AC_CHECK_LIB([svdl], [dlopen], [ac_have_dlopen=yes; DL_LIBS="-lsvdl"])])])
-
-# #   AC_SUBST(DL_LIBS)
-# # ])
-
-# # DL_LIBS =
 
 
 

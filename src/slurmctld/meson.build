@@ -74,7 +74,7 @@ slurmctld = executable(
     # include_directories: [configuration_inc, slurm_h_inc],
     include_directories: [configuration_inc],
     # dependencies : [dependency('threads')],
-    dependencies : [dependency('threads'), dl_libs],
+    dependencies : [pthread_libs, dl_libs],
     link_with: [libcommon],
     # link_with: [libdaemonize],
 )
