@@ -1,5 +1,3 @@
-
-
 slurmd_src = [
     'slurmd.c',
     'slurmd.h',
@@ -8,8 +6,6 @@ slurmd_src = [
     'get_mach_stat.c',
     'get_mach_stat.h',
 ]
-
-
 
 slurmd = executable(
     'slurmd', # name

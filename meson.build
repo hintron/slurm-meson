@@ -311,6 +311,8 @@ numa_libs = cc.find_library('numa', required: false)
 # See https://mesonbuild.com/Reference-manual.html#external-library-object
 if numa_libs.found()
     conf_data.set('HAVE_NUMA', 1, description: 'Define if numa library installed')
+    # TODO: Only add this compiler flag where needed? e.g. task affinity plugin, slurmd, etc?
+    add_project_arguments('-DNUMA_VERSION1_COMPATIBILITY', language : 'c')
 endif
 
 # TODO: What about checking for numa_available function in ac_check_lib?
@@ -327,6 +329,9 @@ endif
 # else
 #   AC_MSG_WARN([unable to locate NUMA memory affinity functions])
 # fi
+
+
+
 
 
 # X_AC_PAM
