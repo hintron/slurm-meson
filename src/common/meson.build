@@ -141,9 +141,7 @@ libcommon_sources = [
 libcommon = build_target(
     'libcommon', # executable name
     libcommon_sources, # source files
-    include_directories : [configuration_inc, slurm_h_inc],
-    # dependencies : server_libs,
-    # install : true,
+    include_directories : [slurm_inc],
     target_type : libtype,
 )
 
@@ -158,41 +156,39 @@ libdaemonize_sources = [
 libdaemonize = build_target(
     'libdaemonize', # executable name
     libdaemonize_sources, # source files
-    include_directories : configuration_inc,
-    # dependencies : server_libs,
-    # install : true,
+    include_directories : slurm_inc,
     target_type : libtype,
 )
 
 
 
 libeio_sources = [
-    'eio.c', 'eio.h',
-    'io_hdr.c', 'io_hdr.h',
+    'eio.c',
+    'eio.h',
+    'io_hdr.c',
+    'io_hdr.h',
 ]
 
 libeio = build_target(
     'libeio', # executable name
     libeio_sources, # source files
-    include_directories : configuration_inc,
-    # dependencies : server_libs,
-    # install : true,
+    include_directories : slurm_inc,
     target_type : libtype,
 )
 
 
 
 libspank_sources = [
-    'plugstack.c', 'plugstack.h',
-    'optz.c', 'optz.h',
+    'plugstack.c',
+    'plugstack.h',
+    'optz.c',
+    'optz.h',
 ]
 
 libspank = build_target(
     'libspank', # executable name
     libspank_sources, # source files
-    include_directories: configuration_inc,
-    # dependencies: server_libs,
-    # install: true,
+    include_directories: slurm_inc,
     target_type: libtype,
 )
 

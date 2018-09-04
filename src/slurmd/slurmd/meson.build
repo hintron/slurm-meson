@@ -14,9 +14,7 @@ slurmd_src = [
 slurmd = executable(
     'slurmd', # executable name
     [slurmd_src], # source files
-    # include_directories : [configuration_inc, slurm_h_inc, common_inc],
-    # include_directories: [configuration_inc, slurm_h_inc],
-    include_directories: [configuration_inc],
+    include_directories: [slurm_inc],
     # TODO: Depend on hwloc, pam, util, ssh2
     dependencies : [pthread_libs, numa_libs, dl_libs],
     # dependencies : [pthread_libs, dl_libs, numa_libs],

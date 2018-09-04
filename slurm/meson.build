@@ -9,6 +9,3 @@ configure_file(
     output : 'slurm.h',
     configuration : slurm_h_data
 )
-
-slurm_h_inc = include_directories('.')
-

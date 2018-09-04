@@ -11,8 +11,6 @@ sysconfdir = join_paths(prefix, get_option('sysconfdir'))
 libdir = join_paths(prefix, get_option('libdir'))
 pkglibdir = join_paths(libdir, 'slurm')
 
-
-
 ##########################
 # Configure Section
 ##########################
@@ -482,7 +480,7 @@ configure_file(
 ##########################
 
 
-configuration_inc = include_directories('.')
+slurm_inc = include_directories('.')
 
 
 # TODO: First compile libslurm, slurmctld, slurmd

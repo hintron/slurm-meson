@@ -49,7 +49,7 @@ slurmapi_src = [
 libslurm = build_target(
     'libslurm', # executable name
     [slurmapi_src], # source files
-    include_directories : [configuration_inc, slurm_h_inc],
+    include_directories : [slurm_inc],
     dependencies : [pthread_libs],
     link_with: [libcommon, libeio, libspank],
     target_type : libtype,
