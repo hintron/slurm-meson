@@ -98,32 +98,16 @@ mysql_version = run_command(db_config_program, '--version').stdout().strip()
 if mysql_version.version_compare('<5.0.0')
     message('Warning: mysql/mariadb installation is at version @0@, but version >= 5.0.0 is needed for the mysql interface'.format(mysql_version))
 else
-    # mysql_inc = include_directories(run_command(db_config_program, '--variable=pkgincludedir').stdout().strip())
-    # mysql_inc = include_directories(run_command(db_config_program, '--include').stdout().strip())
-
     # Tell the entire project where <mysql.h> exists
     add_project_arguments(run_command(db_config_program, '--include').stdout().strip(), language : 'c')
     # TODO: If MySQL is found, should I add -I... to the entire project's cflags, or
     # create an include directory? What are the repercussions?
 
+    # mysql_inc = include_directories(run_command(db_config_program, '--variable=pkgincludedir').stdout().strip())
 endif
 
-
-
-# mysql_libs = run_command(db_config_program, '--libs_r')
-# mysql_libs = run_command(db_config_program, '--libs_r')
 mysql_libs = cc.find_library('mysqlclient', required: false)
-
-# mysql_libs = [
-#     cc.find_library('mysqlclient', required: false),
-#     # TODO: Eventually break these out into their own vars?
-#     cc.find_library('z', required: false),
-#     cc.find_library('m', required: false),
-#     cc.find_library('rt', required: false),
-#     cc.find_library('atomic', required: false),
-#     # cc.find_library('dl', required: false),
-#     # cc.find_library('pthread', required: false),
-# ]
+# mysql_libs = run_command(db_config_program, '--libs_r')
 
 # TODO: Do all this stuff for MYSQL checks
     # #Check for MySQL

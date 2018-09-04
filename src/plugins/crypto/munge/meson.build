@@ -8,7 +8,7 @@ crypto_munge_plugin = shared_library(
     include_directories: [slurm_inc],
     dependencies: [dl_libs, pthread_libs, munge_libs],
     link_with: [libslurm],
-    install : true,
+    install: true,
     install_dir: pkglibdir,
     name_prefix: '',
 )

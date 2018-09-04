@@ -1,5 +1,3 @@
-
-
 slurmdbd_src = [
     'backup.c',
     'backup.h',
@@ -12,9 +10,6 @@ slurmdbd_src = [
     'slurmdbd.c',
     'slurmdbd.h',
 ]
-
-# common_inc = include_directories(join_paths('..','common'))
-
 
 # Note: Make sure export_dynamic and implib are set, so that plugins can easily
 # access slurmdbd functions (symbols).
@@ -31,5 +26,4 @@ slurmdbd = executable(
     install_dir: get_option('sbindir'),
     # Either implib and/or export_dynamic need to be set for plugins to access slurmdbd functions
     export_dynamic: true,
-    # implib: true,
 )

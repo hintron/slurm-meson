@@ -1,5 +1,3 @@
-
-
 slurmctld_src = [
     'acct_policy.c',
     'acct_policy.h',
@@ -62,9 +60,6 @@ slurmctld_src = [
     'trigger_mgr.c',
     'trigger_mgr.h',
 ]
-
-# common_inc = include_directories(join_paths('..','common'))
-
 
 # Note: Make sure export_dynamic and implib are set, so that plugins can easily
 # access slurmctld functions (symbols).

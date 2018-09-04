@@ -2,7 +2,7 @@ jobcomp_none = shared_module(
     'jobcomp_none', # executable name
     'jobcomp_none.c', # source files
     include_directories: [slurm_inc],
-    install : true,
+    install: true,
     install_dir: pkglibdir,
     name_prefix: '',
 )
