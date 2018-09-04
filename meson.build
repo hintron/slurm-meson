@@ -75,7 +75,119 @@ conf_data.set_quoted('PACKAGE_BUGREPORT', 'https://bugs.schedmd.com/', descripti
 
 # TODO:
 # X_AC_RPATH
+
 # X_AC_DATABASES
+
+# http://mesonbuild.com/Porting-from-autotools.html#finding-programs
+# mysql_config/mariadb_config helper programs give data about the installation
+
+db_config_program = ''
+if find_program('mysql_config', required: false).found()
+    db_config_program = 'mysql_config'
+    # conf_data.set('HAVEMYSQLCONFIG', 1, description: '')
+elif find_program('mariadb_config', required: false).found()
+    db_config_program = 'mariadb_config'
+    # conf_data.set('HAVEMYSQLCONFIG', 1, description: '')
+else
+    'mysql_config or mariadb_config not found. Evidently no MySQL/MariaDB development libs installed on system'
+endif
+
+
+# check for mysql-5.0.0+
+mysql_version = run_command(db_config_program, '--version').stdout().strip()
+if mysql_version.version_compare('<5.0.0')
+    message('Warning: mysql/mariadb installation is at version @0@, but version >= 5.0.0 is needed for the mysql interface'.format(mysql_version))
+else
+    # mysql_inc = include_directories(run_command(db_config_program, '--variable=pkgincludedir').stdout().strip())
+    # mysql_inc = include_directories(run_command(db_config_program, '--include').stdout().strip())
+
+    # Tell the entire project where <mysql.h> exists
+    add_project_arguments(run_command(db_config_program, '--include').stdout().strip(), language : 'c')
+    # TODO: If MySQL is found, should I add -I... to the entire project's cflags, or
+    # create an include directory? What are the repercussions?
+
+endif
+
+
+
+# mysql_libs = run_command(db_config_program, '--libs_r')
+# mysql_libs = run_command(db_config_program, '--libs_r')
+mysql_libs = cc.find_library('mysqlclient', required: false)
+
+# mysql_libs = [
+#     cc.find_library('mysqlclient', required: false),
+#     # TODO: Eventually break these out into their own vars?
+#     cc.find_library('z', required: false),
+#     cc.find_library('m', required: false),
+#     cc.find_library('rt', required: false),
+#     cc.find_library('atomic', required: false),
+#     # cc.find_library('dl', required: false),
+#     # cc.find_library('pthread', required: false),
+# ]
+
+# TODO: Do all this stuff for MYSQL checks
+    # #Check for MySQL
+    # ac_have_mysql="no"
+    # _x_ac_mysql_bin="no"
+    # ### Check for mysql_config program
+    # AC_ARG_WITH(
+    #     [mysql_config],
+    #     AS_HELP_STRING(--with-mysql_config=PATH,
+    #         Specify path of directory where mysql_config binary exists),
+    #     [_x_ac_mysql_bin="$withval"])
+
+    # if test x$_x_ac_mysql_bin = xno; then
+    #     AC_PATH_PROGS(HAVEMYSQLCONFIG, [mysql_config mariadb_config], no)
+    # else
+    #     AC_PATH_PROGS(HAVEMYSQLCONFIG, [mysql_config mariadb_config], no, $_x_ac_mysql_bin)
+    # fi
+
+    # if test x$HAVEMYSQLCONFIG = xno; then
+    #     AC_MSG_WARN([*** mysql_config not found. Evidently no MySQL development libs installed on system.])
+    # else
+    #     # check for mysql-5.0.0+
+    #     mysql_config_major_version=`$HAVEMYSQLCONFIG --version | \
+    #         sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[a-zA-Z0-9]]*\)/\1/'`
+    #         mysql_config_minor_version=`$HAVEMYSQLCONFIG --version | \
+    #         sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[a-zA-Z0-9]]*\)/\2/'`
+    #         mysql_config_micro_version=`$HAVEMYSQLCONFIG --version | \
+    #         sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[a-zA-Z0-9]]*\)/\3/'`
+
+    #     if test $mysql_config_major_version -lt 5; then
+    #         AC_MSG_WARN([*** mysql-$mysql_config_major_version.$mysql_config_minor_version.$mysql_config_micro_version available, we need >= mysql-5.0.0 installed for the mysql interface.])
+    #         ac_have_mysql="no"
+    #     else
+    #     # mysql_config puts -I on the front of the dir.  We don't
+    #     # want that so we remove it.
+    #         MYSQL_CFLAGS=`$HAVEMYSQLCONFIG --include`
+    #         MYSQL_LIBS=`$HAVEMYSQLCONFIG --libs_r`
+    #         save_CFLAGS="$CFLAGS"
+    #         save_LIBS="$LIBS"
+    #             CFLAGS="$MYSQL_CFLAGS $save_CFLAGS"
+    #         LIBS="$MYSQL_LIBS $save_LIBS"
+    #         AC_TRY_LINK([#include <mysql.h>],[
+    #                     MYSQL mysql;
+    #                     (void) mysql_init(&mysql);
+    #                     (void) mysql_close(&mysql);
+    #                 ],
+    #             [ac_have_mysql="yes"],
+    #             [ac_have_mysql="no"])
+    #         CFLAGS="$save_CFLAGS"
+    #         LIBS="$save_LIBS"
+    #         if test "$ac_have_mysql" = yes; then
+    #             AC_MSG_RESULT([MySQL $mysql_config_major_version.$mysql_config_minor_version.$mysql_config_micro_version test program built properly.])
+    #             AC_SUBST(MYSQL_LIBS)
+    #             AC_SUBST(MYSQL_CFLAGS)
+    #             AC_DEFINE(HAVE_MYSQL, 1, [Define to 1 if using MySQL libaries])
+    #         else
+    #             MYSQL_CFLAGS=""
+    #             MYSQL_LIBS=""
+    #             AC_MSG_WARN([*** MySQL test program execution failed. A thread-safe MySQL library is required.])
+    #         fi
+    #     fi
+    #     fi
+    # AM_CONDITIONAL(WITH_MYSQL, test x"$ac_have_mysql" = x"yes")
+
 
 # Check to see if this architecture should use slurm_* prefix function aliases for plugins
 use_alias_desc = 'Define slurm_ prefix function aliases for plugins'

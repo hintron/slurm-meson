@@ -17,7 +17,7 @@ global_defaults_src = custom_target(
 
 
 
-libcommon_sources = [
+libcommon_src = [
     'assoc_mgr.c', 'assoc_mgr.h',
     'cpu_frequency.c', 'cpu_frequency.h',
     'node_features.c', 'node_features.h',
@@ -140,7 +140,7 @@ libcommon_sources = [
 
 libcommon = build_target(
     'libcommon', # executable name
-    libcommon_sources, # source files
+    libcommon_src, # source files
     include_directories : [slurm_inc],
     target_type : libtype,
 )
@@ -148,21 +148,21 @@ libcommon = build_target(
 
 
 
-libdaemonize_sources = [
+libdaemonize_src = [
     'daemonize.c',
     'daemonize.h',
 ]
 
 libdaemonize = build_target(
     'libdaemonize', # executable name
-    libdaemonize_sources, # source files
+    libdaemonize_src, # source files
     include_directories : slurm_inc,
     target_type : libtype,
 )
 
 
 
-libeio_sources = [
+libeio_src = [
     'eio.c',
     'eio.h',
     'io_hdr.c',
@@ -171,14 +171,14 @@ libeio_sources = [
 
 libeio = build_target(
     'libeio', # executable name
-    libeio_sources, # source files
+    libeio_src, # source files
     include_directories : slurm_inc,
     target_type : libtype,
 )
 
 
 
-libspank_sources = [
+libspank_src = [
     'plugstack.c',
     'plugstack.h',
     'optz.c',
@@ -187,7 +187,7 @@ libspank_sources = [
 
 libspank = build_target(
     'libspank', # executable name
-    libspank_sources, # source files
+    libspank_src, # source files
     include_directories: slurm_inc,
     target_type: libtype,
 )

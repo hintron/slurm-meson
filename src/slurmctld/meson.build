@@ -1,6 +1,6 @@
 
 
-slurmctld_sources = [
+slurmctld_src = [
     'acct_policy.c',
     'acct_policy.h',
     'agent.c',
@@ -73,7 +73,7 @@ slurmctld_sources = [
 
 slurmctld = executable(
     'slurmctld', # executable name
-    slurmctld_sources, # source files
+    slurmctld_src, # source files
     include_directories: [slurm_inc],
     dependencies : [pthread_libs, dl_libs],
     link_with: [libcommon, libslurm, libdaemonize],

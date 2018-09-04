@@ -16,9 +16,9 @@ subdir('sched')
 subdir('priority')
 subdir('mcs')
 subdir('route')
+subdir('auth')
 
 # TODO:
-# subdir('auth')
 # subdir('burst_buffer')
 # subdir('core_spec')
 # subdir('gres')

@@ -25,7 +25,8 @@ Pros
 + Native support for modern tools (coverage, Valgrind, static analyzers)
 + Does not use Make or shell scripts
     * It can still call external scripts and programs if needed
-
++ Is built with portability and cross-compilation in mind
++ Works with other languages, like Rust
 
 Cons
 --------
@@ -37,6 +38,7 @@ Cons
 - Slightly different command line syntax to build and configure a project
 - Mainly developed by one guy, with only a small supplementary development team
     * If that guy disappears, then there could be a support problem
+- Because of active development, feature set is changing
 
 Autotools
 ===========
@@ -44,7 +46,7 @@ Pros
 --------
 + Stable
 + De facto standard - Used by many people
-+ Understood by a lot of people
++ Well-known by a lot of people
 + Understood(?) by our team
 + Can do everything
 
@@ -56,8 +58,9 @@ Cons
     * Harder to track down build/link bugs
 - Slower
     * Reduces programmer productivity waiting for builds
+- More verbose
 - Relies on shell scripts and Make
-- Possibly not as portable to Windows
+- Possibly not as portable
 
 
 
@@ -67,3 +70,6 @@ I believe that moving to Meson will reduce our technical debt.
 It will save debugging time when we have issues figuring out random linking errors.
 It will also save developer time with the faster build times.
 Maintaining and editing the build scripts will also be easier and less error-prone.
+
+My recommendation is to give it a try alongside autotools until it proves to be stable.
+If needed, we can even do separate meson_<release> branches, so it's isolated.
