@@ -1,11 +1,6 @@
-
-libslurmd_reverse_tree_math = build_target(
+libslurmd_reverse_tree_math = static_library(
     'libslurmd_reverse_tree_math', # name
     ['reverse_tree_math.c', 'reverse_tree_math.h'], # source files
-    # include_directories: [slurm_inc],
-    # dependencies: [pthread_libs],
-    # link_with: [libcommon, libeio, libspank],
-    target_type: libtype,
 )
 
 slurmd_common_src = [
@@ -38,16 +33,13 @@ slurmd_common_src = [
     'xcgroup.h',
 ]
 
+# TODO: Add in HWLOC CPP and LD flags instead of global flags
 
-
-libslurmd_common = build_target(
+libslurmd_common = static_library(
     'libslurmd_common', # name
     [slurmd_common_src], # source files
     include_directories: [slurm_inc],
-    # dependencies: [pthread_libs],
-    # link_with: [libcommon, libeio, libspank],
+    # TODO: HWLOC dep
+    # dependencies: [hwloc_libs],
     link_with: [libslurmd_reverse_tree_math],
-    target_type: libtype,
 )
-
-

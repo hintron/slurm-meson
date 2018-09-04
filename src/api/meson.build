@@ -42,8 +42,6 @@ slurmapi_src = [
     'update_config.c',
 ]
 
-
-
 libslurmhelper = static_library(
     'libslurmhelper', # name
     [slurmapi_src], # source files
@@ -53,11 +51,23 @@ libslurmhelper = static_library(
 )
 
 
+# Determine if libslurm and libslurmfull should be statically or dynamically linked in
+# TODO: If --build-static-libslurm ...
+# https://mesonbuild.c'om/Wrap-best-practices-and-tips.h'tml#make-libraries-buildable-both-as-static-and-shared
 
 
+# if get_option('shared_lib')
+#     libtype = 'shared_library'
+# else
+    libtype = 'static_library'
+# endif
+
+
+
+
+#  TODO: Add in API version info to this library
 libslurm = build_target(
     'libslurm', # name
-    [slurmapi_src], # source files
     include_directories: [slurm_inc],
     link_with: [libslurmhelper],
     target_type: libtype,
@@ -67,7 +77,6 @@ libslurm = build_target(
 
 libslurmfull = build_target(
     'libslurmfull', # name
-    [slurmapi_src], # source files
     include_directories: [slurm_inc],
     link_with: [libslurmhelper],
     target_type: libtype,

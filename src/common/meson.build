@@ -127,25 +127,11 @@ libcommon_src = [
     'tres_frequency.c', 'tres_frequency.h',
 ]
 
-
-# TODO: If --build-static-libslurm ...
-# https://mesonbuild.c'om/Wrap-best-practices-and-tips.h'tml#make-libraries-buildable-both-as-static-and-shared
-
-
-# if get_option('shared_lib')
-#     libtype = 'shared_library'
-# else
-    libtype = 'static_library'
-# endif
-
-libcommon = build_target(
+libcommon = static_library(
     'libcommon', # name
     libcommon_src, # source files
     include_directories: [slurm_inc],
-    target_type: libtype,
 )
-
-
 
 
 libdaemonize_src = [
@@ -153,13 +139,11 @@ libdaemonize_src = [
     'daemonize.h',
 ]
 
-libdaemonize = build_target(
+libdaemonize = static_library(
     'libdaemonize', # name
     libdaemonize_src, # source files
     include_directories : slurm_inc,
-    target_type: libtype,
 )
-
 
 
 libeio_src = [
@@ -169,13 +153,11 @@ libeio_src = [
     'io_hdr.h',
 ]
 
-libeio = build_target(
+libeio = static_library(
     'libeio', # name
     libeio_src, # source files
     include_directories : slurm_inc,
-    target_type: libtype,
 )
-
 
 
 libspank_src = [
@@ -185,10 +167,9 @@ libspank_src = [
     'optz.h',
 ]
 
-libspank = build_target(
+libspank = static_library(
     'libspank', # name
     libspank_src, # source files
     include_directories: slurm_inc,
-    target_type: libtype,
 )
 

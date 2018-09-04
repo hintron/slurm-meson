@@ -9,6 +9,7 @@ subdir('slurmctld')
 subdir('slurmd')
 subdir('slurmdbd')
 subdir('sacctmgr')
+subdir('srun')
 
 
 # TODO:
@@ -26,7 +27,6 @@ subdir('sacctmgr')
 # subdir('sprio')
 # subdir('squeue')
 # subdir('sreport')
-# subdir('srun')
 # subdir('srun_cr')
 # subdir('sshare')
 # subdir('sstat')
