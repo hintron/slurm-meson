@@ -1,11 +1,11 @@
 
 libslurmd_reverse_tree_math = build_target(
-    'libslurmd_reverse_tree_math', # executable name
+    'libslurmd_reverse_tree_math', # name
     ['reverse_tree_math.c', 'reverse_tree_math.h'], # source files
-    # include_directories : [slurm_inc],
-    # dependencies : [pthread_libs],
+    # include_directories: [slurm_inc],
+    # dependencies: [pthread_libs],
     # link_with: [libcommon, libeio, libspank],
-    target_type : libtype,
+    target_type: libtype,
 )
 
 slurmd_common_src = [
@@ -41,13 +41,13 @@ slurmd_common_src = [
 
 
 libslurmd_common = build_target(
-    'libslurmd_common', # executable name
+    'libslurmd_common', # name
     [slurmd_common_src], # source files
-    include_directories : [slurm_inc],
-    # dependencies : [pthread_libs],
+    include_directories: [slurm_inc],
+    # dependencies: [pthread_libs],
     # link_with: [libcommon, libeio, libspank],
     link_with: [libslurmd_reverse_tree_math],
-    target_type : libtype,
+    target_type: libtype,
 )
 
 

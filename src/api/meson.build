@@ -1,6 +1,4 @@
-# TODO:
-
-
+# TODO: WITH_GNU_LD trickery
 
 slurmapi_src = [
     'allocate.c',
@@ -46,12 +44,33 @@ slurmapi_src = [
 
 
 
-libslurm = build_target(
-    'libslurm', # executable name
+libslurmhelper = static_library(
+    'libslurmhelper', # name
     [slurmapi_src], # source files
-    include_directories : [slurm_inc],
-    dependencies : [pthread_libs],
+    include_directories: [slurm_inc],
+    dependencies: [pthread_libs],
     link_with: [libcommon, libeio, libspank],
-    target_type : libtype,
 )
+
+
+
+
+libslurm = build_target(
+    'libslurm', # name
+    [slurmapi_src], # source files
+    include_directories: [slurm_inc],
+    link_with: [libslurmhelper],
+    target_type: libtype,
+)
+
+
+
+libslurmfull = build_target(
+    'libslurmfull', # name
+    [slurmapi_src], # source files
+    include_directories: [slurm_inc],
+    link_with: [libslurmhelper],
+    target_type: libtype,
+)
+
 

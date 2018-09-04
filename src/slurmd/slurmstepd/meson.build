@@ -36,12 +36,12 @@ slurmstepd_src = [
 
 
 libslurmstepd = build_target(
-    'libslurmstepd', # executable name
+    'libslurmstepd', # name
     [slurmstepd_src], # source files
-    include_directories : [slurm_inc],
-    dependencies : [dl_libs],
+    include_directories: [slurm_inc],
+    dependencies: [dl_libs],
     # link_with: [libcommon, libeio, libspank],
     link_with: [libdaemonize, libslurmd_common],
-    target_type : libtype,
+    target_type: libtype,
 )
 

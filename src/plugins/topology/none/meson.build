@@ -1,5 +1,5 @@
 topology_none_plugin = shared_module(
-    'topology_none', # executable name
+    'topology_none', # name
     'topology_none.c', # source files
     include_directories: [slurm_inc],
     install: true,

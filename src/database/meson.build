@@ -6,9 +6,9 @@ database_src = [
 # TODO: WITH_MYSQL trickery
 
 libdatabase = static_library(
-    'slurm_mysql', # executable name
+    'slurm_mysql', # name
     database_src, # source files
-    include_directories : [slurm_inc],
-    dependencies : [pthread_libs, dl_libs],
+    include_directories: [slurm_inc],
+    dependencies: [pthread_libs, dl_libs],
 )
 

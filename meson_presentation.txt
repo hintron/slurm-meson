@@ -39,6 +39,7 @@ Cons
 - Mainly developed by one guy, with only a small supplementary development team
     * If that guy disappears, then there could be a support problem
 - Because of active development, feature set is changing
+- Linux distros know the Autotools workflow well; they may not know or want to know how to use Meson
 
 Autotools
 ===========

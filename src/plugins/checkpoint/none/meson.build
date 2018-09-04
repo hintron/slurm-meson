@@ -1,5 +1,5 @@
 checkpoint_none_plugin = shared_module(
-    'checkpoint_none', # executable name
+    'checkpoint_none', # name
     'checkpoint_none.c', # source files
     include_directories: [slurm_inc],
     install: true,

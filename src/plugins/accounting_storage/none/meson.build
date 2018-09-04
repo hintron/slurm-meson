@@ -1,5 +1,5 @@
 accounting_storage_none_plugin = shared_module(
-    'accounting_storage_none', # executable name
+    'accounting_storage_none', # name
     'accounting_storage_none.c', # source files
     include_directories: [slurm_inc],
     install: true,

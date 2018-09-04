@@ -1,5 +1,5 @@
 auth_none_plugin = shared_module(
-    'auth_none', # executable name
+    'auth_none', # name
     'auth_none.c', # source files
     include_directories: [slurm_inc],
     install: true,

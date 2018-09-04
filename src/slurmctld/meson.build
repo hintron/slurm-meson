@@ -67,10 +67,10 @@ slurmctld_src = [
 # https://mesonbuild.com/Reference-manual.html#shared_module
 
 slurmctld = executable(
-    'slurmctld', # executable name
+    'slurmctld', # name
     slurmctld_src, # source files
     include_directories: [slurm_inc],
-    dependencies : [pthread_libs, dl_libs],
+    dependencies: [pthread_libs, dl_libs],
     link_with: [libcommon, libslurm, libdaemonize],
     install: true,
     install_dir: get_option('sbindir'),

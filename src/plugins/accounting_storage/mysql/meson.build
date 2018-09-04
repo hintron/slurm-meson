@@ -42,10 +42,10 @@ accounting_storage_mysql_src = [
 ]
 
 accounting_storage_mysql_plugin = shared_module(
-    'accounting_storage_mysql', # executable name
+    'accounting_storage_mysql', # name
     accounting_storage_mysql_src, # source files
     include_directories: [slurm_inc],
-    dependencies : [pthread_libs, dl_libs, mysql_libs],
+    dependencies: [pthread_libs, dl_libs, mysql_libs],
     link_with: [libdatabase, libaccounting_storage_common],
     install: true,
     install_dir: pkglibdir,

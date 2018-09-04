@@ -1,5 +1,5 @@
 switch_none_plugin = shared_module(
-    'switch_none', # executable name
+    'switch_none', # name
     'switch_none.c', # source files
     include_directories: [slurm_inc],
     install: true,

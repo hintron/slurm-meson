@@ -4,12 +4,12 @@ bcast_src = [
 ]
 
 libbcast = build_target(
-    'libbcast', # executable name
+    'libbcast', # name
     [bcast_src], # source files
-    include_directories : [slurm_inc],
-    # dependencies : [dependency('zlib'), dependency('lz4')],
+    include_directories: [slurm_inc],
+    # dependencies: [dependency('zlib'), dependency('lz4')],
     link_with: [libslurm],
-    target_type : libtype,
+    target_type: libtype,
 )
 
 

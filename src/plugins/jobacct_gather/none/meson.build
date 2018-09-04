@@ -1,5 +1,5 @@
 jobacct_gather_none_plugin = shared_module(
-    'jobacct_gather_none', # executable name
+    'jobacct_gather_none', # name
     'jobacct_gather_none.c', # source files
     include_directories: [slurm_inc],
     install: true,

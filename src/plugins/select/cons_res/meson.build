@@ -11,7 +11,7 @@ select_cons_res_plugin_src = [
 # Use shared_module() over shared_library(), because that allows this .so to
 # access the caller's symbols (if the caller has export-dynamic set)
 select_cons_res_plugin = shared_module(
-    'select_cons_res', # executable name
+    'select_cons_res', # name
     select_cons_res_plugin_src, # source files
     include_directories: [slurm_inc],
     dependencies: [dl_libs, pthread_libs],

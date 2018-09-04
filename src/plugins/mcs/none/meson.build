@@ -1,5 +1,5 @@
 mcs_none = shared_module(
-    'mcs_none', # executable name
+    'mcs_none', # name
     'mcs_none.c', # source files
     include_directories: [slurm_inc],
     install: true,

@@ -17,10 +17,10 @@ slurmdbd_src = [
 # https://mesonbuild.com/Reference-manual.html#shared_module
 
 slurmdbd = executable(
-    'slurmdbd', # executable name
+    'slurmdbd', # name
     slurmdbd_src, # source files
     include_directories: [slurm_inc],
-    dependencies : [pthread_libs, dl_libs],
+    dependencies: [pthread_libs, dl_libs],
     link_with: [libslurm, libdaemonize],
     install: true,
     install_dir: get_option('sbindir'),

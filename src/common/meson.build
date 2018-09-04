@@ -139,10 +139,10 @@ libcommon_src = [
 # endif
 
 libcommon = build_target(
-    'libcommon', # executable name
+    'libcommon', # name
     libcommon_src, # source files
-    include_directories : [slurm_inc],
-    target_type : libtype,
+    include_directories: [slurm_inc],
+    target_type: libtype,
 )
 
 
@@ -154,10 +154,10 @@ libdaemonize_src = [
 ]
 
 libdaemonize = build_target(
-    'libdaemonize', # executable name
+    'libdaemonize', # name
     libdaemonize_src, # source files
     include_directories : slurm_inc,
-    target_type : libtype,
+    target_type: libtype,
 )
 
 
@@ -170,10 +170,10 @@ libeio_src = [
 ]
 
 libeio = build_target(
-    'libeio', # executable name
+    'libeio', # name
     libeio_src, # source files
     include_directories : slurm_inc,
-    target_type : libtype,
+    target_type: libtype,
 )
 
 
@@ -186,7 +186,7 @@ libspank_src = [
 ]
 
 libspank = build_target(
-    'libspank', # executable name
+    'libspank', # name
     libspank_src, # source files
     include_directories: slurm_inc,
     target_type: libtype,
