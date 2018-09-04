@@ -439,15 +439,6 @@ conf_data.set('SLURMCTLD_PORT_COUNT', 1, description: 'Define the default port c
 # Add SLURM_PREFIX to config.h
 conf_data.set_quoted('SLURM_PREFIX', get_option('prefix'), description: 'Define Slurm installation prefix')
 
-message('Checking whether to enable multiple-slurmd support... ')
-if get_option('multiple-slurmd')
-    conf_data.set('MULTIPLE_SLURMD', true, description: 'Enable multiple slurmd on one node')
-    message('Yes')
-else
-    message('No')
-endif
-
-
 if find_program('sleep').found()
     conf_data.set_quoted('SLEEP_CMD', '/bin/sleep', description: 'Define path to sleep command')
 endif
@@ -534,6 +525,21 @@ munge_libs = cc.find_library('munge')
 #   AC_SUBST(MUNGE_LDFLAGS)
 #   AC_SUBST(MUNGE_DIR)
 # fi
+
+message('Checking whether to enable multiple-slurmd support... ')
+if get_option('multiple-slurmd')
+    conf_data.set('MULTIPLE_SLURMD', true, description: 'Enable multiple slurmd on one node')
+    message('Yes')
+else
+    message('No')
+endif
+
+
+
+# TODO: Check explicitly for openpty?
+util_libs = cc.find_library('util')
+
+
 
 # X_AC_BLCR
 # LIBCURL_CHECK_CONFIG

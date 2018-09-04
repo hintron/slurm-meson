@@ -1,5 +1,3 @@
-
-
 slurmstepd_src = [
     'slurmstepd.c',
     'slurmstepd.h',
@@ -33,15 +31,15 @@ slurmstepd_src = [
 # EXTRA_slurmstepd_SOURCES = x11_forwarding.c x11_forwarding.h
 # endif
 
-
-
-libslurmstepd = build_target(
-    'libslurmstepd', # name
+slurmstepd = executable(
+    'slurmstepd', # name
     [slurmstepd_src], # source files
     include_directories: [slurm_inc],
-    dependencies: [dl_libs],
-    # link_with: [libcommon, libeio, libspank],
-    link_with: [libdaemonize, libslurmd_common],
-    target_type: libtype,
+    # TODO: Depend on hwloc, pam, ssh2
+    # slurmd and slurmstepd dependencies should match, or slurmstepd can silently fail
+    dependencies: [pthread_libs, numa_libs, dl_libs, util_libs],
+    link_with: [libslurmfull, libdaemonize, libslurmd_common],
+    install: true,
+    install_dir: get_option('sbindir'),
+    export_dynamic: true,
 )
-
