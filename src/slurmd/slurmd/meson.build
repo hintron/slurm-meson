@@ -17,9 +17,8 @@ slurmd = executable(
     include_directories: [slurm_inc],
     # TODO: Depend on hwloc, pam, util, ssh2
     dependencies: [pthread_libs, numa_libs, dl_libs],
-    # dependencies: [pthread_libs, dl_libs, numa_libs],
-    # link_with: [libcommon, libslurm, libdaemonize],
-    link_with: [libcommon, libdaemonize, libslurmd_common, libspank, libbcast],
+    link_with: [libcommon, libdaemonize, libslurmd_common, libspank, libfile_bcast],
     install: true,
     install_dir: get_option('sbindir'),
+    export_dynamic: true,
 )

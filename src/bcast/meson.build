@@ -3,8 +3,8 @@ bcast_src = [
     'file_bcast.h',
 ]
 
-libbcast = build_target(
-    'libbcast', # name
+libfile_bcast = build_target(
+    'file_bcast', # name
     [bcast_src], # source files
     include_directories: [slurm_inc],
     # dependencies: [dependency('zlib'), dependency('lz4')],
