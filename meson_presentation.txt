@@ -13,14 +13,16 @@ Pros
 + Easier maintenance due to simplicity and explicitness
     * Python-like simple syntax
     * Easy to use
++ Supports unity builds for even faster build times from scratch
 + Well documented
 + Open Source
 + Actively developed
 + Guides to port from Autotools to Meson
     * https://mesonbuild.com/Porting-from-autotools.html#porting-from-autotools
     * https://wiki.gnome.org/Initiatives/GnomeGoals/MesonPorting
-+ Backed by GNOME
-    * Will be or currently is used by all GNOME projects
++ Used or will be used by:
+    * All GNOME projects (see meson porting webpage above)
+    * Systemd (https://github.com/systemd/systemd/pull/6266)
 + It's a joy to use compared to Autotools
 + Native support for modern tools (coverage, Valgrind, static analyzers)
 + Does not use Make or shell scripts

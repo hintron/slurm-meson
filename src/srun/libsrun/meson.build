@@ -16,7 +16,7 @@ libsrun_src = [
 ]
 
 libsrun = static_library(
-    'libsrun', # name
+    'srun', # name
     libsrun_src, # source files
     include_directories: [slurm_inc],
     dependencies: [dl_libs],

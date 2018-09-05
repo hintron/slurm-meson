@@ -107,71 +107,9 @@ else
 endif
 
 mysql_libs = cc.find_library('mysqlclient', required: false)
+
+# TODO: Do more for MYSQL checks?
 # mysql_libs = run_command(db_config_program, '--libs_r')
-
-# TODO: Do all this stuff for MYSQL checks
-    # #Check for MySQL
-    # ac_have_mysql="no"
-    # _x_ac_mysql_bin="no"
-    # ### Check for mysql_config program
-    # AC_ARG_WITH(
-    #     [mysql_config],
-    #     AS_HELP_STRING(--with-mysql_config=PATH,
-    #         Specify path of directory where mysql_config binary exists),
-    #     [_x_ac_mysql_bin="$withval"])
-
-    # if test x$_x_ac_mysql_bin = xno; then
-    #     AC_PATH_PROGS(HAVEMYSQLCONFIG, [mysql_config mariadb_config], no)
-    # else
-    #     AC_PATH_PROGS(HAVEMYSQLCONFIG, [mysql_config mariadb_config], no, $_x_ac_mysql_bin)
-    # fi
-
-    # if test x$HAVEMYSQLCONFIG = xno; then
-    #     AC_MSG_WARN([*** mysql_config not found. Evidently no MySQL development libs installed on system.])
-    # else
-    #     # check for mysql-5.0.0+
-    #     mysql_config_major_version=`$HAVEMYSQLCONFIG --version | \
-    #         sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[a-zA-Z0-9]]*\)/\1/'`
-    #         mysql_config_minor_version=`$HAVEMYSQLCONFIG --version | \
-    #         sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[a-zA-Z0-9]]*\)/\2/'`
-    #         mysql_config_micro_version=`$HAVEMYSQLCONFIG --version | \
-    #         sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[a-zA-Z0-9]]*\)/\3/'`
-
-    #     if test $mysql_config_major_version -lt 5; then
-    #         AC_MSG_WARN([*** mysql-$mysql_config_major_version.$mysql_config_minor_version.$mysql_config_micro_version available, we need >= mysql-5.0.0 installed for the mysql interface.])
-    #         ac_have_mysql="no"
-    #     else
-    #     # mysql_config puts -I on the front of the dir.  We don't
-    #     # want that so we remove it.
-    #         MYSQL_CFLAGS=`$HAVEMYSQLCONFIG --include`
-    #         MYSQL_LIBS=`$HAVEMYSQLCONFIG --libs_r`
-    #         save_CFLAGS="$CFLAGS"
-    #         save_LIBS="$LIBS"
-    #             CFLAGS="$MYSQL_CFLAGS $save_CFLAGS"
-    #         LIBS="$MYSQL_LIBS $save_LIBS"
-    #         AC_TRY_LINK([#include <mysql.h>],[
-    #                     MYSQL mysql;
-    #                     (void) mysql_init(&mysql);
-    #                     (void) mysql_close(&mysql);
-    #                 ],
-    #             [ac_have_mysql="yes"],
-    #             [ac_have_mysql="no"])
-    #         CFLAGS="$save_CFLAGS"
-    #         LIBS="$save_LIBS"
-    #         if test "$ac_have_mysql" = yes; then
-    #             AC_MSG_RESULT([MySQL $mysql_config_major_version.$mysql_config_minor_version.$mysql_config_micro_version test program built properly.])
-    #             AC_SUBST(MYSQL_LIBS)
-    #             AC_SUBST(MYSQL_CFLAGS)
-    #             AC_DEFINE(HAVE_MYSQL, 1, [Define to 1 if using MySQL libaries])
-    #         else
-    #             MYSQL_CFLAGS=""
-    #             MYSQL_LIBS=""
-    #             AC_MSG_WARN([*** MySQL test program execution failed. A thread-safe MySQL library is required.])
-    #         fi
-    #     fi
-    #     fi
-    # AM_CONDITIONAL(WITH_MYSQL, test x"$ac_have_mysql" = x"yes")
-
 
 # Check to see if this architecture should use slurm_* prefix function aliases for plugins
 use_alias_desc = 'Define slurm_ prefix function aliases for plugins'
@@ -317,25 +255,24 @@ endif
 
 # TODO: What about checking for numa_available function in ac_check_lib?
 
-# AC_CHECK_LIB([numa],
-#       [numa_available],
-#       [ac_have_numa=yes; NUMA_LIBS="-lnuma"])
-
-# AC_SUBST(NUMA_LIBS)
-# AM_CONDITIONAL(HAVE_NUMA, test "x$ac_have_numa" = "xyes")
-# if test "x$ac_have_numa" = "xyes"; then
-#   AC_DEFINE(HAVE_NUMA, 1, [define if numa library installed])
-#   CFLAGS="-DNUMA_VERSION1_COMPATIBILITY $CFLAGS"
-# else
-#   AC_MSG_WARN([unable to locate NUMA memory affinity functions])
-# fi
-
-
-
-
 
 # X_AC_PAM
+
 # X_AC_LIBSLURM
+
+# Determine if libslurm, libslurmfull, and libslurmdb should be statically or
+# dynamically linked in
+# https://mesonbuild.com/Wrap-best-practices-and-tips.html#make-libraries-buildable-both-as-static-and-shared
+
+if get_option('static_libslurm')
+    libslurm_type = 'static_library'
+    message('libslurm, libslurmfull, and libslurmdb will be STATICALLY linked (static library)')
+else
+    libslurm_type = 'shared_library'
+    # libslurm_type = 'shared_module'
+    message('libslurm, libslurmfull, and libslurmdb will be DYNAMICALLY linked (shared library)')
+endif
+
 # X_AC_ISO
 # X_AC_ENV_LOGIC
 # X_AC_SLURM_BIGENDIAN
@@ -449,17 +386,6 @@ if find_program('su').found()
 endif
 
 
-
-message('Checking whether to link to libslurm.so instead of libslurm.o... ')
-if get_option('static-libslurm')
-    shared_libslurm = false
-    message('Yes')
-else
-    shared_libslurm = true
-    message('No')
-endif
-
-
 # TODO:
 # X_AC_NRT
 # X_AC_SGI_JOB
@@ -470,76 +396,21 @@ endif
 # X_AC_READLINE
 # X_AC_SLURM_WITH_SSL
 # X_AC_SYSTEMD
+
 # X_AC_MUNGE
 munge_libs = cc.find_library('munge')
-
 # TODO: What other munge stuff needs to be ported?
-# _x_ac_munge_dirs="/usr /usr/local /opt/freeware /opt/munge"
-# _x_ac_munge_libs="lib64 lib"
 
-# AC_ARG_WITH(
-#   [munge],
-#   AS_HELP_STRING(--with-munge=PATH,Specify path to munge installation),
-#   [AS_IF([test "x$with_munge" != xno],[_x_ac_munge_dirs="$with_munge $_x_ac_munge_dirs"])])
-
-# if [test "x$with_munge" = xno]; then
-#   AC_MSG_WARN([support for munge disabled])
-# else
-#   AC_CACHE_CHECK(
-#     [for munge installation],
-#     [x_ac_cv_munge_dir],
-#     [
-#       for d in $_x_ac_munge_dirs; do
-#         test -d "$d" || continue
-#         test -d "$d/include" || continue
-#         test -f "$d/include/munge.h" || continue
-#         for bit in $_x_ac_munge_libs; do
-#           test -d "$d/$bit" || continue
-#           _x_ac_munge_libs_save="$LIBS"
-#           LIBS="-L$d/$bit -lmunge $LIBS"
-#           AC_LINK_IFELSE(
-#             [AC_LANG_CALL([], munge_encode)],
-#             AS_VAR_SET(x_ac_cv_munge_dir, $d))
-#           LIBS="$_x_ac_munge_libs_save"
-#           test -n "$x_ac_cv_munge_dir" && break
-#         done
-#         test -n "$x_ac_cv_munge_dir" && break
-#       done
-#     ])
-
-#   if test -z "$x_ac_cv_munge_dir"; then
-#     AC_MSG_WARN([unable to locate munge installation])
-#   else
-#     MUNGE_LIBS="-lmunge"
-#     MUNGE_CPPFLAGS="-I$x_ac_cv_munge_dir/include"
-#     MUNGE_DIR="$x_ac_cv_munge_dir"
-#     if test "$ac_with_rpath" = "yes"; then
-#       MUNGE_LDFLAGS="-Wl,-rpath -Wl,$x_ac_cv_munge_dir/$bit -L$x_ac_cv_munge_dir/$bit"
-#     else
-#       MUNGE_LDFLAGS="-L$x_ac_cv_munge_dir/$bit"
-#     fi
-#   fi
-
-#   AC_SUBST(MUNGE_LIBS)
-#   AC_SUBST(MUNGE_CPPFLAGS)
-#   AC_SUBST(MUNGE_LDFLAGS)
-#   AC_SUBST(MUNGE_DIR)
-# fi
-
-message('Checking whether to enable multiple-slurmd support... ')
-if get_option('multiple-slurmd')
+if get_option('multiple_slurmd')
     conf_data.set('MULTIPLE_SLURMD', true, description: 'Enable multiple slurmd on one node')
-    message('Yes')
+    multiple_slurmd_msg = 'YES'
 else
-    message('No')
+    multiple_slurmd_msg = 'NO'
 endif
-
-
+message('Checking whether to enable multiple slurmd support... @0@'.format(multiple_slurmd_msg))
 
 # TODO: Check explicitly for openpty?
 util_libs = cc.find_library('util')
-
-
 
 # X_AC_BLCR
 # LIBCURL_CHECK_CONFIG
@@ -589,14 +460,8 @@ configure_file(
 
 slurm_inc = include_directories('.')
 
-
-# TODO: First compile libslurm, slurmctld, slurmd
-# TODO: Then compile slurmdbd, srun, salloc, sinfo
-
-
 subdir('slurm')
 subdir('src')
-
 
 # Finish compiling
 

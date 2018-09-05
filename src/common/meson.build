@@ -128,7 +128,7 @@ libcommon_src = [
 ]
 
 libcommon = static_library(
-    'libcommon', # name
+    'common', # name
     libcommon_src, # source files
     include_directories: [slurm_inc],
 )
@@ -140,7 +140,7 @@ libdaemonize_src = [
 ]
 
 libdaemonize = static_library(
-    'libdaemonize', # name
+    'daemonize', # name
     libdaemonize_src, # source files
     include_directories : slurm_inc,
 )
@@ -154,7 +154,7 @@ libeio_src = [
 ]
 
 libeio = static_library(
-    'libeio', # name
+    'eio', # name
     libeio_src, # source files
     include_directories : slurm_inc,
 )
@@ -168,7 +168,7 @@ libspank_src = [
 ]
 
 libspank = static_library(
-    'libspank', # name
+    'spank', # name
     libspank_src, # source files
     include_directories: slurm_inc,
 )

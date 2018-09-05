@@ -23,12 +23,12 @@ db_api_src = [
 
 # TODO: API version stuff
 
-libslurmdb = static_library(
+libslurmdb = build_target(
     'slurmdb', # name
     db_api_src, # source files
     include_directories: [slurm_inc],
     dependencies: [pthread_libs, dl_libs],
     # TODO: The makefile says it needs this...
-    # link_with: [libslurmhelper],
+    link_with: [libslurmhelper],
+    target_type: libslurm_type,
 )
-

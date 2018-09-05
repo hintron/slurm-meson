@@ -1,5 +1,5 @@
 libslurmd_reverse_tree_math = static_library(
-    'libslurmd_reverse_tree_math', # name
+    'slurmd_reverse_tree_math', # name
     ['reverse_tree_math.c', 'reverse_tree_math.h'], # source files
 )
 
@@ -36,7 +36,7 @@ slurmd_common_src = [
 # TODO: Add in HWLOC CPP and LD flags instead of global flags
 
 libslurmd_common = static_library(
-    'libslurmd_common', # name
+    'slurmd_common', # name
     [slurmd_common_src], # source files
     include_directories: [slurm_inc],
     # TODO: HWLOC dep
