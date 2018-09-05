@@ -22,13 +22,15 @@ add_project_arguments('-DHAVE_CONFIG_H', language : 'c')
 
 
 # X_AC_SLURM_VERSION from slurm.m4
-project = run_command('perl', '-ne', 'print,exit if s/^\s*NAME:\s*(\S*).*/\1/i', 'META').stdout().strip()
+# Make sure to escape \ for meson strings
+# \1 == 0x01 in meson >= 0.46; https://mesonbuild.com/Release-notes-for-0-46-0.html
+project = run_command('perl', '-ne', 'print,exit if s/^\\s*NAME:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
 conf_data.set_quoted('PROJECT', project, description: 'Define the project\'s name')
 
 
-api_current = run_command('perl', '-ne', 'print,exit if s/^\s*API_CURRENT:\s*(\S*).*/\1/i', 'META').stdout().strip()
-api_age = run_command('perl', '-ne', 'print,exit if s/^\s*API_AGE:\s*(\S*).*/\1/i', 'META').stdout().strip()
-api_revision = run_command('perl', '-ne', 'print,exit if s/^\s*API_REVISION:\s*(\S*).*/\1/i', 'META').stdout().strip()
+api_current = run_command('perl', '-ne', 'print,exit if s/^\\s*API_CURRENT:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
+api_age = run_command('perl', '-ne', 'print,exit if s/^\\s*API_AGE:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
+api_revision = run_command('perl', '-ne', 'print,exit if s/^\\s*API_REVISION:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
 api_major = api_current.to_int() - api_age.to_int()
 api_version = run_command('printf', '0x%02x%02x%02x', api_major.to_string(), api_age, api_revision).stdout().strip()
 
@@ -39,11 +41,11 @@ conf_data.set('SLURM_API_AGE', api_age, description: 'API current age')
 conf_data.set('SLURM_API_REVISION', api_revision, description: 'API current rev')
 
 
-version = run_command('perl', '-ne', 'print,exit if s/^\s*VERSION:\s*(\S*).*/\1/i', 'META').stdout().strip()
-slurm_major = run_command('perl', '-ne', 'print,exit if s/^\s*MAJOR:\s*(\S*).*/\1/i', 'META').stdout().strip()
-slurm_minor = run_command('perl', '-ne', 'print,exit if s/^\s*MINOR:\s*(\S*).*/\1/i', 'META').stdout().strip()
-slurm_micro = run_command('perl', '-ne', 'print,exit if s/^\s*MICRO:\s*(\S*).*/\1/i', 'META').stdout().strip()
-release = run_command('perl', '-ne', 'print,exit if s/^\s*RELEASE:\s*(\S*).*/\1/i', 'META').stdout().strip()
+version = run_command('perl', '-ne', 'print,exit if s/^\\s*VERSION:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
+slurm_major = run_command('perl', '-ne', 'print,exit if s/^\\s*MAJOR:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
+slurm_minor = run_command('perl', '-ne', 'print,exit if s/^\\s*MINOR:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
+slurm_micro = run_command('perl', '-ne', 'print,exit if s/^\\s*MICRO:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
+release = run_command('perl', '-ne', 'print,exit if s/^\\s*RELEASE:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
 
 conf_data.set_quoted('VERSION', version, description: 'Define the project\'s version')
 conf_data.set_quoted('SLURM_MAJOR', slurm_major, description: 'Define the project\'s major version')
@@ -346,7 +348,7 @@ if host == 'linux'
 else
     conf_data.set('SETPROCTITLE_STRATEGY', 'PS_USE_NONE', description: setproc_strat_desc)
 endif
-conf_data.set('SETPROCTITLE_PS_PADDING', '\'\0\'', description: 'Define if you need setproctitle padding')
+conf_data.set('SETPROCTITLE_PS_PADDING', '\'\\0\'', description: 'Define if you need setproctitle padding')
 
 
 # TODO: HAVE__PROGNAME
