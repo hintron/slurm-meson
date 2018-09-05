@@ -29,16 +29,22 @@ Clone Slurm (meson branch):
 
 Set up build dir:
 
-    mkdir -p ~/slurm_test/master/meson_build
     cd ~/slurm_test/master/slurm/
 
 Configure with Meson:
 
-    meson ../meson_build/build -Dmultiple_slurmd=true --werror --prefix=$HOME/slurm_test/master/meson_build
+    meson ../meson_build/build -Dmultiple_slurmd=true -Dstatic_libslurm=true --werror --prefix=$HOME/slurm_test/master/meson_build
 
 Build with Meson:
 
     cd ../meson_build/build
     ninja install
 
+And that's it!
 
+WIP: configuring Meson to dynamically link libslurm:
+=====================================================
+
+    meson ../meson_build/build -Dmultiple_slurmd=true -Dstatic_libslurm=true --werror --prefix=$HOME/slurm_test/master/meson_build
+
+Currently, the executables can't find the shared libraries at run time...
