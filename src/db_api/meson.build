@@ -29,6 +29,7 @@ libslurmdb = build_target(
     include_directories: [slurm_inc],
     dependencies: [pthread_libs, dl_libs],
     # TODO: The makefile says it needs this...
-    link_with: [libslurmhelper],
+    # link_with: [libslurmhelper],
+    link_with: [libslurmfull],
     target_type: libslurm_type,
 )

@@ -21,9 +21,11 @@ slurmdbd = executable(
     slurmdbd_src, # source files
     include_directories: [slurm_inc],
     dependencies: [pthread_libs, dl_libs],
-    link_with: [libslurm, libdaemonize],
+    link_with: [libslurmfull, libdaemonize],
     install: true,
     install_dir: get_option('sbindir'),
     # Either implib and/or export_dynamic need to be set for plugins to access slurmdbd functions
     export_dynamic: true,
+    # TODO:
+    # build_rpath: join_paths(get_option('libdir'), 'slurm'),
 )
