@@ -23,10 +23,10 @@ subdir('sbcast')
 subdir('sdiag')
 subdir('sreport')
 subdir('layouts')
+subdir('smap')
 
 
 # TODO:
-# subdir('smap')
 # subdir('sprio')
 # subdir('srun_cr')
 # subdir('sshare')

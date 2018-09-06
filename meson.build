@@ -351,6 +351,31 @@ pthread_libs = dependency('threads')
 # TODO: X_AC_UCX
 # TODO: X_AC_SSH2
 
+# X_AC_NCURSES
+
+ncurses = cc.find_library('ncurses', required: false)
+curses = cc.find_library('curses', required: false)
+tinfo = cc.find_library('tinfo', required: false)
+
+# Only build smap if some curses library has been found
+ncurses_libs = []
+build_smap = false
+if ncurses.found()
+    ncurses_libs = [ncurses]
+    build_smap = true
+elif curses.found()
+    ncurses_libs = [curses]
+    build_smap = true
+else
+    message('Cannot build smap: no curses or ncurses library found')
+endif
+
+if tinfo.found()
+    ncurses_libs += tinfo
+endif
+
+# TODO: Build test ncurses program and try to link it
+
 # TODO: X_AC_CRAY
 
 
@@ -432,12 +457,11 @@ else
 endif
 message('Checking whether to enable multiple slurmd support... @0@'.format(multiple_slurmd_msg))
 
-# TODO: Check explicitly for openpty?
 util_libs = cc.find_library('util')
+# TODO: Check explicitly for openpty?
 
 # X_AC_BLCR
 # LIBCURL_CHECK_CONFIG
-# AM_CONDITIONAL(BUILD_SMAP, test "x$ac_build_smap" = "xyes")
 # X_AC_DEPRECATED
 
 
