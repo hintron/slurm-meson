@@ -22,10 +22,10 @@ subdir('sattach')
 subdir('sbcast')
 subdir('sdiag')
 subdir('sreport')
+subdir('layouts')
 
 
 # TODO:
-# subdir('layouts')
 # subdir('smap')
 # subdir('sprio')
 # subdir('srun_cr')
