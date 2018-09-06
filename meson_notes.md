@@ -112,3 +112,12 @@ I think this just requires not using link_whole when it comes to libslurm.
 
 
 
+
+Things to look into
+====================
+
+* Explicit -lm for the math library: only needed if -nostdlib or -nodefaultlibs
+is specified. For now, ignore porting over -lm stuff
+https://stackoverflow.com/questions/1033898/why-do-you-have-to-link-the-math-library-in-c
+
+* 

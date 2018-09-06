@@ -31,3 +31,6 @@ scontrol = executable(
     export_dynamic: true,
     install_rpath: executable_rpath,
 )
+
+# TODO: Readline libs
+# TODO: -lm
