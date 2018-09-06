@@ -32,4 +32,6 @@ libslurmdb = build_target(
     # link_with: [libslurmhelper],
     link_with: [libslurmfull],
     target_type: libslurm_type,
+    install: libslurm_install,
+    install_dir: pkglibdir,
 )

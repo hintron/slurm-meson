@@ -1,8 +1,3 @@
-Meson How-To
-=====================================================
-
-https://mesonbuild.com/Quick-guide.html
-
 How to build Slurm master with Meson
 =====================================
 
@@ -34,7 +29,7 @@ Set up build dir:
 
 Configure with Meson:
 
-    meson ../meson_build/build -Dmultiple_slurmd=true -Dstatic_libslurm=true --werror --prefix=$HOME/slurm_test/master/meson_build
+    meson ../meson_build/build -Dmultiple_slurmd=true --werror --prefix=$HOME/slurm_test/master/meson_build
 
 Build with Meson:
 
@@ -43,9 +38,13 @@ Build with Meson:
 
 And that's it!
 
-WIP: configuring Meson to dynamically link libslurm:
+Configuring Meson to statically link libslurm:
 =====================================================
 
-    meson ../meson_build/build -Dmultiple_slurmd=true -Dstatic_libslurm=true --werror --prefix=$HOME/slurm_test/master/meson_build
+    meson ../meson_build/build -Dstatic_libslurm=true -Dmultiple_slurmd=true --werror --prefix=$HOME/slurm_test/master/meson_build
 
-Currently, the executables can't find the shared libraries at run time...
+
+Resources
+=============
+
+See https://mesonbuild.com/Quick-guide.html

@@ -288,10 +288,11 @@ endif
 
 if get_option('static_libslurm')
     libslurm_type = 'static_library'
+    libslurm_install = false
     message('libslurm, libslurmfull, and libslurmdb will be STATICALLY linked (static library)')
 else
     libslurm_type = 'shared_library'
-    # libslurm_type = 'shared_module'
+    libslurm_install = true
     message('libslurm, libslurmfull, and libslurmdb will be DYNAMICALLY linked (shared library)')
 endif
 

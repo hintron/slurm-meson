@@ -42,6 +42,7 @@ slurmapi_src = [
     'update_config.c',
 ]
 
+# TODO: Use middle-man libslurmhelper?
 # libslurmhelper = static_library(
 #     'slurmhelper', # name
 #     [slurmapi_src], # source files
@@ -50,7 +51,7 @@ slurmapi_src = [
 #     link_with: [libcommon, libeio, libspank],
 # )
 
-#  TODO: Add in API version info to this library
+# TODO: Add in API version info to this library
 # TODO: Only let symbols defined in src/api show up? e.g. no libcommon symbols
 libslurm = build_target(
     'slurm', # name
@@ -60,7 +61,7 @@ libslurm = build_target(
     # link_with: [libslurmhelper],
     link_whole: [libcommon, libeio, libspank],
     target_type: libslurm_type,
-    install: true,
+    install: libslurm_install,
     install_dir: pkglibdir,
 )
 
@@ -72,6 +73,6 @@ libslurmfull = build_target(
     # link_with: [libslurmhelper],
     link_whole: [libcommon, libeio, libspank],
     target_type: libslurm_type,
-    install: true,
+    install: libslurm_install,
     install_dir: pkglibdir,
 )
