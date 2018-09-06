@@ -16,4 +16,5 @@ srun = executable(
     install: true,
     install_dir: get_option('bindir'),
     export_dynamic: true,
+    install_rpath: executable_rpath,
 )

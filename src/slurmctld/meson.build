@@ -75,5 +75,5 @@ slurmctld = executable(
     install: true,
     install_dir: get_option('sbindir'),
     export_dynamic: true,
-    build_rpath: pkglibdir
+    install_rpath: executable_rpath,
 )

@@ -15,7 +15,7 @@ select_cons_res_plugin = shared_module(
     select_cons_res_plugin_src, # source files
     include_directories: [slurm_inc],
     dependencies: [dl_libs, pthread_libs],
-    link_with: [libslurm],
+    link_with: [libcommon],
     install: true,
     install_dir: pkglibdir,
     name_prefix: '',

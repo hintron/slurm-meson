@@ -11,6 +11,11 @@ sysconfdir = join_paths(prefix, get_option('sysconfdir'))
 libdir = join_paths(prefix, get_option('libdir'))
 pkglibdir = join_paths(libdir, 'slurm')
 
+message('prefix: @0@'.format(prefix))
+message('sysconfdir: @0@'.format(sysconfdir))
+message('libdir: @0@'.format(libdir))
+message('pkglibdfir: @0@'.format(pkglibdir))
+
 ##########################
 # Configure Section
 ##########################
@@ -77,6 +82,21 @@ conf_data.set_quoted('PACKAGE_BUGREPORT', 'https://bugs.schedmd.com/', descripti
 
 # TODO:
 # X_AC_RPATH
+
+# Determine if each executable should have an rpath, and if that rpath
+# should be absolute or relative to the executable install location
+executable_rpath = ''
+if get_option('static_libslurm') == false
+    # For now, assume that rpath must be set for executables linking to shared libraries at run time
+    # Determine if rpath should be absolute or relative
+    # TODO: Is this a useful option?
+    if get_option('rpath_absolute') # defaults to false
+        executable_rpath = pkglibdir
+    else
+        executable_rpath = join_paths('$ORIGIN', '..', get_option('libdir'), 'slurm')
+    endif
+endif
+message('Setting executables\' rpath to @0@'.format(executable_rpath))
 
 # X_AC_DATABASES
 
