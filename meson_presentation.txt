@@ -20,9 +20,13 @@ Pros
 + Guides to port from Autotools to Meson
     * https://mesonbuild.com/Porting-from-autotools.html#porting-from-autotools
     * https://wiki.gnome.org/Initiatives/GnomeGoals/MesonPorting
-+ Used or will be used by:
++ Used by some large projects:
+    * Systemd - https://github.com/systemd/systemd
     * All GNOME projects (see meson porting webpage above)
-    * Systemd (https://github.com/systemd/systemd/pull/6266)
+        ** GLib - https://gitlab.gnome.org/GNOME/glib
+        ** GTK+ - https://gitlab.gnome.org/GNOME/gtk
+        ** HexChat IRC Chat Client - https://github.com/hexchat/hexchat
+    * Xorg - https://gitlab.freedesktop.org/xorg/xserver
 + It's a joy to use compared to Autotools
 + Native support for modern tools (coverage, Valgrind, static analyzers)
 + Does not use Make or shell scripts

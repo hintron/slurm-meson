@@ -1,4 +1,6 @@
-project('slurm', 'c')
+project('slurm', 'c',
+    meson_version : '>= 0.47.0',
+)
 
 cc = meson.get_compiler('c')
 
@@ -118,7 +120,7 @@ endif
 # check for mysql-5.0.0+
 mysql_version = run_command(db_config_program, '--version').stdout().strip()
 if mysql_version.version_compare('<5.0.0')
-    message('Warning: mysql/mariadb installation is at version @0@, but version >= 5.0.0 is needed for the mysql interface'.format(mysql_version))
+    warning('mysql/mariadb installation is at version @0@, but version >= 5.0.0 is needed for the mysql interface'.format(mysql_version))
 else
     # Tell the entire project where <mysql.h> exists
     add_project_arguments(run_command(db_config_program, '--include').stdout().strip(), language : 'c')
@@ -367,7 +369,7 @@ elif curses.found()
     ncurses_libs = [curses]
     build_smap = true
 else
-    message('Cannot build smap: no curses or ncurses library found')
+    warning('Cannot build smap: no curses or ncurses library found')
 endif
 
 if tinfo.found()
@@ -375,6 +377,31 @@ if tinfo.found()
 endif
 
 # TODO: Build test ncurses program and try to link it
+
+
+# TODO: Test for check
+
+# AM_PATH_GLIB_2_0
+glib_libs = dependency('glib-2.0', required: false)
+
+# AM_PATH_GTK_2_0
+
+# TODO: gthread module
+# TODO: Get this gtk check to work!
+gtk_string = 'gtk2.0-0'
+gtk_libs = dependency(gtk_string, required: false)
+# gtk_libs = cc.find_library(gtk_string, required: false)
+
+build_sview = false
+if gtk_libs.found()
+    build_sview = true
+else
+    warning('Cannot build sview: @0@ not found'.format(gtk_string))
+endif
+
+# TODO: Anything more to do with gtk?
+
+
 
 # TODO: X_AC_CRAY
 
@@ -461,6 +488,46 @@ util_libs = cc.find_library('util')
 # TODO: Check explicitly for openpty?
 
 # X_AC_BLCR
+
+# # TODO: Loop through all possible combinations of possible directories? Or waste of time?
+# blcr_suffix = ['usr', join_paths('usr', 'local'), join_paths('opt', 'freeware'), join_paths('opt', 'blcr')]
+# blcr_prefix = ['lib', 'lib64', '']
+# if get_option('blcr')
+#     blcr_suffix += get_option('blcr')
+# endif
+# foreach suffix : blcr_suffix
+#     foreach prefix : items
+#         if build_srun_cr == false
+#             curr_dir += join_paths(prefix, suffix)
+#             blcr_libs = cc.find_library('cr', dirs: curr_dir)
+#             if blcr_libs.found()
+#                 conf_data.set_quoted('BLCR_HOME', curr_dir, description: 'Define BLCR installation home')
+#                 build_srun_cr = true # exit loop
+#             endif
+#         endif
+#     endforeach
+# endforeach
+
+blcr_libs = cc.find_library('cr')
+build_srun_cr = false
+if blcr_libs.found()
+    if not cc.has_header('libcr.h')
+        warning('Unable to find the libcr.h header file for the BLCR (cr) library; cannot build srun_cr')
+    elif not cc.has_function('cr_init', prefix: '#include <libcr.h>')
+        # TODO: For some reason, the libcr .so files have no symbols when I install the libcr-dev package...
+        warning('Unable to find the cr_init function in the BLCR (cr) library; cannot build srun_cr')
+    else
+        conf_data.set_quoted('BLCR_HOME', '/usr/lib', description: 'Define BLCR installation home')
+        build_srun_cr = true
+    endif
+else
+    warning('Unable to find the BLCR (cr) library; cannot build srun_cr')
+endif
+
+
+
+
+
 # LIBCURL_CHECK_CONFIG
 # X_AC_DEPRECATED
 

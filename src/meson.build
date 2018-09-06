@@ -24,11 +24,11 @@ subdir('sdiag')
 subdir('sreport')
 subdir('layouts')
 subdir('smap')
+subdir('sprio')
+subdir('sview')
+subdir('srun_cr')
 
 
 # TODO:
-# subdir('sprio')
-# subdir('srun_cr')
 # subdir('sshare')
 # subdir('strigger')
-# subdir('sview')

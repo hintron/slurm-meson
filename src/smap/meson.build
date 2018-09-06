@@ -1,4 +1,4 @@
-# Conditionally build smap only
+# Conditionally build smap
 if build_smap
     smap_src = [
         'smap.h',

@@ -7,6 +7,7 @@ option('mysql_config', type: 'string', description: 'Specify path of directory w
 option('rpath_absolute', type: 'boolean', value: false, description: 'If set to true, makes the rpath of executables absolute. This makes it so the executables can move anywhere without needing to move any lib dirs in relation to it. Absolute rpath will be prefix + libdir + `slurm`. By default, rpath is relative, and is set to `$ORIGIN/../` + libdir + `slurm`, where `$ORIGIN` is the location of the executable')
 # TODO: rpath option?
 # option('rpath', type: 'boolean', value: true, description: 'If set to false, disables setting the rpath for executables. Only takes effect if static_libslurm is unspecified')
+# option('blcr', type: 'string', description: 'Specify path to BLCR installation')
 
 # Example (from the slurm source directory):
 # meson ../meson_build/build -Dmultiple_slurmd=true --werror --prefix=$HOME/slurm/slurm_fork/meson_build
