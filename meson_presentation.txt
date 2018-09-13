@@ -17,6 +17,7 @@ Pros
 + Well documented
 + Open Source
 + Actively developed
++ No need for running autogen to generate makefiles
 + Guides to port from Autotools to Meson
     * https://mesonbuild.com/Porting-from-autotools.html#porting-from-autotools
     * https://wiki.gnome.org/Initiatives/GnomeGoals/MesonPorting
