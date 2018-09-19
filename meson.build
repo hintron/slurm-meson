@@ -123,7 +123,7 @@ if mysql_version.version_compare('<5.0.0')
     warning('mysql/mariadb installation is at version @0@, but version >= 5.0.0 is needed for the mysql interface'.format(mysql_version))
 else
     # Tell the entire project where <mysql.h> exists
-    add_project_arguments(run_command(db_config_program, '--include').stdout().strip(), language : 'c')
+    add_project_arguments(run_command(db_config_program, '--include').stdout().strip().split(' '), language : 'c')
     # TODO: If MySQL is found, should I add -I... to the entire project's cflags, or
     # create an include directory? What are the repercussions?
 
