@@ -508,7 +508,7 @@ util_libs = cc.find_library('util')
 #     endforeach
 # endforeach
 
-blcr_libs = cc.find_library('cr')
+blcr_libs = cc.find_library('cr', required: false)
 build_srun_cr = false
 if blcr_libs.found()
     if not cc.has_header('libcr.h')
