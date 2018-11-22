@@ -4,6 +4,8 @@ subdir('api')
 subdir('bcast')
 if mysql_libs.found()
     subdir('database')
+else
+    warning('src/database not being built because mysql_libs are empty')
 endif
 subdir('db_api')
 subdir('plugins')

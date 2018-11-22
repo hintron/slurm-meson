@@ -9,7 +9,7 @@ Install the latest version of Meson with Python3 Pip:
 
     pip3 install --user meson
 
-Make sure meson is installed and the version is > 0.45:
+Make sure meson is installed and the version is >= 0.46:
 
     meson --version
 
@@ -23,7 +23,7 @@ Clone slurm_meson:
 
     git clone git@gitlab.com:hintron/slurm_meson.git ~/slurm_meson/slurm
 
-Configure with Meson:
+Configure with Meson (developer mode):
 
     cd ~/slurm_meson/slurm
     meson ../meson_build/build -Dmultiple_slurmd=true --werror --prefix=$HOME/slurm_meson/meson_build

@@ -4,6 +4,7 @@ sprio_src = [
     'sprio.c',
     'print.c',
     'opts.c',
+    'sort.c',
 ]
 
 sprio = executable(

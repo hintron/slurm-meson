@@ -1,5 +1,5 @@
 project('slurm', 'c',
-    meson_version : '>= 0.47.0',
+    meson_version : '>= 0.46.0',
 )
 
 cc = meson.get_compiler('c')
