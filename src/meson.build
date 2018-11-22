@@ -2,7 +2,9 @@
 subdir('common')
 subdir('api')
 subdir('bcast')
-subdir('database')
+if mysql_libs.found()
+    subdir('database')
+endif
 subdir('db_api')
 subdir('plugins')
 subdir('slurmctld')

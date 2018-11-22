@@ -3,7 +3,7 @@ How to build Slurm master with Meson
 
 Install Python3 and Ninja:
 
-    sudo apt-get install python3 ninja-build
+    sudo apt-get install python3 python3-pip ninja-build
 
 Install the latest version of Meson with Python3 Pip:
 
@@ -19,17 +19,14 @@ If meson is not installed, make sure to add pip packages to your PATH (e.g. in ~
         PATH="$HOME/.local/bin:$PATH"
     fi
 
-Clone Slurm (meson branch):
+Clone slurm_meson:
 
-    git clone -b meson https://bitbucket.org/kolob/slurm_fork.git ~/slurm_test/master/slurm
-
-Set up build dir:
-
-    cd ~/slurm_test/master/slurm/
+    git clone git@gitlab.com:hintron/slurm_meson.git ~/slurm_meson/slurm
 
 Configure with Meson:
 
-    meson ../meson_build/build -Dmultiple_slurmd=true --werror --prefix=$HOME/slurm_test/master/meson_build
+    cd ~/slurm_meson/slurm
+    meson ../meson_build/build -Dmultiple_slurmd=true --werror --prefix=$HOME/slurm_meson/meson_build
 
 Build with Meson:
 
@@ -41,7 +38,7 @@ And that's it!
 Configuring Meson to statically link libslurm:
 =====================================================
 
-    meson ../meson_build/build -Dstatic_libslurm=true -Dmultiple_slurmd=true --werror --prefix=$HOME/slurm_test/master/meson_build
+    meson ../meson_build/build -Dstatic_libslurm=true -Dmultiple_slurmd=true --werror --prefix=$HOME/slurm_meson/meson_build
 
 
 Resources

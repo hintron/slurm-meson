@@ -1,2 +1,4 @@
 subdir('none')
-subdir('munge')
+if munge_libs.found()
+    subdir('munge')
+endif
