@@ -1,5 +1,3 @@
 subdir('common')
+subdir('cray')
 subdir('generic')
-
-# TODO: WITH_JSON_PARSER
-# subdir('cray')

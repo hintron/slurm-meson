@@ -1,3 +1,2 @@
 subdir('default')
-# TODO:
-# subdir('topology')
+subdir('topology')

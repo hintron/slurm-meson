@@ -20,5 +20,3 @@ select_cons_res_plugin = shared_module(
     install_dir: pkglibdir,
     name_prefix: '',
 )
-
-

@@ -1,3 +1,2 @@
 subdir('none')
-# TODO:
-# subdir('cncu')
+subdir('cncu')

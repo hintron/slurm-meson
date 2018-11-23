@@ -1,5 +1,3 @@
 subdir('common')
+subdir('cray')
 subdir('none')
-
-# TODO: if WITH_JSON_PARSER
-# subdir('cray')

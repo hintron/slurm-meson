@@ -138,6 +138,12 @@ if mysql_libs.found()
     mysql_include = run_command(db_config_program, '--include').stdout().strip().split(' ')
     message('mysql_include: @0@'.format(mysql_include))
     add_project_arguments(mysql_include, language : 'c')
+
+    mysql_cflags = run_command(db_config_program, '--include').stdout().strip().split(' ')
+
+    # TODO: lookup libs_r and add that to mysql_libs?
+    # This would explain why I needed to add in dl and pthread when the makefile
+    # didn't show that explicitly... it was all baked into MYSQL_LIBS
 endif
 
 # TODO: If MySQL is found, should I add -I... to the entire project's cflags, or
@@ -219,6 +225,7 @@ check_functions = [
   ['HAVE_INET_ATON', 'inet_aton', '#include<arpa/inet.h>'],
   ['HAVE_INET_PTON', 'inet_pton', '#include<arpa/inet.h>'],
   ['HAVE_MALLOC', 'malloc', '#include<stdlib.h>'],
+  # TODO: Get this check working
   ['HAVE_SCHED_SETAFFINITY', 'sched_setaffinity', '#include<sched.h>'],
   ['HAVE_SETRESUID', 'setresuid', '#include<unistd.h>'],
   ['HAVE_STATFS', 'statfs', '#include<mount.h>'],
