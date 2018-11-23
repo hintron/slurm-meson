@@ -1,4 +1,3 @@
 subdir('none')
-# TODO:
-# subdir('partition_prio')
-# subdir('qos')
+subdir('partition_prio')
+subdir('qos')
