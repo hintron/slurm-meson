@@ -80,7 +80,7 @@ library prefix
 ===============
 
 There is a default 'lib' prefix to all libraries. To get rid of it, specify
-`name_prefix=''`. This was needed for slurm to find the plugin shared libraries.
+`name_prefix=''`. This was needed for Slurm to find the plugin shared libraries.
 
 
 libslurm, libslurmfull, libcommon
@@ -115,13 +115,8 @@ limit the symbols in libslurm to only those found in the src/api source files.
 I think this just requires not using link_whole when it comes to libslurm.
 
 
-
-
-Things to look into
+Math library
 ====================
-
-* Explicit -lm for the math library: only needed if -nostdlib or -nodefaultlibs
-is specified. For now, ignore porting over -lm stuff
-https://stackoverflow.com/questions/1033898/why-do-you-have-to-link-the-math-library-in-c
-
-*
+Explicit -lm for the math library: only needed if -nostdlib or -nodefaultlibs
+is specified.
+See https://stackoverflow.com/questions/1033898/why-do-you-have-to-link-the-math-library-in-c
