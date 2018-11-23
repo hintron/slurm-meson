@@ -10,7 +10,10 @@ cc = meson.get_compiler('c')
 
 prefix = get_option('prefix')
 sysconfdir = join_paths(prefix, get_option('sysconfdir'))
-libdir = join_paths(prefix, get_option('libdir'))
+# force libdir to be 'lib' to match current Slurm build behavior
+# See https://mesonbuild.com/Builtin-options.html#page-description
+libdir = join_paths(prefix, 'lib')
+
 pkglibdir = join_paths(libdir, 'slurm')
 
 message('prefix: @0@'.format(prefix))
@@ -95,7 +98,7 @@ if get_option('static_libslurm') == false
     if get_option('rpath_absolute') # defaults to false
         executable_rpath = pkglibdir
     else
-        executable_rpath = join_paths('$ORIGIN', '..', get_option('libdir'), 'slurm')
+        executable_rpath = join_paths('$ORIGIN', '..', libdir, 'slurm')
     endif
 endif
 message('Setting executables\' rpath to @0@'.format(executable_rpath))
@@ -460,7 +463,7 @@ conf_data.set('SLURMCTLD_PORT_COUNT', 1, description: 'Define the default port c
 # TODO: Support --with-slurmctld-port option to set defaults
 
 # Add SLURM_PREFIX to config.h
-conf_data.set_quoted('SLURM_PREFIX', get_option('prefix'), description: 'Define Slurm installation prefix')
+conf_data.set_quoted('SLURM_PREFIX', prefix, description: 'Define Slurm installation prefix')
 
 if find_program('sleep').found()
     conf_data.set_quoted('SLEEP_CMD', '/bin/sleep', description: 'Define path to sleep command')
@@ -508,27 +511,7 @@ util_libs = cc.find_library('util')
 # TODO: Check explicitly for openpty?
 
 # X_AC_BLCR
-
-# # TODO: Loop through all possible combinations of possible directories? Or waste of time?
-# blcr_suffix = ['usr', join_paths('usr', 'local'), join_paths('opt', 'freeware'), join_paths('opt', 'blcr')]
-# blcr_prefix = ['lib', 'lib64', '']
-# if get_option('blcr')
-#     blcr_suffix += get_option('blcr')
-# endif
-# foreach suffix : blcr_suffix
-#     foreach prefix : items
-#         if build_srun_cr == false
-#             curr_dir += join_paths(prefix, suffix)
-#             blcr_libs = cc.find_library('cr', dirs: curr_dir)
-#             if blcr_libs.found()
-#                 conf_data.set_quoted('BLCR_HOME', curr_dir, description: 'Define BLCR installation home')
-#                 build_srun_cr = true # exit loop
-#             endif
-#         endif
-#     endforeach
-# endforeach
-
-# TODO: Get rid of this stuff
+# TODO: Get rid of BLCR stuff
 blcr_libs = cc.find_library('cr', required: false)
 build_srun_cr = false
 if blcr_libs.found()
@@ -550,10 +533,8 @@ endif
 math_libs = cc.find_library('m', required : false)
 
 
-
 # LIBCURL_CHECK_CONFIG
 # X_AC_DEPRECATED
-
 
 # Derived from the helper script ac_converter.py
 check_functions = [

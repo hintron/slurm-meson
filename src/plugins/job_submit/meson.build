@@ -1,0 +1,10 @@
+subdir('all_partitions')
+subdir('cray')
+subdir('defaults')
+subdir('logging')
+# TODO: detect lua
+# subdir('lua')
+subdir('partition')
+subdir('pbs')
+subdir('require_timelimit')
+subdir('throttle')

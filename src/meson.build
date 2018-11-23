@@ -8,9 +8,9 @@ else
     warning('src/database not being built because mysql_libs are empty')
 endif
 subdir('db_api')
+subdir('slurmd')
 subdir('plugins')
 subdir('slurmctld')
-subdir('slurmd')
 subdir('slurmdbd')
 subdir('sacctmgr')
 subdir('srun')
