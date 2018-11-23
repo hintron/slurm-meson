@@ -64,7 +64,7 @@ make_bash_script $file_in "
 set timeout $max_job_delay
 set srun_pid [spawn $srun -t1 --exclusive -N1 $file_in]
 expect {
-	-re "NodeList=($alpha_numeric)" {
+	-re "NodeList=($alpha_numeric_under)" {
 		set node_name $expect_out(1,string)
 		set match 1
 		exp_continue
