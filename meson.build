@@ -210,6 +210,35 @@ foreach h : check_headers
 endforeach
 
 
+# Check functions
+# Derived from the helper script ac_converter.py
+check_functions = [
+  ['HAVE_FACCESSAT', 'faccessat', '#include<unistd.h>'],
+  ['HAVE_FDATASYNC', 'fdatasync', '#include<unistd.h>'],
+  ['HAVE_HSTRERROR', 'hstrerror', '#include<netdb.h>'],
+  ['HAVE_INET_ATON', 'inet_aton', '#include<arpa/inet.h>'],
+  ['HAVE_INET_PTON', 'inet_pton', '#include<arpa/inet.h>'],
+  ['HAVE_MALLOC', 'malloc', '#include<stdlib.h>'],
+  ['HAVE_SCHED_SETAFFINITY', 'sched_setaffinity', '#include<sched.h>'],
+  ['HAVE_SETRESUID', 'setresuid', '#include<unistd.h>'],
+  ['HAVE_STATFS', 'statfs', '#include<mount.h>'],
+  ['HAVE_STATVFS', 'statvfs', '#include<sys/statvfs.h>'],
+  ['HAVE_STRERROR', 'strerror', '#include<string.h>'],
+  ['HAVE_STRERROR_R', 'strerror_r', '#include<string.h>'],
+  ['HAVE_STRLCPY', 'strlcpy', '#include<string.h>'],
+  ['HAVE_STRNDUP', 'strndup', '#include<string.h>'],
+  ['HAVE_STRSIGNAL', 'strsignal', '#include<signal.h>'],
+  ['HAVE_SYSCTLBYNAME', 'sysctlbyname', '#include<sys/sysctl.h>'],
+]
+
+foreach f : check_functions
+  if cc.has_function(f.get(1), prefix : f.get(2))
+    conf_data.set(f.get(0), 1)
+  endif
+endforeach
+
+
+
 # TODO: AC_HEADER_MAJOR
 # https://www.gnu.org/software/autoconf/manual/autoconf-2.67/html_node/Particular-Headers.html
 # https://github.com/mozilla/rr/commit/5a16d15ef348c069b82449dcdeaeea3c1eb8639b
@@ -252,7 +281,6 @@ dl_libs = cc.find_library('dl', required: false)
 # TODO: X_AC_PTRACE
 
 # X_AC_AFFINITY
-# TODO: Finish X_AC_AFFINITY
 
 # For test code compilation:
 # https://mesonbuild.com/Compiler-properties.html#does-code-compile
@@ -280,18 +308,37 @@ if cc.compiles(code_affinity_2, name: 'sched_getaffinity() 2 arguments')
     conf_data.set('SCHED_GETAFFINITY_TWO_ARGS', 1, description: 'Define to 1 if sched_getaffinity takes two arguments')
 endif
 
-
 # cc.find_library checks in a similar way to AC_CHECK_LIB
 # See https://github.com/mesonbuild/meson/issues/217
 numa_libs = cc.find_library('numa', required: false)
 # See https://mesonbuild.com/Reference-manual.html#external-library-object
 if numa_libs.found()
     conf_data.set('HAVE_NUMA', 1, description: 'Define if numa library installed')
-    # TODO: Only add this compiler flag where needed? e.g. task affinity plugin, slurmd, etc?
-    add_project_arguments('-DNUMA_VERSION1_COMPATIBILITY', language : 'c')
+    # NOTE: Only set NUMA_VERSION1_COMPATIBILITY for the build targets that need it (e.g. task/affinity, task/cray)
 endif
 
 # TODO: What about checking for numa_available function in ac_check_lib?
+
+# Check and set CPUSET_DIR and set HAVE_SCHED_SETAFFINITY if needed
+tmp_dirs = [
+    '/dev/cpuset',
+    # '',
+    # with-cpuset-dir,
+]
+# See https://stackoverflow.com/questions/34602901/in-meson-can-you-test-for-presence-of-a-directory-in-your-project
+foreach tmp : tmp_dirs
+if run_command('test', '-d', tmp).returncode() == 0
+    conf_data.set('CPUSET_DIR', tmp)
+    message('Found CPUSET_DIR. Setting HAVE_SCHED_SETAFFINITY')
+    # If the cpuset_dir exists, then set HAVE_SCHED_SETAFFINITY
+    conf_data.set('HAVE_SCHED_SETAFFINITY', 1)
+else
+    warning('Could not find CPUSET_DIR')
+endif
+endforeach
+# Check cwd and passed in value for --with-cpusetdir
+
+
 
 
 # X_AC_PAM
@@ -490,15 +537,20 @@ endif
 # X_AC_NRT
 # X_AC_SGI_JOB
 # X_AC_NETLOC
+netloc_libs = cc.find_library('netloc', required: false)
+if netloc_libs.found()
+    conf_data.set('HAVE_NETLOC', 1, description: 'Define to 1 if netloc library found')
+endif
+# TODO: Test for HAVE_NETLOC_NOSUB
+
 # X_AC_LUA
 # X_AC_MAN2HTML
 # X_AC_PRINTF_NULL
 
 # X_AC_READLINE
 readline_libs = cc.find_library('readline', required: false)
-
 if readline_libs.found()
-    conf_data.set('HAVE_READLINE', 1, description: 'Define if you are compiling with readline')
+    conf_data.set('HAVE_READLINE', 1, description: 'Define to 1 if you are compiling with readline')
 endif
 
 # X_AC_SLURM_WITH_SSL
@@ -546,32 +598,6 @@ math_libs = cc.find_library('m', required : false)
 
 # LIBCURL_CHECK_CONFIG
 # X_AC_DEPRECATED
-
-# Derived from the helper script ac_converter.py
-check_functions = [
-  ['HAVE_FACCESSAT', 'faccessat', '#include<unistd.h>'],
-  ['HAVE_FDATASYNC', 'fdatasync', '#include<unistd.h>'],
-  ['HAVE_HSTRERROR', 'hstrerror', '#include<netdb.h>'],
-  ['HAVE_INET_ATON', 'inet_aton', '#include<arpa/inet.h>'],
-  ['HAVE_INET_PTON', 'inet_pton', '#include<arpa/inet.h>'],
-  ['HAVE_MALLOC', 'malloc', '#include<stdlib.h>'],
-  ['HAVE_SCHED_SETAFFINITY', 'sched_setaffinity', '#include<sched.h>'],
-  ['HAVE_SETRESUID', 'setresuid', '#include<unistd.h>'],
-  ['HAVE_STATFS', 'statfs', '#include<mount.h>'],
-  ['HAVE_STATVFS', 'statvfs', '#include<sys/statvfs.h>'],
-  ['HAVE_STRERROR', 'strerror', '#include<string.h>'],
-  ['HAVE_STRERROR_R', 'strerror_r', '#include<string.h>'],
-  ['HAVE_STRLCPY', 'strlcpy', '#include<string.h>'],
-  ['HAVE_STRNDUP', 'strndup', '#include<string.h>'],
-  ['HAVE_STRSIGNAL', 'strsignal', '#include<signal.h>'],
-  ['HAVE_SYSCTLBYNAME', 'sysctlbyname', '#include<sys/sysctl.h>'],
-]
-
-foreach f : check_functions
-  if cc.has_function(f.get(1), prefix : f.get(2))
-    conf_data.set(f.get(0), 1)
-  endif
-endforeach
 
 configure_file(
     output : 'config.h',

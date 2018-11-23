@@ -19,7 +19,6 @@ slurmd = executable(
     install_dir: get_option('sbindir'),
     export_dynamic: true,
     install_rpath: executable_rpath,
-    # TODO: Specify compile and link flags?
     # c_args: [''],
     # This is needed to actually link to the libs that slurmd doesn't use
     # TODO: Or use link_whole?
