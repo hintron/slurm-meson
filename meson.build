@@ -105,33 +105,42 @@ message('Setting executables\' rpath to @0@'.format(executable_rpath))
 # http://mesonbuild.com/Porting-from-autotools.html#finding-programs
 # mysql_config/mariadb_config helper programs give data about the installation
 
-db_config_program = ''
-if find_program('mysql_config', required: false).found()
+mysql_lib = cc.find_library('mysql', required: false)
+mariadb_lib = cc.find_library('mariadb', required: false)
+
+mysql_version = ''
+if mysql_lib.found()
+    mysql_libs = mysql_lib
     db_config_program = 'mysql_config'
-    # conf_data.set('HAVEMYSQLCONFIG', 1, description: '')
-elif find_program('mariadb_config', required: false).found()
+    mysql_version += 'MySQL '
+elif mariadb_lib.found()
+    mysql_libs = mariadb_lib
     db_config_program = 'mariadb_config'
-    # conf_data.set('HAVEMYSQLCONFIG', 1, description: '')
+    mysql_version += 'MariaDB '
 else
-    'mysql_config or mariadb_config not found. Evidently no MySQL/MariaDB development libs installed on system'
+    warning('mysql or mariadb not found on the system')
+    mysql_libs = mysql_lib
 endif
 
-if db_config_program != ''
+if mysql_libs.found()
+    mysql_version += run_command(db_config_program, '--version').stdout().strip()
+    message('@0@'.format(mysql_version))
+
     # check for mysql-5.0.0+
-    mysql_version = run_command(db_config_program, '--version').stdout().strip()
-    if mysql_version.version_compare('<5.0.0')
-        warning('mysql/mariadb installation is at version @0@, but version >= 5.0.0 is needed for the mysql interface'.format(mysql_version))
-    else
-        # Tell the entire project where <mysql.h> exists
-        add_project_arguments(run_command(db_config_program, '--include').stdout().strip().split(' '), language : 'c')
-        # TODO: If MySQL is found, should I add -I... to the entire project's cflags, or
-        # create an include directory? What are the repercussions?
-
-        # mysql_inc = include_directories(run_command(db_config_program, '--variable=pkgincludedir').stdout().strip())
+    if db_config_program == 'mysql_config' and mysql_version.version_compare('<5.0.0')
+        warning('mysql installation is at version @0@, but version >= 5.0.0 is needed for the mysql interface'.format(mysql_version))
     endif
+
+    # Tell the entire project where <mysql.h> exists
+    mysql_include = run_command(db_config_program, '--include').stdout().strip().split(' ')
+    message('mysql_include: @0@'.format(mysql_include))
+    add_project_arguments(mysql_include, language : 'c')
 endif
 
-mysql_libs = cc.find_library('mysqlclient', required: false)
+# TODO: If MySQL is found, should I add -I... to the entire project's cflags, or
+# create an include directory? What are the repercussions?
+
+# mysql_inc = include_directories(run_command(db_config_program, '--variable=pkgincludedir').stdout().strip())
 
 # TODO: Do more for MYSQL checks?
 # mysql_libs = run_command(db_config_program, '--libs_r')
@@ -475,7 +484,9 @@ endif
 # X_AC_SYSTEMD
 
 # X_AC_MUNGE
-munge_libs = cc.find_library('munge', required: false)
+# Munge is a defacto dependency. No other auth plugin type
+# Look for libmunge-dev
+munge_libs = cc.find_library('munge')
 # TODO: What other munge stuff needs to be ported?
 
 if get_option('multiple_slurmd')
@@ -526,7 +537,9 @@ else
     warning('Unable to find the BLCR (cr) library; cannot build srun_cr')
 endif
 
-
+# Get the math library for things that need it
+# See https://mesonbuild.com/howtox.html#add-math-library-lm-portably
+mathlib = cc.find_library('m', required : false)
 
 
 

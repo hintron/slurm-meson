@@ -1,3 +1,2 @@
 subdir('basic')
-# TODO:
-# subdir('multifactor')
+subdir('multifactor')
