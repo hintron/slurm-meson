@@ -295,6 +295,12 @@ endif
 
 
 # X_AC_PAM
+pam_lib = cc.find_library('pam', required: false)
+pam_misc_lib = cc.find_library('pam_misc', required: false)
+pam_libs = [pam_lib, pam_misc_lib]
+if pam_lib.found() and pam_misc_lib.found()
+    conf_data.set('HAVE_PAM', 1, description: 'Define if PAM libraries are installed')
+endif
 
 # X_AC_LIBSLURM
 
@@ -361,6 +367,11 @@ pthread_libs = dependency('threads')
 
 # TODO: X_AC_LZ4
 # TODO: X_AC_HWLOC
+hwloc_libs = cc.find_library('hwloc', required: false)
+if hwloc_libs.found()
+    conf_data.set('HAVE_HWLOC', 1, description: 'Define to 1 if hwloc library found')
+endif
+
 # TODO: X_AC_PMIX
 # TODO: X_AC_FREEIPMI
 # TODO: X_AC_RRDTOOL
@@ -561,10 +572,6 @@ foreach f : check_functions
     conf_data.set(f.get(0), 1)
   endif
 endforeach
-
-
-
-
 
 configure_file(
     output : 'config.h',

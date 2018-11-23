@@ -38,6 +38,7 @@ mpi_pmix_plugin = shared_module(
     install: true,
     install_dir: pkglibdir,
     name_prefix: '',
+    dependencies: [hwloc_libs],
     link_with: [libslurmd_reverse_tree_math],
 )
 

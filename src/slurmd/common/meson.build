@@ -33,13 +33,12 @@ slurmd_common_src = [
     'xcgroup.h',
 ]
 
-# TODO: Add in HWLOC CPP and LD flags instead of global flags
-
 libslurmd_common = static_library(
     'slurmd_common', # name
     [slurmd_common_src], # source files
     include_directories: [slurm_inc],
-    # TODO: HWLOC dep
-    # dependencies: [hwloc_libs],
+    dependencies: [hwloc_libs],
     link_with: [libslurmd_reverse_tree_math],
 )
+
+# TODO: Add in HWLOC CPP and LD flags instead of global flags
