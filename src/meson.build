@@ -31,8 +31,5 @@ subdir('smap')
 subdir('sprio')
 subdir('sview')
 subdir('srun_cr')
-
-
-# TODO:
-# subdir('sshare')
-# subdir('strigger')
+subdir('sshare')
+subdir('strigger')

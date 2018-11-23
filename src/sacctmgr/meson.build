@@ -22,16 +22,11 @@ sacctmgr_src = [
     'tres_function.c',
 ]
 
-# Note: Make sure export_dynamic and implib are set, so that plugins can easily
-# access sacctmgr functions (symbols).
-# https://stackoverflow.com/a/17083153 (-Wl,--export-dynamic flag)
-# https://mesonbuild.com/Reference-manual.html#shared_module
-
 sacctmgr = executable(
     'sacctmgr', # name
     sacctmgr_src, # source files
     include_directories: [slurm_inc],
-    dependencies: [pthread_libs, dl_libs],
+    dependencies: [pthread_libs, dl_libs, readline_libs],
     link_with: [libslurmfull, libslurmdb, libdaemonize],
     install: true,
     install_dir: get_option('bindir'),

@@ -45,6 +45,10 @@ of the executable to be available for use, and this isn't the default. This
 basically just sets the `-export-dynamic` linker flag, as can be seen in the
 corresponding Makefile.am.
 
+https://stackoverflow.com/a/17083153
+(-Wl,--export-dynamic flag)
+https://mesonbuild.com/Reference-manual.html#shared_module
+
 Dependencies
 =============
 
@@ -120,4 +124,4 @@ Things to look into
 is specified. For now, ignore porting over -lm stuff
 https://stackoverflow.com/questions/1033898/why-do-you-have-to-link-the-math-library-in-c
 
-* 
+*

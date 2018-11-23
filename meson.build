@@ -479,7 +479,14 @@ endif
 # X_AC_LUA
 # X_AC_MAN2HTML
 # X_AC_PRINTF_NULL
+
 # X_AC_READLINE
+readline_libs = cc.find_library('readline', required: false)
+
+if readline_libs.found()
+    conf_data.set('HAVE_READLINE', 1, description: 'Define if you are compiling with readline')
+endif
+
 # X_AC_SLURM_WITH_SSL
 # X_AC_SYSTEMD
 
@@ -521,6 +528,7 @@ util_libs = cc.find_library('util')
 #     endforeach
 # endforeach
 
+# TODO: Get rid of this stuff
 blcr_libs = cc.find_library('cr', required: false)
 build_srun_cr = false
 if blcr_libs.found()
@@ -539,7 +547,7 @@ endif
 
 # Get the math library for things that need it
 # See https://mesonbuild.com/howtox.html#add-math-library-lm-portably
-mathlib = cc.find_library('m', required : false)
+math_libs = cc.find_library('m', required : false)
 
 
 
