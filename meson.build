@@ -441,6 +441,13 @@ if hwloc_libs.found()
     conf_data.set('HAVE_HWLOC', 1, description: 'Define to 1 if hwloc library found')
 endif
 
+# X_AC_NVML
+nvml_libs = cc.find_library('nvidia-ml', required: false)
+if nvml_libs.found()
+    conf_data.set('HAVE_NVML', 1, description: 'Define to 1 if nvml library found')
+endif
+# TODO: Figure out what needs to be done for the other parts of X_AC_NVML
+
 # TODO: X_AC_PMIX
 # TODO: X_AC_FREEIPMI
 # TODO: X_AC_RRDTOOL
