@@ -7,9 +7,8 @@ libfile_bcast = static_library(
     'file_bcast', # name
     [bcast_src], # source files
     include_directories: [slurm_inc],
-    # TODO:
-    # dependencies: [dependency('zlib'), dependency('lz4')],
+    dependencies: [lz4_lib, z_lib],
     link_with: [libslurm],
 )
 
-
+# TODO: ZLIB_LDFLAGS, ZLIB_CPPFLAGS, LZ4_LDFLAGS, LZ4_CPPFLAGS

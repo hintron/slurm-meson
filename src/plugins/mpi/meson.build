@@ -1,7 +1,6 @@
 subdir('none')
 subdir('openmpi')
 subdir('pmi2')
-# TODO:
-# if HAVE_PMIX
-#     subdir('pmix')
-# endif
+if conf_data.get('HAVE_PMIX', false)
+    subdir('pmix')
+endif

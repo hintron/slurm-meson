@@ -1,4 +1,3 @@
 subdir('none')
-# TODO:
-# subdir('blcr')
-# subdir('ompi')
+subdir('blcr')
+subdir('ompi')

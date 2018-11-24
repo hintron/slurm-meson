@@ -419,8 +419,20 @@ pthread_libs = dependency('threads')
 # AM_CONDITIONAL(BUILD_HDF5, test "$with_hdf5" = "yes")
 # AC_DEFINE([H5_NO_DEPRECATED_SYMBOLS], [1], [Make sure we get the 1.8 HDF5 API])
 
-# TODO: X_AC_LZ4
-# TODO: X_AC_HWLOC
+# AX_CHECK_ZLIB
+z_lib = cc.find_library('z', required: false)
+if z_lib.found()
+    conf_data.set('HAVE_LIBZ', 1, description: 'Define to 1 if `z` library found (-lz)')
+endif
+
+# X_AC_LZ4
+lz4_lib = cc.find_library('lz4', required: false)
+if lz4_lib.found()
+    conf_data.set('HAVE_LZ4', 1, description: 'Define to 1 if `lz4` library found (-llz4)')
+endif
+
+
+# X_AC_HWLOC
 hwloc_libs = cc.find_library('hwloc', required: false)
 if hwloc_libs.found()
     conf_data.set('HAVE_HWLOC', 1, description: 'Define to 1 if hwloc library found')

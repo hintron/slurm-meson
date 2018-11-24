@@ -1,3 +1,3 @@
 subdir('backfill')
-# subdir('builtin')
-# subdir('hold')
+subdir('builtin')
+subdir('hold')

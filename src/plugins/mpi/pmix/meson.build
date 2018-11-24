@@ -31,6 +31,15 @@ mpi_pmix_src = [
     'pmixp_coll_ring.c',
 ]
 
+if conf_data.get('HAVE_UCX', false)
+    mpi_pmix_src += [
+        'pmixp_dconn_ucx.c',
+        'pmixp_dconn_ucx.h',
+    ]
+endif
+
+# TODO: HAVE_PMIX_V1, HAVE_PMIX_V2, HAVE_PMIX_V3
+
 mpi_pmix_plugin = shared_module(
     'mpi_pmix', # name
     mpi_pmix_src, # source files
@@ -41,6 +50,5 @@ mpi_pmix_plugin = shared_module(
     dependencies: [hwloc_libs],
     link_with: [libslurmd_reverse_tree_math],
 )
-
 # TODO: HAVE_UCX
 # TODO: libs and flags HWLOC, UCX
