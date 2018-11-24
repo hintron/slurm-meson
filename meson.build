@@ -29,6 +29,7 @@ conf_data = configuration_data()
 # https://mesonbuild.com/Adding-arguments.html
 add_project_arguments('-DHAVE_CONFIG_H', language : 'c')
 
+conf_data.set('MESON_BUILD_SYSTEM', 1, description: 'If this is set, then the project was configured and built with Meson')
 
 
 # X_AC_SLURM_VERSION from slurm.m4
@@ -447,7 +448,6 @@ if nvml_libs.found()
     conf_data.set('HAVE_NVML', 1, description: 'Define to 1 if nvml library found')
 endif
 # TODO: Figure out what needs to be done for the other parts of X_AC_NVML
-
 # TODO: X_AC_PMIX
 # TODO: X_AC_FREEIPMI
 # TODO: X_AC_RRDTOOL

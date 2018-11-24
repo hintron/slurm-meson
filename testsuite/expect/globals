@@ -2145,7 +2145,7 @@ proc test_select_type_params { type } {
 		if {![string compare $type "MEMORY"] &&
 		    [string first "_MEMORY" $item] != -1} {
 			set ret 1
-			break		
+			break
 		# i.e. Check for CR_CORE_MEMORY or CR_CORE
 		} elseif {[string first "MEMORY" $item] != -1 &&
 		          [string first $type $item] != -1} {
@@ -4708,4 +4708,31 @@ proc copy_conf { config_path cwd } {
 			wait
 		}
 	}
+}
+
+################################################################
+# Determine if the Meson build system was employed or not
+# Returns true if built with Meson, and false otherwise
+#
+# See https://stackoverflow.com/questions/10372155/tcl-exec-egrep-child-process-exited-abnormally
+################################################################
+proc built_with_meson { } {
+	global bin_grep build_dir number
+	set built_with_meson 0
+	log_user 0
+	spawn $bin_grep "MESON_BUILD_SYSTEM" "$build_dir/config.h"
+	expect {
+		-re "#define MESON_BUILD_SYSTEM ($number)" {
+			set built_with_meson $expect_out(1,string)
+			exp_continue
+		}
+		eof {
+			wait
+		}
+	}
+	log_user 1
+	if {$built_with_meson == 1} {
+		send_user "Built with MESON!\n"
+	}
+	return $built_with_meson
 }
