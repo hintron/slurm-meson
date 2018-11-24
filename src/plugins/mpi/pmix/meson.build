@@ -31,7 +31,7 @@ mpi_pmix_src = [
     'pmixp_coll_ring.c',
 ]
 
-if conf_data.get('HAVE_UCX', false)
+if conf_data.get('HAVE_UCX', 0) == 1
     mpi_pmix_src += [
         'pmixp_dconn_ucx.c',
         'pmixp_dconn_ucx.h',
@@ -50,5 +50,4 @@ mpi_pmix_plugin = shared_module(
     dependencies: [hwloc_libs],
     link_with: [libslurmd_reverse_tree_math],
 )
-# TODO: HAVE_UCX
 # TODO: libs and flags HWLOC, UCX

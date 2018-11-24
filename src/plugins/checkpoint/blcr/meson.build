@@ -1,4 +1,4 @@
-if conf_data.get('WITH_BLCR', false)
+if conf_data.get('WITH_BLCR', 0) == 1
     checkpoint_blcr_plugin = shared_module(
         'checkpoint_blcr', # name
         'checkpoint_blcr.c', # source files

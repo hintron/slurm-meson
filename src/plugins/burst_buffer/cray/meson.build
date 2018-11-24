@@ -1,4 +1,4 @@
-if conf_data.get('WITH_JSON_PARSER', false)
+if conf_data.get('WITH_JSON_PARSER', 0) == 1
     burst_buffer_cray_src = [
         'burst_buffer_cray.c',
     ]

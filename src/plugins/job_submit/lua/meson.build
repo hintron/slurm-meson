@@ -1,4 +1,4 @@
-if conf_data.get('HAVE_LUA', false)
+if conf_data.get('HAVE_LUA', 0) == 1
     job_submit_lua_src = [
         'job_submit_lua.c',
     ]

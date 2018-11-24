@@ -1,6 +1,5 @@
+subdir('cray')
+subdir('ibmaem')
+subdir('ipmi')
 subdir('none')
-# TODO:
-# subdir('cray')
-# subdir('rapl')
-# subdir('ibmaem')
-# subdir('ipmi')
+subdir('rapl')

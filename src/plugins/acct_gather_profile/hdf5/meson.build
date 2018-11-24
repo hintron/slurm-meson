@@ -1,4 +1,4 @@
-if conf_data.get('BUILD_HDF5', false)
+if conf_data.get('BUILD_HDF5', 0) == 1
     libhdf5_api_src = [
         'acct_gather_profile_hdf5.c',
     ]

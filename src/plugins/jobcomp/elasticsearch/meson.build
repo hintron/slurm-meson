@@ -1,4 +1,4 @@
-if conf_data.get('WITH_CURL', false)
+if conf_data.get('WITH_CURL', 0) == 1
     jobcomp_elasticsearch_src = [
         'jobcomp_elasticsearch.c',
     ]

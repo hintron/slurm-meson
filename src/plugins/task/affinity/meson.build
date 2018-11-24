@@ -1,5 +1,5 @@
 # Only build if HAVE_SCHED_SETAFFINITY
-if conf_data.get('HAVE_SCHED_SETAFFINITY', false)
+if conf_data.get('HAVE_SCHED_SETAFFINITY', 0) == 1
     task_affinity_src = [
         'affinity.c',
         'affinity.h',

@@ -144,7 +144,10 @@ if mysql_libs.found()
     # TODO: lookup libs_r and add that to mysql_libs?
     # This would explain why I needed to add in dl and pthread when the makefile
     # didn't show that explicitly... it was all baked into MYSQL_LIBS
+    conf_data.set('WITH_MYSQL', 1, description: 'Define to 1 if using MySQL libaries')
 endif
+
+
 
 # TODO: If MySQL is found, should I add -I... to the entire project's cflags, or
 # create an include directory? What are the repercussions?

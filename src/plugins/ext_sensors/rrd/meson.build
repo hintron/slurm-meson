@@ -1,4 +1,4 @@
-if conf_data.get('BUILD_RRD', false)
+if conf_data.get('BUILD_RRD', 0) == 1
     ext_sensors_rrd_src = [
         'ext_sensors_rrd.h',
         'ext_sensors_rrd.c',

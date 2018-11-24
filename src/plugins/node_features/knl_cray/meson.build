@@ -1,4 +1,4 @@
-if conf_data.get('WITH_JSON_PARSER', false)
+if conf_data.get('WITH_JSON_PARSER', 0) == 1
     node_features_knl_generic_src = [
         'node_features_knl_generic.c',
     ]

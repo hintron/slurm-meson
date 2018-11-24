@@ -1,4 +1,4 @@
-if conf_data.get('WITH_MYSQL', false)
+if conf_data.get('WITH_MYSQL', 0) == 1
     jobcomp_mysql_src = [
         'jobcomp_mysql.c',
         'mysql_jobcomp_process.c',

@@ -24,7 +24,6 @@ if build_sview
         'sview', # name
         sview_src, # source files
         include_directories: [slurm_inc],
-        # TODO: Add gtk_libs?
         dependencies: [dl_libs, gtk_libs],
         link_with: [libslurmfull, libslurmdb],
         install: true,

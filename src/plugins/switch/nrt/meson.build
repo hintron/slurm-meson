@@ -1,4 +1,4 @@
-if conf_data.get('HAVE_NRT', false)
+if conf_data.get('HAVE_NRT', 0) == 1
     # TODO: Finish libpermapi
     subdir('libpermapi')
 

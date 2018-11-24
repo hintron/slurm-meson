@@ -1,4 +1,4 @@
-if conf_data.get('WITH_CURL', false)
+if conf_data.get('WITH_CURL', 0) == 1
     acct_gather_profile_influxdb_src = [
         'acct_gather_profile_influxdb.c',
     ]

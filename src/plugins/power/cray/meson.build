@@ -1,4 +1,4 @@
-if conf_data.get('WITH_JSON_PARSER', false)
+if conf_data.get('WITH_JSON_PARSER', 0) == 1
     power_cray_src = [
         'power_cray.c',
     ]
