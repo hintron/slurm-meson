@@ -1,7 +1,7 @@
 How to build Slurm master with Meson
 =====================================
 
-Install Python3 and Ninja:
+Install Python3 (>= 3.5) and Ninja (>= 1.5). E.g. on Ubuntu:
 
     sudo apt-get install python3 python3-pip ninja-build
 
