@@ -8,7 +8,7 @@ This project was started because Autotools is a nightmare to maintain and use; M
 
 ## Quickstart
 
-See [meson/howto.md] for how to install Meson and use it to build Slurm.
+See [meson/howto.md](meson/howto.md) for how to install Meson and use it to build Slurm.
 
 ## Contributing
 
