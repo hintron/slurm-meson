@@ -40,16 +40,11 @@ And that's it!
 
 In GitHub, navigate to the meson19.05 branch: https://github.com/hintron/slurm-meson/commits/meson19.05
 
-There should only be a single Meson-related commit. It should be all the commits
-from the meson branch squashed into a single commit. Click it.
+There should only be a single Meson-related commit. All the Slurm Meson commits
+should be squashed into a single commit. Click it.
 
-E.g. https://github.com/hintron/slurm-meson/commit/9c66895d1710ba1d4f04c489bd734e328fa49be2
-
-Make it a patch by appending `.patch` to the end of the url. E.g.:
-
-https://github.com/hintron/slurm-meson/commit/9c66895d1710ba1d4f04c489bd734e328fa49be2.patch
-
-Right click to save-as the file.
+Make it a patch by appending `.patch` to the end of the url. Right click and
+save-as the file.
 
 Now, you have two options:
 
