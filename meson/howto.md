@@ -34,6 +34,30 @@ Build with Meson:
 
 And that's it!
 
+# How to patch an existing Slurm installation with Git
+
+In GitHub, navigate to the meson19.05 branch: https://github.com/hintron/slurm-meson/commits/meson19.05
+
+There should only be a single Meson-related commit. It should be all the commits
+from the meson branch squashed into a single commit. Click it.
+
+E.g. https://github.com/hintron/slurm-meson/commit/9c66895d1710ba1d4f04c489bd734e328fa49be2
+
+Make it a patch by appending `.patch` to the end of the url. E.g.:
+
+https://github.com/hintron/slurm-meson/commit/9c66895d1710ba1d4f04c489bd734e328fa49be2.patch
+
+Right click to save-as the file.
+
+In the Slurm git repo, make sure you are on the latest Slurm 19.05 branch and do
+
+    git am <patch>
+
+You should now have a patched Meson-capable Slurm source.
+
+    git am
+
+
 ## Configuring Meson to statically link libslurm:
 
     meson ../meson-build/build -Dstatic_libslurm=true --prefix=$HOME/slurm-meson/meson-build
