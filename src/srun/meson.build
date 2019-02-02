@@ -12,7 +12,7 @@ srun = executable(
     srun_src, # source files
     include_directories: [slurm_inc, include_directories('libsrun')],
     dependencies: [pthread_libs, dl_libs],
-    link_with: [libslurmfull, libfile_bcast, libsrun, libslurmdb, libdaemonize],
+    link_with: [libslurmfull, libfile_bcast, libsrun, libdaemonize],
     install: true,
     install_dir: get_option('bindir'),
     export_dynamic: true,

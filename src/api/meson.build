@@ -1,5 +1,26 @@
 # TODO: WITH_GNU_LD trickery
 
+slurmdbapi_src = [
+    'account_functions.c',
+    'archive_functions.c',
+    'assoc_functions.c',
+    'cluster_functions.c',
+    'cluster_report_functions.c',
+    'coord_functions.c',
+    'connection_functions.c',
+    'extra_get_functions.c',
+    'federation_functions.c',
+    'job_functions.c',
+    'job_report_functions.c',
+    'qos_functions.c',
+    'resource_functions.c',
+    'tres_functions.c',
+    'usage_functions.c',
+    'user_functions.c',
+    'user_report_functions.c',
+    'wckey_functions.c',
+]
+
 slurmapi_src = [
     'allocate.c',
     'allocate_msg.c',
@@ -25,7 +46,6 @@ slurmapi_src = [
     'reservation_info.c',
     'signal.c',
     'slurm_get_statistics.c',
-    'slurm_hostlist.c',
     'slurm_pmi.c',
     'slurm_pmi.h',
     'step_ctx.c',
@@ -40,6 +60,7 @@ slurmapi_src = [
     'triggers.c',
     'reconfigure.c',
     'update_config.c',
+    slurmdbapi_src,
 ]
 
 # TODO: Use middle-man libslurmhelper?

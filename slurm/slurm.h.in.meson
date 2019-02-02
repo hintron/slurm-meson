@@ -47,9 +47,6 @@
 #define SYSTEM_DIMENSIONS 1
 #define HIGHEST_DIMENSIONS 5
 
-/* Define to 1 if you have the <sys/socket.h> header file. */
-#mesondefine HAVE_SYS_SOCKET_H
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -57,6 +54,7 @@ extern "C" {
 #include <slurm/slurm_errno.h>
 
 #include <inttypes.h>		/* for uint16_t, uint32_t definitions */
+#include <netinet/in.h>		/* struct sockaddr_in */
 #include <stdbool.h>
 #include <stdio.h>		/* for FILE definitions */
 #include <sys/types.h>		/* for uid_t definition */
@@ -64,13 +62,7 @@ extern "C" {
 #include <unistd.h>
 
 /* Define slurm_addr_t below to avoid including extraneous slurm headers */
-#ifdef	HAVE_SYS_SOCKET_H
-#  ifndef __slurm_addr_t_defined
-#    include <netinet/in.h>
-#    define  __slurm_addr_t_defined
 typedef struct sockaddr_in slurm_addr_t;
-#  endif
-#endif
 
 #ifndef __slurmdb_cluster_rec_t_defined
 #  define __slurmdb_cluster_rec_t_defined
@@ -226,7 +218,7 @@ enum job_states {
 					but sent SIGSTOP */
 #define JOB_RECONFIG_FAIL 0x00020000 /* Node configuration for job failed,
 					not job state, just job requeue flag */
-#define	JOB_POWER_UP_NODE  0x00040000 /* Allocated powered down nodes,
+#define	JOB_POWER_UP_NODE 0x00040000 /* Allocated powered down nodes,
 				      * waiting for reboot */
 #define JOB_REVOKED       0x00080000 /* Sibling job revoked */
 #define JOB_REQUEUE_FED   0x00100000 /* Job is being requeued by federation */
@@ -550,22 +542,6 @@ enum job_acct_types {
 				  * partitions */
 #define PARTITION_ENFORCE_ANY  2 /* job limit must be valid for ANY
 				  * partition */
-enum connection_type {
-	SELECT_MESH, 		/* nodes wired in mesh */
-	SELECT_TORUS, 		/* nodes wired in torus */
-	SELECT_NAV,		/* nodes wired in torus else mesh */
-	SELECT_SMALL, 		/* nodes in a small partition */
-	SELECT_HTC_S,           /* nodes in a htc running SMP mode */
-	SELECT_HTC_D,           /* nodes in a htc running Dual mode */
-	SELECT_HTC_V,           /* nodes in a htc running VN mode */
-	SELECT_HTC_L            /* nodes in a htc running in Linux mode */
-};
-
-enum node_use_type {
-	SELECT_COPROCESSOR_MODE,/* use extra processor for communications */
-	SELECT_VIRTUAL_NODE_MODE,/* application uses both processors */
-	SELECT_NAV_MODE		/* either mode is acceptable */
-};
 
 /* Select plugin (id) in use by cluster */
 enum select_plugin_type {
@@ -585,16 +561,14 @@ enum select_plugin_type {
 /* switch plugin (id) in use by cluster */
 enum switch_plugin_type {
 	SWITCH_PLUGIN_NONE         = 100, /* NONE */
-	SWITCH_PLUGIN_GENERIC      = 101, /* Genereic */
-	SWITCH_PLUGIN_CRAY         = 102, /* NRT */
-	SWITCH_PLUGIN_NRT          = 103, /* Cray */
+	SWITCH_PLUGIN_GENERIC      = 101, /* Generic */
+	SWITCH_PLUGIN_CRAY         = 102, /* Cray */
+	/* 103 unused (originally used for NRT) */
 };
 
 enum select_jobdata_type {
 	SELECT_JOBDATA_PAGG_ID	= 14,	/* data-> uint64_t job container ID */
 	SELECT_JOBDATA_PTR	= 15,	/* data-> select_jobinfo_t *jobinfo */
-	SELECT_JOBDATA_BLOCK_PTR = 16,	/* data-> bg_record_t *bg_record */
-	SELECT_JOBDATA_DIM_CNT	= 17,	/* data-> uint16_t dim_cnt */
 	SELECT_JOBDATA_CLEANING	= 22,	/* data-> uint16_t if the job is in
 					 * cleaning state or not. */
 	SELECT_JOBDATA_NETWORK	= 23,	/* data-> char * network info */
@@ -602,22 +576,12 @@ enum select_jobdata_type {
 };
 
 enum select_nodedata_type {
-	SELECT_NODEDATA_BITMAP_SIZE, /* data-> uint16_t */
-	SELECT_NODEDATA_SUBGRP_SIZE, /* data-> uint16_t */
-	SELECT_NODEDATA_SUBCNT,      /* data-> uint16_t */
-	SELECT_NODEDATA_BITMAP,      /* data-> bitstr_t * needs to be
-				      * freed with FREE_NULL_BITMAP */
-	SELECT_NODEDATA_STR,         /* data-> char *  needs to be
-				      * freed with xfree */
-	SELECT_NODEDATA_PTR,         /* data-> select_nodeinfo_t *nodeinfo */
-	SELECT_NODEDATA_EXTRA_INFO,  /* data-> char *  needs to be
-				      * freed with xfree */
-	SELECT_NODEDATA_RACK_MP,     /* data-> char * needs to be
-				      * freed with xfree */
-	SELECT_NODEDATA_MEM_ALLOC,   /* data-> uint32_t */
-	SELECT_NODEDATA_TRES_ALLOC_FMT_STR, /* data-> char * needs to be freed
-					       with xfree */
-	SELECT_NODEDATA_TRES_ALLOC_WEIGHTED /* data-> double */
+	SELECT_NODEDATA_SUBCNT = 2,		/* data-> uint16_t */
+	SELECT_NODEDATA_PTR = 5,		/* data-> select_nodeinfo_t *nodeinfo */
+	SELECT_NODEDATA_MEM_ALLOC = 8,		/* data-> uint32_t */
+	SELECT_NODEDATA_TRES_ALLOC_FMT_STR = 9,	/* data-> char *,
+						 * free with xfree */
+	SELECT_NODEDATA_TRES_ALLOC_WEIGHTED = 10, /* data-> double */
 };
 
 enum select_print_mode {
@@ -899,7 +863,7 @@ enum node_states {
  * Values can be ORed */
 #define SHOW_ALL	0x0001	/* Show info for "hidden" partitions */
 #define SHOW_DETAIL	0x0002	/* Show detailed resource information */
-#define SHOW_DETAIL2	0x0004	/* Show batch script listing */
+/*  was SHOW_DETAIL2	0x0004     Removed v19.05 */
 #define SHOW_MIXED	0x0008	/* Automatically set node MIXED state */
 #define SHOW_LOCAL	0x0010	/* Show only local information, even on
 				 * federated cluster */
@@ -1357,8 +1321,8 @@ typedef struct dynamic_plugin_data {
 } dynamic_plugin_data_t;
 
 typedef struct acct_gather_energy {
+	uint32_t ave_watts;	  /* average power consump of node, in watts */
 	uint64_t base_consumed_energy;
-	uint32_t base_watts;	  /* lowest power consump of node, in watts */
 	uint64_t consumed_energy; /* total energy consumed by node, in joules */
 	uint32_t current_watts;	  /* current power consump of node, in watts */
 	uint64_t previous_consumed_energy;
@@ -2581,6 +2545,7 @@ typedef struct reservation_name_msg {
 #define DEBUG_FLAG_NODE_FEATURES 0x0000800000000000 /* Node Features debug */
 #define DEBUG_FLAG_FEDR         0x0001000000000000 /* Federation debug */
 #define DEBUG_FLAG_HETERO_JOBS  0x0002000000000000 /* Heterogeneous job debug */
+#define DEBUG_FLAG_ACCRUE       0x0004000000000000 /* Accrue counters debug */
 
 #define PREEMPT_MODE_OFF	0x0000	/* disable job preemption */
 #define PREEMPT_MODE_SUSPEND	0x0001	/* suspend jobs to preempt */
@@ -2694,6 +2659,7 @@ typedef struct slurm_ctl_conf {
 					* gather plugins */
 	char *job_acct_gather_type; /* job accounting gather type */
 	char *job_acct_gather_params; /* job accounting gather parameters */
+	uint16_t job_acct_oom_kill; /* Enforce mem limit at runtime y|n */
 	char *job_ckpt_dir;	/* directory saving job record checkpoint */
 	char *job_comp_host;	/* job completion logging host */
 	char *job_comp_loc;	/* job completion logging location */
@@ -2730,7 +2696,6 @@ typedef struct slurm_ctl_conf {
 	uint16_t max_tasks_per_node; /* maximum tasks per node */
 	char *mcs_plugin; /* mcs plugin type */
 	char *mcs_plugin_params; /* mcs plugin parameters */
-	uint16_t mem_limit_enforce; /* Enforce mem limit at runtime y|n */
 	uint32_t min_job_age;	/* COMPLETED jobs over this age (secs)
 				 * purged from in memory records */
 	char *mpi_default;	/* Default version of MPI in use */

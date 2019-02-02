@@ -27,7 +27,7 @@ sacctmgr = executable(
     sacctmgr_src, # source files
     include_directories: [slurm_inc],
     dependencies: [pthread_libs, dl_libs, readline_libs],
-    link_with: [libslurmfull, libslurmdb, libdaemonize],
+    link_with: [libslurmfull, libdaemonize],
     install: true,
     install_dir: get_option('bindir'),
     export_dynamic: true,

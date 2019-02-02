@@ -1,2 +1,1 @@
 subdir('slurm')
-subdir('poe')

@@ -176,7 +176,6 @@ check_headers = [
     ['HAVE_MCHECK_H', 'mcheck.h'],
     ['HAVE_VALUES_H', 'values.h'],
     ['HAVE_SOCKET_H', 'socket.h'],
-    ['HAVE_SYS_SOCKET_H', 'sys/socket.h'],
     ['HAVE_STDBOOL_H', 'stdbool.h'],
     ['HAVE_SYS_IPC_H', 'sys/ipc.h'],
     ['HAVE_SYS_SHM_H', 'sys/shm.h'],
@@ -362,18 +361,18 @@ endif
 
 # X_AC_LIBSLURM
 
-# Determine if libslurm, libslurmfull, and libslurmdb should be statically or
+# Determine if libslurm and libslurmfull should be statically or
 # dynamically linked in
 # https://mesonbuild.com/Wrap-best-practices-and-tips.html#make-libraries-buildable-both-as-static-and-shared
 
 if get_option('static_libslurm')
     libslurm_type = 'static_library'
     libslurm_install = false
-    message('libslurm, libslurmfull, and libslurmdb will be STATICALLY linked (static library)')
+    message('libslurm and libslurmfull will be STATICALLY linked (static library)')
 else
     libslurm_type = 'shared_library'
     libslurm_install = true
-    message('libslurm, libslurmfull, and libslurmdb will be DYNAMICALLY linked (shared library)')
+    message('libslurm and libslurmfull will be DYNAMICALLY linked (shared library)')
 endif
 
 # X_AC_ISO

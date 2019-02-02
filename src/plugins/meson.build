@@ -1,4 +1,4 @@
-subdir('crypto')
+subdir('cred')
 subdir('select')
 subdir('switch')
 subdir('preempt')

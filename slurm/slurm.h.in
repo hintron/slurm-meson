@@ -661,7 +661,7 @@ enum acct_energy_type {
  * Symbol format is SLURM_DIST_<node>_<socket>_<core>
  *
  * <node>   = Method for distributing tasks to nodes.
- *            This determines the order in which task ids are 
+ *            This determines the order in which task ids are
  *            distributed to the nodes selected for the job/step.
  * <socket> = Method for distributing allocated lllps across sockets.
  *            This determines the order in which allocated lllps are
@@ -702,9 +702,9 @@ typedef enum task_dist_states {
 	SLURM_DIST_BLOCK_CFULL_CYCLIC   = 0x0132,
 	SLURM_DIST_BLOCK_CFULL_BLOCK    = 0x0232,
 	SLURM_DIST_BLOCK_CFULL_CFULL    = 0x0332,
-	
+
 	SLURM_DIST_NODECYCLIC           = 0x0001,
-	SLURM_DIST_NODEBLOCK            = 0x0002,	
+	SLURM_DIST_NODEBLOCK            = 0x0002,
 	SLURM_DIST_SOCKCYCLIC           = 0x0010,
 	SLURM_DIST_SOCKBLOCK            = 0x0020,
 	SLURM_DIST_SOCKCFULL            = 0x0030,
@@ -4300,7 +4300,7 @@ extern void slurm_print_topo_record(FILE *out,
 \*****************************************************************************/
 
 /*
- * slurm_load_powercap - issue RPC to get slurm powercapping details 
+ * slurm_load_powercap - issue RPC to get slurm powercapping details
  * IN powercap_info_msg_pptr - place to store a pointer to the result
  * RET 0 or a slurm error code
  * NOTE: free the response using slurm_free_powercap_info_msg
@@ -4327,7 +4327,7 @@ extern void slurm_print_powercap_info_msg(FILE *out,
 					  int one_liner);
 
 /*
- * slurm_update_powercap - issue RPC to update powercapping cap 
+ * slurm_update_powercap - issue RPC to update powercapping cap
  * IN powercap_msg - description of powercapping updates
  * RET SLURM_SUCCESS on success, otherwise return SLURM_ERROR with errno set
  */
