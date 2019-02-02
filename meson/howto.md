@@ -1,4 +1,4 @@
-# How to build Slurm master with Meson
+# How to install Meson
 
 Install Python3 (>= 3.5) and Ninja (>= 1.5). E.g. on Ubuntu:
 
@@ -18,6 +18,8 @@ If meson is not installed, make sure to add pip packages to your PATH (e.g. in ~
         PATH="$HOME/.local/bin:$PATH"
     fi
 
+# How to build Slurm master with Meson
+
 Clone slurm-meson:
 
     git clone git@github.com:hintron/slurm-meson.git ~/slurm-meson/slurm
@@ -34,7 +36,7 @@ Build with Meson:
 
 And that's it!
 
-# How to patch an existing Slurm installation with Git
+# How to patch an existing Slurm installation
 
 In GitHub, navigate to the meson19.05 branch: https://github.com/hintron/slurm-meson/commits/meson19.05
 
@@ -49,19 +51,30 @@ https://github.com/hintron/slurm-meson/commit/9c66895d1710ba1d4f04c489bd734e328f
 
 Right click to save-as the file.
 
-In the Slurm git repo, make sure you are on the latest Slurm 19.05 branch and do
+Now, you have two options:
+
+1) If your Slurm source has a git repo, you can apply the patch with git like
+so:
 
     git am <patch>
 
-You should now have a patched Meson-capable Slurm source.
+or
 
-    git am
+    git apply
 
+2) If your Slurm source does not have a git repo, you can use the `patch`
+program
+
+    patch -p1 < <patch>
+
+This also works well in the case where git doesn't apply the patch correctly.
+To undo the patch, you can simply do:
+
+    patch -p1 -R < <patch>
 
 ## Configuring Meson to statically link libslurm:
 
     meson ../meson-build/build -Dstatic_libslurm=true --prefix=$HOME/slurm-meson/meson-build
-
 
 ## Resources
 
