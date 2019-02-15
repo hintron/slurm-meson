@@ -25,3 +25,8 @@ get this working on various systems and with various Slurm configurations.
 The immediate near-term goal is to get Slurm 19.05 to build solely with Meson.
 
 See [meson/developers.md](meson/developers.md).
+
+## Other Docs
+Checkout these other docs:
+* [meson/notes.md](meson/notes.md)
+* [meson/presentation.md](meson/presentation.md)
