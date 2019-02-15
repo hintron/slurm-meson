@@ -46,7 +46,8 @@ Cons
 - Mainly developed by one guy, with only a small supplementary development team
     * If that guy disappears, then there could be a support problem
 - Because of active development, feature set is changing
-- Linux distros know the Autotools workflow well; they may not know or want to know how to use Meson
+- Linux distros know the Autotools workflow well; they may not know or want to
+know how to use Meson
 
 Autotools
 ===========
@@ -74,10 +75,13 @@ Cons
 
 Conclusion
 ===========
-I believe that moving to Meson will reduce our technical debt.
-It will save debugging time when we have issues figuring out random linking errors.
-It will also save developer time with the faster build times.
-Maintaining and editing the build scripts will also be easier and less error-prone.
+* I believe that moving to Meson will reduce our technical debt.
+* It will save debugging time when we have issues figuring out random linking
+errors.
+* It will also save developer time with the faster build times.
+* Maintaining and editing the build scripts will also be easier and less
+error-prone.
 
-My recommendation is to give it a try alongside autotools until it proves to be stable.
+My recommendation is to give it a try alongside autotools until it proves to be
+stable.
 If needed, we can even do separate meson_<release> branches, so it's isolated.

@@ -12,7 +12,8 @@ Make sure meson is installed and the version is >= 0.46:
 
     meson --version
 
-If meson is not installed, make sure to add pip packages to your PATH (e.g. in ~/.bashrc):
+If meson is not installed, make sure to add pip packages to your PATH
+(e.g. in ~/.bashrc):
 
     if [ -d "$HOME/.local/bin" ] ; then
         PATH="$HOME/.local/bin:$PATH"
@@ -29,8 +30,9 @@ Simply clone the latest 19.05-capable Slurm Meson branch with Git:
 ## Repo-less
 
 Navigate to https://github.com/hintron/slurm-meson/releases to see a list of
-Meson-capable Slurm releases. These releases are all repo-free.
-You can download a release manually through a web browser or via curl like so:
+Meson-capable Slurm releases. All downloads all free of git repos.
+You can download a release through the browser or via curl like
+so:
 
     wget https://github.com/hintron/slurm-meson/archive/<tag>.tar.gz
 
