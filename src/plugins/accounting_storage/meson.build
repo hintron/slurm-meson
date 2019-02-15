@@ -1,0 +1,5 @@
+subdir('common')
+subdir('filetxt')
+subdir('mysql')
+subdir('none')
+subdir('slurmdbd')

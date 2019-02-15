@@ -1,0 +1,5 @@
+subdir('3d_torus')
+subdir('hypercube')
+subdir('node_rank')
+subdir('none')
+subdir('tree')

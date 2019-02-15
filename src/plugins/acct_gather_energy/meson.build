@@ -1,0 +1,5 @@
+subdir('cray')
+subdir('ibmaem')
+subdir('ipmi')
+subdir('none')
+subdir('rapl')
