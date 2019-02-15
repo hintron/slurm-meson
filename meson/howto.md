@@ -46,41 +46,41 @@ Go to the Slurm source directory. E.g.:
 
     cd ~/slurm-meson/slurm
 
-In GitHub, navigate to Releases: https://github.com/hintron/slurm-meson/releases
-
-Then, click the link to the commit. Make a patch file out of the link by appending
-`.patch` to the end of the url.
+In GitHub, navigate to Releases:
+https://github.com/hintron/slurm-meson/releases. Then, click the link to the
+commit. Make a patch file out of the link by appending `.patch` to the end of
+the url.
 
 If your Slurm source has a git repo, you can use git to apply the patch.
 
 The first method is without any intermediate files:
 
     curl <patch-url> | git am
+    # or...
     curl <patch-url> | git apply
 
 Alternatively, you can right click and save-as the patch file in a browser, or download
-it via wget like so:
+it via `wget` like so:
 
-    wget https://github.com/hintron/slurm-meson/commit/3dbb31ef5fd9717f9660ff80ec2b0fd7ca9882e0.patch
+    wget https://github.com/hintron/slurm-meson/commit/3dbb31ef5fd9717f9660ff80ec2b0fd7ca9882e0.patch -O <patch-file>
+
+Then apply it with Git:
     git am <patch-file>
+    # or...
     git apply <patch-file>
 
 
 If your Slurm source does not have a git repo, you can use the `patch` program:
 
     patch -p1 < <patch-file>
-
-or
-
+    # or...
     curl <patch-url> | patch -p1
 
-This second method seems to apply the patch cleaner than git.
+Using `patch` seems to apply the patch cleaner than git.
 To undo a patch applied with the second method, you can simply do:
 
     patch -p1 -R < <patch>
-
-or
-
+    # or...
     curl <patch-url> | patch -p1 -R
 
 # How to build Slurm with Meson
