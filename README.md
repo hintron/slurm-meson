@@ -1,10 +1,13 @@
 # Slurm Meson
 
-This is a port of [Slurm](https://github.com/SchedMD/slurm/) to enable using
-[Meson](https://mesonbuild.com/) as the build system.
+This is an up-to-date fork of the latest
+[Slurm](https://github.com/SchedMD/slurm/) with [Meson](https://mesonbuild.com/)
+enabled as the build system.
 
-The eventual goal is to provide a Meson-enabling patch for each major release of
-Slurm until Meson is adopted into the Slurm codebase.
+The goal is to provide both a Meson-enabled Slurm fork as well as
+standalone patches for existing Slurm installations to become Meson-compatible.
+This will be done for each major release starting for Slurm 19.05 and
+continuing until Meson is adopted into the Slurm codebase.
 
 This project was started because Autotools is a nightmare to maintain and use;
 Meson isn't.
