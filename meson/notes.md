@@ -121,7 +121,13 @@ Explicit -lm for the math library: only needed if -nostdlib or -nodefaultlibs
 is specified.
 See https://stackoverflow.com/questions/1033898/why-do-you-have-to-link-the-math-library-in-c
 
+# Test Code Compilation
 
+For test code compilation:
+https://mesonbuild.com/Compiler-properties.html#does-code-compile
+https://mesonbuild.com/Reference-manual.html#compiler-object
+https://mesonbuild.com/Syntax.html#strings
+https://mesonbuild.com/Reference-manual.html#run-result-object
 
 # MariaDB 10.3 on Ubuntu 18.04
 

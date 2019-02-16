@@ -228,8 +228,7 @@ check_functions = [
   ['HAVE_INET_ATON', 'inet_aton', '#include<arpa/inet.h>'],
   ['HAVE_INET_PTON', 'inet_pton', '#include<arpa/inet.h>'],
   ['HAVE_MALLOC', 'malloc', '#include<stdlib.h>'],
-  # TODO: Get this check working
-  ['HAVE_SCHED_SETAFFINITY', 'sched_setaffinity', '#include<sched.h>'],
+  ['HAVE_SCHED_SETAFFINITY', 'sched_setaffinity', '#define _GNU_SOURCE\n#include<sched.h>'],
   ['HAVE_SETRESUID', 'setresuid', '#include<unistd.h>'],
   ['HAVE_STATFS', 'statfs', '#include<mount.h>'],
   ['HAVE_STATVFS', 'statvfs', '#include<sys/statvfs.h>'],
@@ -291,32 +290,6 @@ dl_libs = cc.find_library('dl', required: false)
 # TODO: X_AC_PTRACE
 
 # X_AC_AFFINITY
-
-# For test code compilation:
-# https://mesonbuild.com/Compiler-properties.html#does-code-compile
-# https://mesonbuild.com/Reference-manual.html#compiler-object
-# https://mesonbuild.com/Syntax.html#strings
-# https://mesonbuild.com/Reference-manual.html#run-result-object
-code_affinity_3 = '''#define _GNU_SOURCE
-#include <sched.h>
-int main (int argc, char ** argv) {
-    cpu_set_t mask;
-    sched_getaffinity(0, sizeof(cpu_set_t), &mask);
-}'''
-
-code_affinity_2 = '''#define _GNU_SOURCE
-#include <sched.h>
-int main (int argc, char ** argv) {
-    cpu_set_t mask;
-    sched_getaffinity(0, &mask);
-}'''
-
-if cc.compiles(code_affinity_3, name: 'sched_getaffinity() 3 arguments')
-    conf_data.set('SCHED_GETAFFINITY_THREE_ARGS', 1, description: 'Define to 1 if sched_getaffinity takes three arguments')
-endif
-if cc.compiles(code_affinity_2, name: 'sched_getaffinity() 2 arguments')
-    conf_data.set('SCHED_GETAFFINITY_TWO_ARGS', 1, description: 'Define to 1 if sched_getaffinity takes two arguments')
-endif
 
 # cc.find_library checks in a similar way to AC_CHECK_LIB
 # See https://github.com/mesonbuild/meson/issues/217
