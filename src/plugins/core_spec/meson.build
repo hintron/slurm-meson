@@ -1,2 +1,2 @@
-subdir('none')
 subdir('cray')
+subdir('none')

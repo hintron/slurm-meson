@@ -1,4 +1,5 @@
 subdir('common')
 subdir('gpu')
-subdir('mic')
 subdir('nic')
+subdir('mic')
+subdir('mps')

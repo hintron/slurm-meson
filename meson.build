@@ -209,6 +209,9 @@ check_headers = [
     ['HAVE_FLOAT_H', 'float.h'],
     ['HAVE_SYS_STATVFS_H', 'sys/statvfs.h'],
     ['HAVE_SYS_STATVFS_H', 'sys/sysmacros.h'],
+    ['HAVE_FREEIPMI_H', 'freeipmi/freeipmi.h'],
+    ['HAVE_NVML_H', 'nvml.h'],
+    ['HAVE_HWLOC_H', 'hwloc.h'],
 ]
 
 foreach h : check_headers
@@ -417,11 +420,18 @@ endif
 # X_AC_NVML
 nvml_libs = cc.find_library('nvidia-ml', required: false)
 if nvml_libs.found()
-    conf_data.set('HAVE_NVML', 1, description: 'Define to 1 if nvml library found')
+    conf_data.set('HAVE_NVML', 1, description: 'Define to 1 if NVML library found')
 endif
 # TODO: Figure out what needs to be done for the other parts of X_AC_NVML
 # TODO: X_AC_PMIX
-# TODO: X_AC_FREEIPMI
+
+# X_AC_FREEIPMI
+freeipmi_libs = cc.find_library('freeipmi', required: false)
+if freeipmi_libs.found()
+    conf_data.set('HAVE_FREEIPMI', 1, description: 'Define to 1 if freeipmi library found')
+endif
+
+
 # TODO: X_AC_RRDTOOL
 # TODO: X_AC_UCX
 # TODO: X_AC_SSH2
