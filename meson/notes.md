@@ -184,6 +184,9 @@ If the password is not blank, you can change it like so:
 
 See https://serverfault.com/questions/103412/how-to-change-my-mysql-root-password-back-to-empty.
 
+You may also try something like this:
+    ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'new_password'
+
 After running slurmdbd, if you get this error:
 
     slurmdbd: error: mysql_query failed: 1558 Column count of mysql.proc is wrong. Expected 21, found 20. Created with MariaDB 100138, now running 100312. Please use mysql_upgrade to fix this error
@@ -207,3 +210,19 @@ under `[mysqld]`
     plugin-load-add = auth_cocket.so
 
 And rerun `sudo mysql_upgrade`.
+
+# Setting up _slurmdbd_
+
+Add the cluster to the DB:
+    sacctmgr add cluster my_cluster
+    sacctmgr show assoc
+
+If you are running slurmdbd as a user other than root, add it to Slurm:
+    sacctmgr add user name=my_name account=root
+
+# Setting up _slurmctld_
+
+Start slurmctld with -i to ignore previous state, if needed.
+
+# Running testsuite
+
