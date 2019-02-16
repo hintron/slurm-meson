@@ -97,8 +97,9 @@ Configure with Meson:
     cd ~/slurm-meson/slurm
     meson ../meson-build/build --prefix=$HOME/slurm-meson/meson-build
 
-You can optionally add developer options like `-Dmultiple_slurmd=true` and
-`--werror`.
+You can optionally add developer options like `-Dmultiple-slurmd=true` and
+`--werror`:
+    meson ../meson-build/build --prefix=$HOME/slurm-meson/meson-build --werror -Dmultiple-slurmd=true
 
 Build with Meson:
 
@@ -114,4 +115,4 @@ to rerun the configuration.
 
 ## Configuring Meson to statically link libslurm:
 
-Add the `-Dstatic_libslurm=true` option to the Meson configure command.
+Add the `-Dstatic-libslurm=true` option to the Meson configure command.

@@ -1,5 +1,6 @@
+# Put other first, since cray uses it
+subdir('other')
 subdir('cons_res')
 subdir('cons_tres')
-subdir('other')
 subdir('cray')
 subdir('linear')

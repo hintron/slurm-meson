@@ -91,11 +91,11 @@ conf_data.set_quoted('PACKAGE_BUGREPORT', 'https://bugs.schedmd.com/', descripti
 # Determine if each executable should have an rpath, and if that rpath
 # should be absolute or relative to the executable install location
 executable_rpath = ''
-if get_option('static_libslurm') == false
+if get_option('static-libslurm') == false
     # For now, assume that rpath must be set for executables linking to shared libraries at run time
     # Determine if rpath should be absolute or relative
     # TODO: Is this a useful option?
-    if get_option('rpath_absolute') # defaults to false
+    if get_option('rpath-absolute') # defaults to false
         executable_rpath = pkglibdir
     else
         executable_rpath = join_paths('$ORIGIN', '..', libdir, 'slurm')
@@ -364,7 +364,7 @@ endif
 # dynamically linked in
 # https://mesonbuild.com/Wrap-best-practices-and-tips.html#make-libraries-buildable-both-as-static-and-shared
 
-if get_option('static_libslurm')
+if get_option('static-libslurm')
     libslurm_type = 'static_library'
     libslurm_install = false
     message('libslurm and libslurmfull will be STATICALLY linked (static library)')
@@ -514,7 +514,7 @@ endif
 # TODO: What other munge stuff needs to be ported?
 # X_AC_BLCR
 
-if get_option('multiple_slurmd')
+if get_option('multiple-slurmd')
     conf_data.set('MULTIPLE_SLURMD', true, description: 'Enable multiple slurmd on one node')
     multiple_slurmd_msg = 'YES'
 else
