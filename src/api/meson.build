@@ -68,7 +68,7 @@ slurmapi_src = [
 #     'slurmhelper', # name
 #     [slurmapi_src], # source files
 #     include_directories: [slurm_inc],
-#     dependencies: [pthread_libs],
+#     dependencies: [pthread_lib],
 #     link_with: [libcommon, libeio, libspank],
 # )
 
@@ -78,7 +78,7 @@ libslurm = build_target(
     'slurm', # name
     [slurmapi_src], # source files
     include_directories: [slurm_inc],
-    dependencies: [pthread_libs, dl_libs],
+    dependencies: [pthread_lib, dl_lib],
     # link_with: [libslurmhelper],
     link_whole: [libcommon, libeio, libspank],
     target_type: libslurm_type,
@@ -90,7 +90,7 @@ libslurmfull = build_target(
     'slurmfull', # name
     [slurmapi_src], # source files
     include_directories: [slurm_inc],
-    dependencies: [pthread_libs, dl_libs],
+    dependencies: [pthread_lib, dl_lib],
     # link_with: [libslurmhelper],
     link_whole: [libcommon, libeio, libspank],
     target_type: libslurm_type,

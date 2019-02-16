@@ -7,7 +7,7 @@ sdiag = executable(
     'sdiag', # name
     sdiag_src, # source files
     include_directories: [slurm_inc],
-    dependencies: [dl_libs],
+    dependencies: [dl_lib],
     link_with: [libslurmfull],
     install: true,
     install_dir: get_option('bindir'),

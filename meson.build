@@ -104,13 +104,140 @@ if get_option('static_libslurm') == false
 endif
 message('Setting executables\' rpath to @0@'.format(executable_rpath))
 
+# Check to see if this architecture should use slurm_* prefix function aliases for plugins
+use_alias_desc = 'Define slurm_ prefix function aliases for plugins'
+host = host_machine.system()
+if host == 'darwin'
+    conf_data.set('USE_ALIAS', 0, description: use_alias_desc)
+else
+    conf_data.set('USE_ALIAS', 1, description: use_alias_desc)
+endif
+
+# TODO: Check for programs
+# TODO: Check for libraries
+
+
+
+
+
+#####################################
+# Check for libraries
+#####################################
+# TODO: Support specifying custom paths to check?
+curses_lib = cc.find_library('curses', required: false)
+blcr_lib = cc.find_library('cr', required: false)
+dl_lib = cc.find_library('dl', required: false)
+freeipmi_lib = cc.find_library('freeipmi', required: false)
+glib_lib = dependency('glib-2.0', required: false)
+# TODO: Get this gtk check to work!
+gtk_lib = dependency('gtk2.0-0', required: false)
+# gtk_lib = cc.find_library(gtk_string, required: false)
+# TODO: gthread module
+hwloc_lib = cc.find_library('hwloc', required: false)
+lz4_lib = cc.find_library('lz4', required: false)
+math_lib = cc.find_library('m', required: false)
+mariadb_lib = cc.find_library('mariadb', required: false)
+munge_lib = cc.find_library('munge')
+mysql_lib = cc.find_library('mysql', required: false)
+nvml_lib = cc.find_library('nvidia-ml', required: false)
+ncurses_lib = cc.find_library('ncurses', required: false)
+netloc_lib = cc.find_library('netloc', required: false)
+numa_lib = cc.find_library('numa', required: false)
+pam_lib = cc.find_library('pam', required: false)
+pam_misc_lib = cc.find_library('pam_misc', required: false)
+pthread_lib = dependency('threads')
+readline_lib = cc.find_library('readline', required: false)
+tinfo_lib = cc.find_library('tinfo', required: false)
+util_lib = cc.find_library('util')
+z_lib = cc.find_library('z', required: false)
+
+
+#####################################
+# Check for header files
+#####################################
+check_headers = [
+    ['HAVE_CURSES_H', 'curses.h'],
+    ['HAVE_DIRENT_H', 'dirent.h'],
+    ['HAVE_ERRNO_H', 'errno.h'],
+    ['HAVE_FLOAT_H', 'float.h'],
+    ['HAVE_FREEIPMI_H', 'freeipmi/freeipmi.h'],
+    ['HAVE_HWLOC_H', 'hwloc.h'],
+    ['HAVE_INTTYPES_H', 'inttypes.h'],
+    ['HAVE_KSTAT_H', 'kstat.h'],
+    ['HAVE_LINUX_SCHED_H', 'linux/sched.h'],
+    ['HAVE_LIMITS_H', 'limits.h'],
+    ['HAVE_MCHECK_H', 'mcheck.h'],
+    ['HAVE_NETDB_H', 'netdb.h'],
+    ['HAVE_NCURSES_H', 'ncurses.h'],
+    ['HAVE_NVML_H', 'nvml.h'],
+    ['HAVE_PAM_APPL_H', 'pam/pam_appl.h'],
+    ['HAVE_PATHS_H', 'paths.h'],
+    ['HAVE_PTHREAD_H', 'pthread.h'],
+    ['HAVE_PTY_H', 'pty.h'],
+    ['HAVE_SECURITY_PAM_APPL_H', 'security/pam_appl.h'],
+    ['HAVE_SOCKET_H', 'socket.h'],
+    ['HAVE_STDBOOL_H', 'stdbool.h'],
+    ['HAVE_STDLIB_H', 'stdlib.h'],
+    ['HAVE_SYS_DR_H', 'sys/dr.h'],
+    ['HAVE_SYS_IPC_H', 'sys/ipc.h'],
+    ['HAVE_SYS_PRCTL_H', 'sys/prctl.h'],
+    ['HAVE_SYS_PTRACE_H', 'sys/ptrace.h'],
+    ['HAVE_SYS_SEM_H', 'sys/sem.h'],
+    ['HAVE_SYS_SHM_H', 'sys/shm.h'],
+    ['HAVE_SYS_STATFS_H', 'sys/statfs.h'],
+    ['HAVE_SYS_STATVFS_H', 'sys/statvfs.h'],
+    ['HAVE_SYS_SYSCTL_H', 'sys/sysctl.h'],
+    ['HAVE_SYS_SYSLOG_H', 'sys/syslog.h'],
+    ['HAVE_SYS_STATVFS_H', 'sys/sysmacros.h'],
+    ['HAVE_SYS_SYSTEMCFG_H', 'sys/systemcfg.h'],
+    ['HAVE_SYS_VFS_H', 'sys/vfs.h'],
+    ['HAVE_SYSINT_H', 'sysint.h'],
+    ['HAVE_TERMCAP_H', 'termcap.h'],
+    ['HAVE_UTMP_H', 'utmp.h'],
+    ['HAVE_VALUES_H', 'values.h'],
+]
+
+foreach h : check_headers
+    if cc.has_header(h.get(1))
+        desc = 'Define to 1 if you have the <' + h.get(1) + '> header file'
+        conf_data.set(h.get(0), 1, description: desc)
+    endif
+endforeach
+
+#####################################
+# Check functions in libraries
+#####################################
+# Derived from the helper script ac_converter.py
+check_functions = [
+  ['HAVE_FACCESSAT', 'faccessat', '#include<unistd.h>'],
+  ['HAVE_FDATASYNC', 'fdatasync', '#include<unistd.h>'],
+  ['HAVE_HSTRERROR', 'hstrerror', '#include<netdb.h>'],
+  ['HAVE_INET_ATON', 'inet_aton', '#include<arpa/inet.h>'],
+  ['HAVE_INET_PTON', 'inet_pton', '#include<arpa/inet.h>'],
+  ['HAVE_MALLOC', 'malloc', '#include<stdlib.h>'],
+  ['HAVE_SCHED_SETAFFINITY', 'sched_setaffinity', '#define _GNU_SOURCE\n#include<sched.h>'],
+  ['HAVE_SETRESUID', 'setresuid', '#include<unistd.h>'],
+  ['HAVE_STATFS', 'statfs', '#include<mount.h>'],
+  ['HAVE_STATVFS', 'statvfs', '#include<sys/statvfs.h>'],
+  ['HAVE_STRERROR', 'strerror', '#include<string.h>'],
+  ['HAVE_STRERROR_R', 'strerror_r', '#include<string.h>'],
+  ['HAVE_STRLCPY', 'strlcpy', '#include<string.h>'],
+  ['HAVE_STRNDUP', 'strndup', '#include<string.h>'],
+  ['HAVE_STRSIGNAL', 'strsignal', '#include<signal.h>'],
+  ['HAVE_SYSCTLBYNAME', 'sysctlbyname', '#include<sys/sysctl.h>'],
+]
+
+foreach f : check_functions
+  if cc.has_function(f.get(1), prefix : f.get(2))
+    conf_data.set(f.get(0), 1)
+  endif
+endforeach
+
+
 # X_AC_DATABASES
 
 # http://mesonbuild.com/Porting-from-autotools.html#finding-programs
 # mysql_config/mariadb_config helper programs give data about the installation
-
-mysql_lib = cc.find_library('mysql', required: false)
-mariadb_lib = cc.find_library('mariadb', required: false)
 
 mysql_version = ''
 if mysql_lib.found()
@@ -159,95 +286,6 @@ endif
 # mysql_libs = run_command(db_config_program, '--libs_r')
 
 
-# Check to see if this architecture should use slurm_* prefix function aliases for plugins
-use_alias_desc = 'Define slurm_ prefix function aliases for plugins'
-host = host_machine.system()
-if host == 'darwin'
-    conf_data.set('USE_ALIAS', 0, description: use_alias_desc)
-else
-    conf_data.set('USE_ALIAS', 1, description: use_alias_desc)
-endif
-
-# TODO: Check for programs
-# TODO: Check for libraries
-
-# Check for header files
-check_headers = [
-    ['HAVE_MCHECK_H', 'mcheck.h'],
-    ['HAVE_VALUES_H', 'values.h'],
-    ['HAVE_SOCKET_H', 'socket.h'],
-    ['HAVE_STDBOOL_H', 'stdbool.h'],
-    ['HAVE_SYS_IPC_H', 'sys/ipc.h'],
-    ['HAVE_SYS_SHM_H', 'sys/shm.h'],
-    ['HAVE_SYS_SEM_H', 'sys/sem.h'],
-    ['HAVE_ERRNO_H', 'errno.h'],
-    ['HAVE_STDLIB_H', 'stdlib.h'],
-    ['HAVE_DIRENT_H', 'dirent.h'],
-    ['HAVE_PTHREAD_H', 'pthread.h'],
-    ['HAVE_SYS_PRCTL_H', 'sys/prctl.h'],
-    ['HAVE_SYSINT_H', 'sysint.h'],
-    ['HAVE_INTTYPES_H', 'inttypes.h'],
-    ['HAVE_TERMCAP_H', 'termcap.h'],
-    ['HAVE_NETDB_H', 'netdb.h'],
-    ['HAVE_SYS_SYSTEMCFG_H', 'sys/systemcfg.h'],
-    ['HAVE_NCURSES_H', 'ncurses.h'],
-    ['HAVE_CURSES_H', 'curses.h'],
-    ['HAVE_SYS_DR_H', 'sys/dr.h'],
-    ['HAVE_SYS_VFS_H', 'sys/vfs.h'],
-    ['HAVE_PAM_APPL_H', 'pam/pam_appl.h'],
-    ['HAVE_SECURITY_PAM_APPL_H', 'security/pam_appl.h'],
-    ['HAVE_SYS_SYSCTL_H', 'sys/sysctl.h'],
-    ['HAVE_PTY_H', 'pty.h'],
-    ['HAVE_UTMP_H', 'utmp.h'],
-    ['HAVE_SYS_SYSLOG_H', 'sys/syslog.h'],
-    ['HAVE_LINUX_SCHED_H', 'linux/sched.h'],
-    ['HAVE_KSTAT_H', 'kstat.h'],
-    ['HAVE_PATHS_H', 'paths.h'],
-    ['HAVE_LIMITS_H', 'limits.h'],
-    ['HAVE_SYS_STATFS_H', 'sys/statfs.h'],
-    ['HAVE_SYS_PTRACE_H', 'sys/ptrace.h'],
-    ['HAVE_FLOAT_H', 'float.h'],
-    ['HAVE_SYS_STATVFS_H', 'sys/statvfs.h'],
-    ['HAVE_SYS_STATVFS_H', 'sys/sysmacros.h'],
-    ['HAVE_FREEIPMI_H', 'freeipmi/freeipmi.h'],
-    ['HAVE_NVML_H', 'nvml.h'],
-    ['HAVE_HWLOC_H', 'hwloc.h'],
-]
-
-foreach h : check_headers
-    if cc.has_header(h.get(1))
-        desc = 'Define to 1 if you have the <' + h.get(1) + '> header file'
-        conf_data.set(h.get(0), 1, description: desc)
-    endif
-endforeach
-
-
-# Check functions
-# Derived from the helper script ac_converter.py
-check_functions = [
-  ['HAVE_FACCESSAT', 'faccessat', '#include<unistd.h>'],
-  ['HAVE_FDATASYNC', 'fdatasync', '#include<unistd.h>'],
-  ['HAVE_HSTRERROR', 'hstrerror', '#include<netdb.h>'],
-  ['HAVE_INET_ATON', 'inet_aton', '#include<arpa/inet.h>'],
-  ['HAVE_INET_PTON', 'inet_pton', '#include<arpa/inet.h>'],
-  ['HAVE_MALLOC', 'malloc', '#include<stdlib.h>'],
-  ['HAVE_SCHED_SETAFFINITY', 'sched_setaffinity', '#define _GNU_SOURCE\n#include<sched.h>'],
-  ['HAVE_SETRESUID', 'setresuid', '#include<unistd.h>'],
-  ['HAVE_STATFS', 'statfs', '#include<mount.h>'],
-  ['HAVE_STATVFS', 'statvfs', '#include<sys/statvfs.h>'],
-  ['HAVE_STRERROR', 'strerror', '#include<string.h>'],
-  ['HAVE_STRERROR_R', 'strerror_r', '#include<string.h>'],
-  ['HAVE_STRLCPY', 'strlcpy', '#include<string.h>'],
-  ['HAVE_STRNDUP', 'strndup', '#include<string.h>'],
-  ['HAVE_STRSIGNAL', 'strsignal', '#include<signal.h>'],
-  ['HAVE_SYSCTLBYNAME', 'sysctlbyname', '#include<sys/sysctl.h>'],
-]
-
-foreach f : check_functions
-  if cc.has_function(f.get(1), prefix : f.get(2))
-    conf_data.set(f.get(0), 1)
-  endif
-endforeach
 
 
 
@@ -266,11 +304,10 @@ endif
 # TODO: X_AC__SYSTEM_CONFIGURATION
 
 # X_AC_DLFCN
-# See https://github.com/mesonbuild/meson/commit/192c96acefbff35044df19ad6f764d6ff28e4bce
-dl_libs = cc.find_library('dl', required: false)
 
 # TODO: Figure out dlopen trickery? Needed?
 # See libtool.m4 @ 1821
+# See https://github.com/mesonbuild/meson/commit/192c96acefbff35044df19ad6f764d6ff28e4bce
 
 # Do we need to do this? Doesn't really work anyways
 # code_dlfcn = '''#include <dlfcn.h>
@@ -279,26 +316,19 @@ dl_libs = cc.find_library('dl', required: false)
 # }'''
 
 # if cc.links(code_dlfcn, name: 'dl library is implicitly in system')
-#     dl_libs = dependency('', required: false)
+#     dl_lib = dependency('', required: false)
 # elif cc.links(code_dlfcn, name: 'dl library is `dl`', flags: '-ldl')
-#     dl_libs = dependency('dl', required: false)
+#     dl_lib = dependency('dl', required: false)
 # elif cc.links(code_dlfcn, name: 'dl library is `svdl`', flags: '-lsvdl')
-#     dl_libs = dependency('svdl', required: false)
+#     dl_lib = dependency('svdl', required: false)
 # endif
-
-
-
 
 # TODO: X_AC_SLURM_PROGRAM_INVOCATION_NAME
 # TODO: X_AC_PTRACE
 
 # X_AC_AFFINITY
 
-# cc.find_library checks in a similar way to AC_CHECK_LIB
-# See https://github.com/mesonbuild/meson/issues/217
-numa_libs = cc.find_library('numa', required: false)
-# See https://mesonbuild.com/Reference-manual.html#external-library-object
-if numa_libs.found()
+if numa_lib.found()
     conf_data.set('HAVE_NUMA', 1, description: 'Define if numa library installed')
     # NOTE: Only set NUMA_VERSION1_COMPATIBILITY for the build targets that need it (e.g. task/affinity, task/cray)
 endif
@@ -324,13 +354,7 @@ endif
 endforeach
 # Check cwd and passed in value for --with-cpusetdir
 
-
-
-
 # X_AC_PAM
-pam_lib = cc.find_library('pam', required: false)
-pam_misc_lib = cc.find_library('pam_misc', required: false)
-pam_libs = [pam_lib, pam_misc_lib]
 if pam_lib.found() and pam_misc_lib.found()
     conf_data.set('HAVE_PAM', 1, description: 'Define if PAM libraries are installed')
 endif
@@ -386,115 +410,49 @@ endif
 # )
 
 # AC_CHECK_DECLS([hstrerror, strsignal, sys_siglist])
-
 # ACX_PTHREAD([], AC_MSG_ERROR([Error: Cannot figure out how to use pthreads!]))
-pthread_libs = dependency('threads')
-
 # X_AC_DIMENSIONS
-
 # X_AC_OFED
-
 # AX_LIB_HDF5()
 # AM_CONDITIONAL(BUILD_HDF5, test "$with_hdf5" = "yes")
 # AC_DEFINE([H5_NO_DEPRECATED_SYMBOLS], [1], [Make sure we get the 1.8 HDF5 API])
-
 # AX_CHECK_ZLIB
-z_lib = cc.find_library('z', required: false)
-if z_lib.found()
-    conf_data.set('HAVE_LIBZ', 1, description: 'Define to 1 if `z` library found (-lz)')
-endif
-
 # X_AC_LZ4
-lz4_lib = cc.find_library('lz4', required: false)
-if lz4_lib.found()
-    conf_data.set('HAVE_LZ4', 1, description: 'Define to 1 if `lz4` library found (-llz4)')
-endif
-
-
 # X_AC_HWLOC
-hwloc_libs = cc.find_library('hwloc', required: false)
-if hwloc_libs.found()
-    conf_data.set('HAVE_HWLOC', 1, description: 'Define to 1 if hwloc library found')
-endif
-
 # X_AC_NVML
-nvml_libs = cc.find_library('nvidia-ml', required: false)
-if nvml_libs.found()
-    conf_data.set('HAVE_NVML', 1, description: 'Define to 1 if NVML library found')
-endif
-# TODO: Figure out what needs to be done for the other parts of X_AC_NVML
 # TODO: X_AC_PMIX
-
 # X_AC_FREEIPMI
-freeipmi_libs = cc.find_library('freeipmi', required: false)
-if freeipmi_libs.found()
-    conf_data.set('HAVE_FREEIPMI', 1, description: 'Define to 1 if freeipmi library found')
-endif
-
-
 # TODO: X_AC_RRDTOOL
 # TODO: X_AC_UCX
 # TODO: X_AC_SSH2
-
 # X_AC_NCURSES
-
-ncurses = cc.find_library('ncurses', required: false)
-curses = cc.find_library('curses', required: false)
-tinfo = cc.find_library('tinfo', required: false)
 
 # Only build smap if some curses library has been found
 ncurses_libs = []
 build_smap = false
-if ncurses.found()
-    ncurses_libs = [ncurses]
+if ncurses_lib.found()
+    ncurses_libs = [ncurses_lib]
     build_smap = true
-elif curses.found()
+elif curses_libs_found
     ncurses_libs = [curses]
     build_smap = true
 else
     warning('Cannot build smap: no curses or ncurses library found')
 endif
 
-if tinfo.found()
-    ncurses_libs += tinfo
+if tinfo_lib.found()
+    ncurses_libs += tinfo_lib
 endif
 
 # TODO: Build test ncurses program and try to link it
-
-
 # TODO: Test for check
 
 # AM_PATH_GLIB_2_0
-glib_libs = dependency('glib-2.0', required: false)
-
 # AM_PATH_GTK_2_0
 
-# TODO: gthread module
-# TODO: Get this gtk check to work!
-gtk_string = 'gtk2.0-0'
-gtk_libs = dependency(gtk_string, required: false)
-# gtk_libs = cc.find_library(gtk_string, required: false)
-
-build_sview = false
-if gtk_libs.found()
-    build_sview = true
-else
-    warning('Cannot build sview: @0@ not found'.format(gtk_string))
-endif
-
-# TODO: Anything more to do with gtk?
-
-
-
 # TODO: X_AC_CRAY
-
-
 # checks for system services.
-
 # checks for system-specific stuff.
-
-
-
 
 # X_AC_SETPROCTITLE
 # check for how to emulate setproctitle
@@ -543,35 +501,19 @@ if find_program('su').found()
     conf_data.set_quoted('SUCMD', '/bin/su', description: sucmd_desc)
 endif
 
-
-# TODO:
 # X_AC_NRT
 # X_AC_SGI_JOB
 # X_AC_NETLOC
-netloc_libs = cc.find_library('netloc', required: false)
-if netloc_libs.found()
-    conf_data.set('HAVE_NETLOC', 1, description: 'Define to 1 if netloc library found')
-endif
 # TODO: Test for HAVE_NETLOC_NOSUB
-
 # X_AC_LUA
 # X_AC_MAN2HTML
 # X_AC_PRINTF_NULL
-
 # X_AC_READLINE
-readline_libs = cc.find_library('readline', required: false)
-if readline_libs.found()
-    conf_data.set('HAVE_READLINE', 1, description: 'Define to 1 if you are compiling with readline')
-endif
-
 # X_AC_SLURM_WITH_SSL
 # X_AC_SYSTEMD
-
 # X_AC_MUNGE
-# Munge is a defacto dependency. No other auth plugin type
-# Look for libmunge-dev
-munge_libs = cc.find_library('munge')
 # TODO: What other munge stuff needs to be ported?
+# X_AC_BLCR
 
 if get_option('multiple_slurmd')
     conf_data.set('MULTIPLE_SLURMD', true, description: 'Enable multiple slurmd on one node')
@@ -581,14 +523,10 @@ else
 endif
 message('Checking whether to enable multiple slurmd support... @0@'.format(multiple_slurmd_msg))
 
-util_libs = cc.find_library('util')
 # TODO: Check explicitly for openpty?
 
-# X_AC_BLCR
-# TODO: Get rid of BLCR stuff
-blcr_libs = cc.find_library('cr', required: false)
 build_srun_cr = false
-if blcr_libs.found()
+if blcr_lib.found()
     if not cc.has_header('libcr.h')
         warning('Unable to find the libcr.h header file for the BLCR (cr) library; cannot build srun_cr')
     elif not cc.has_function('cr_init', prefix: '#include <libcr.h>')
@@ -601,11 +539,6 @@ if blcr_libs.found()
 else
     warning('Unable to find the BLCR (cr) library; cannot build srun_cr')
 endif
-
-# Get the math library for things that need it
-# See https://mesonbuild.com/howtox.html#add-math-library-lm-portably
-math_libs = cc.find_library('m', required : false)
-
 
 # LIBCURL_CHECK_CONFIG
 # X_AC_DEPRECATED
@@ -624,10 +557,10 @@ slurm_inc = include_directories('.')
 
 subdir('slurm')
 subdir('src')
+# TODO: Build contribs
+#subdir('contribs')
 
-# Finish compiling
-
-
+# Finished compiling
 
 # References:
 # https://mesonbuild.com/Porting-from-autotools.html#porting-from-autotools

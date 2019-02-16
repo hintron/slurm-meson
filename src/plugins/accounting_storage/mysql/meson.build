@@ -46,7 +46,7 @@ if mysql_libs.found()
         'accounting_storage_mysql', # name
         accounting_storage_mysql_src, # source files
         include_directories: [slurm_inc],
-        dependencies: [pthread_libs, dl_libs, mysql_libs],
+        dependencies: [pthread_lib, dl_lib, mysql_libs],
         link_with: [libdatabase, libaccounting_storage_common],
         install: true,
         install_dir: pkglibdir,

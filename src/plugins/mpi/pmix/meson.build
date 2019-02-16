@@ -47,7 +47,7 @@ mpi_pmix_plugin = shared_module(
     install: true,
     install_dir: pkglibdir,
     name_prefix: '',
-    dependencies: [hwloc_libs],
+    dependencies: [hwloc_lib],
     link_with: [libslurmd_reverse_tree_math],
 )
 # TODO: libs and flags HWLOC, UCX

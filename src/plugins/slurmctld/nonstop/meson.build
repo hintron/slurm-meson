@@ -12,7 +12,7 @@ slurmctld_nonstop_plugin = shared_module(
     'slurmctld_nonstop', # name
     slurmctld_nonstop_src, # source files
     include_directories: [slurm_inc],
-    dependencies: [munge_libs],
+    dependencies: [munge_lib],
     install: true,
     install_dir: pkglibdir,
     name_prefix: '',

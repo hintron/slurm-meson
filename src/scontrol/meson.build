@@ -24,7 +24,7 @@ scontrol = executable(
     'scontrol', # name
     scontrol_src, # source files
     include_directories: [slurm_inc],
-    dependencies: [dl_libs, math_libs, readline_libs, pthread_libs],
+    dependencies: [dl_lib, math_lib, readline_lib, pthread_lib],
     link_with: [libslurmfull],
     install: true,
     install_dir: get_option('bindir'),

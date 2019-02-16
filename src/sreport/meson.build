@@ -16,7 +16,7 @@ sreport = executable(
     'sreport', # name
     sreport_src, # source files
     include_directories: [slurm_inc],
-    dependencies: [dl_libs, readline_libs],
+    dependencies: [dl_lib, readline_lib],
     link_with: [libslurmfull],
     install: true,
     install_dir: get_option('bindir'),

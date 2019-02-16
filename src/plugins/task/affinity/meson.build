@@ -13,7 +13,7 @@ task_affinity = shared_module(
     'task_affinity', # name
     task_affinity_src, # source files
     include_directories: [slurm_inc],
-    dependencies: [numa_libs],
+    dependencies: [numa_lib],
     install: true,
     install_dir: pkglibdir,
     name_prefix: '',

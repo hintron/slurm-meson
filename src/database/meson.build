@@ -8,6 +8,6 @@ if conf_data.get('WITH_MYSQL', 0) == 1
         'slurm_mysql', # name
         database_src, # source files
         include_directories: [slurm_inc],
-        dependencies: [pthread_libs, dl_libs],
+        dependencies: [pthread_lib, dl_lib],
     )
 endif

@@ -13,7 +13,7 @@ slurmd = executable(
     include_directories: [slurm_inc],
     # TODO: Depend on ssh2
     # slurmd and slurmstepd dependencies should match, or slurmstepd can silently fail
-    dependencies: [pthread_libs, numa_libs, dl_libs, util_libs, hwloc_libs, pam_libs],
+    dependencies: [pthread_lib, numa_lib, dl_lib, util_lib, hwloc_lib, pam_lib, pam_misc_lib],
     link_with: [libslurmfull, libdaemonize, libslurmd_common, libfile_bcast],
     install: true,
     install_dir: get_option('sbindir'),

@@ -1,11 +1,9 @@
-Meson Notes
-============
+# Meson Notes Overview
 
 I will write down what I learn so I don't forget, and to aid in porting future
 code.
 
-Setting rpath for executables
-==============================
+# Setting rpath for executables
 
 Getting executables to access shared libraries (e.g. libslurmfull.so) was a pain
 point.
@@ -25,8 +23,7 @@ See build.ninja.
 Not sure what the double `$` in $$ORIGIN means in build.ninja...
 
 
-Upgrading from Meson 0.45 to 0.47
-==================================
+# Upgrading from Meson 0.45 to 0.47
 
 Some of the Slurm build code taken from configure.ac had `\1` or `\0` in
 them. This caused issues, since Meson 0.46 introduced byte literals of the form
@@ -36,8 +33,7 @@ I had to look up the 0.46 build notes and python's own documentation to double
 check.
 
 
-Getting plugins to work
-========================
+# Getting plugins to work
 
 The plugins would not link correctly unless `export_dynamic: true` was set in
 executable(). This is because the plugin .so libraries are expecting the symbols
@@ -49,16 +45,14 @@ https://stackoverflow.com/a/17083153
 (-Wl,--export-dynamic flag)
 https://mesonbuild.com/Reference-manual.html#shared_module
 
-Dependencies
-=============
+# Dependencies
 
 For whatever reason, using dependency() didn't work for me. So I instead did
 e.g. `mysql_libs = cc.find_library('mysqlclient', required: false)` to find
 libraries. This worked with mysql, dl, numa, util, and munge. Only `threads`
 seems to work with dependency().
 
-globals_default.c
-==================
+# globals_default.c
 
 Generating this was a bit of a pain, because Meson does not support using shell
 syntax in the run_command() function. So there was no easy way in Meson to
@@ -76,15 +70,13 @@ Related: printing the git commit will be very easy, due to the vcs_tag()
 function.
 
 
-library prefix
-===============
+# library prefix
 
 There is a default 'lib' prefix to all libraries. To get rid of it, specify
 `name_prefix=''`. This was needed for Slurm to find the plugin shared libraries.
 
 
-libslurm, libslurmfull, libcommon
-==================================
+# libslurm, libslurmfull, libcommon
 
 libcommon is the library from src/common.
 
@@ -115,11 +107,12 @@ limit the symbols in libslurm to only those found in the src/api source files.
 I think this just requires not using link_whole when it comes to libslurm.
 
 
-Math library
-====================
+# Math library
+
 Explicit -lm for the math library: only needed if -nostdlib or -nodefaultlibs
 is specified.
 See https://stackoverflow.com/questions/1033898/why-do-you-have-to-link-the-math-library-in-c
+See https://mesonbuild.com/howtox.html#add-math-library-lm-portably
 
 # Test Code Compilation
 
@@ -231,4 +224,10 @@ If you are running slurmdbd as a user other than root, add it to Slurm:
 Start slurmctld with -i to ignore previous state, if needed.
 
 # Running testsuite
+
+# AC_CHECK_LIB
+
+cc.find_library() serves the same purpose.
+See https://github.com/mesonbuild/meson/issues/217
+See https://mesonbuild.com/Reference-manual.html#external-library-object
 

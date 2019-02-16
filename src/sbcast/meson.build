@@ -8,7 +8,7 @@ sbcast = executable(
     'sbcast', # name
     sbcast_src, # source files
     include_directories: [slurm_inc],
-    dependencies: [dl_libs, math_libs],
+    dependencies: [dl_lib, math_lib],
     link_with: [libslurmfull, libfile_bcast],
     install: true,
     install_dir: get_option('bindir'),

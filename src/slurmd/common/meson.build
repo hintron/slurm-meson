@@ -37,7 +37,7 @@ libslurmd_common = static_library(
     'slurmd_common', # name
     [slurmd_common_src], # source files
     include_directories: [slurm_inc],
-    dependencies: [hwloc_libs],
+    dependencies: [hwloc_lib],
     link_with: [libslurmd_reverse_tree_math],
 )
 

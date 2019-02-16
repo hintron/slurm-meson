@@ -6,7 +6,7 @@ gres_mps_plugin = shared_module(
     'gres_mps', # name
     gres_mps_src, # source files
     include_directories: [slurm_inc],
-    dependencies: [nvml_libs],
+    dependencies: [nvml_lib],
     install: true,
     install_dir: pkglibdir,
     name_prefix: '',

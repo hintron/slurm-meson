@@ -22,9 +22,15 @@ subdir('sbcast')
 subdir('sdiag')
 subdir('sreport')
 subdir('layouts')
-subdir('smap')
+if build_smap
+    subdir('smap')
+endif
 subdir('sprio')
-subdir('sview')
-subdir('srun_cr')
+if gtk_lib.found()
+    subdir('sview')
+endif
+if build_srun_cr
+    subdir('srun_cr')
+endif
 subdir('sshare')
 subdir('strigger')

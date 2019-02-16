@@ -11,7 +11,7 @@ srun = executable(
     'srun', # name
     srun_src, # source files
     include_directories: [slurm_inc, include_directories('libsrun')],
-    dependencies: [pthread_libs, dl_libs],
+    dependencies: [pthread_lib, dl_lib],
     link_with: [libslurmfull, libfile_bcast, libsrun, libdaemonize],
     install: true,
     install_dir: get_option('bindir'),

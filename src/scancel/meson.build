@@ -8,7 +8,7 @@ scancel = executable(
     'scancel', # name
     scancel_src, # source files
     include_directories: [slurm_inc],
-    dependencies: [dl_libs, pthread_libs],
+    dependencies: [dl_lib, pthread_lib],
     link_with: [libslurmfull],
     install: true,
     install_dir: get_option('bindir'),

@@ -11,6 +11,6 @@ priority_multifactor_plugin = shared_module(
     include_directories: [slurm_inc],
     install: true,
     install_dir: pkglibdir,
-    dependencies: [math_libs],
+    dependencies: [math_lib],
     name_prefix: '',
 )
