@@ -120,3 +120,90 @@ Math library
 Explicit -lm for the math library: only needed if -nostdlib or -nodefaultlibs
 is specified.
 See https://stackoverflow.com/questions/1033898/why-do-you-have-to-link-the-math-library-in-c
+
+
+
+# MariaDB 10.3 on Ubuntu 18.04
+
+## Installing
+
+Trying to install MariaDB with the default packages on Ubuntu doesn't work very
+well. Let's instead force Ubuntu to install 10.3, so the server, client, and dev
+packages are all on the same version.
+
+See https://computingforgeeks.com/install-mariadb-10-on-ubuntu-18-04-and-centos-7/
+
+Get a clean slate:
+    sudo apt-get remove mariadb-server mysql-server libmysqlclient-dev
+
+Prerequisites:
+    sudo apt-get install software-properties-common
+
+Add MariaDB 10.3 apt repository:
+    sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+    sudo add-apt-repository 'deb [arch=amd64] http://mirror.zol.co.zw/mariadb/repo/10.3/ubuntu bionic main'
+
+Install MariaDB 10.3L
+    sudo apt update
+    sudo apt -y install mariadb-server mariadb-client libmariadb-dev
+
+Now, all versions should be at 10.3. Let's check:
+    mysql -V # client
+    mysqld -V # server
+    mariadb_config # libmariadb-dev
+
+Let's see if the mariadb service is up and running:
+    sudo systemctl status mariadb
+
+Restart or start the mariadb service if needed:
+    sudo systemctl restart mariadb
+    # sudo systemctl start mariadb
+
+Be sure to reconfigure Slurm so it can use the MariaDB 10.3 dev library.
+    ninja reconfigure
+
+## Debugging
+
+Debug mariadb configuration:
+    mariadb_config
+
+Make sure that `--socket` matches the socket that `mysql` command is trying to
+access. If they differ (e.g. the former is `/tmp/mysql.sock` and the latter is
+`/var/run/mysqld/mysqld.sock`) then likely the client and server versions of
+mariadb are different.
+
+See if mysqld is listening on port 3306:
+    sudo netstat -tulpn
+
+Download mysql-workbench to try accessing the DB via a GUI:
+    sudo apt install mysql-workbench
+    mysql-workbench
+
+If the password is not blank, you can change it like so:
+    sudo mysqladmin -u root -p'old_password' password ''
+
+See https://serverfault.com/questions/103412/how-to-change-my-mysql-root-password-back-to-empty.
+
+After running slurmdbd, if you get this error:
+
+    slurmdbd: error: mysql_query failed: 1558 Column count of mysql.proc is wrong. Expected 21, found 20. Created with MariaDB 100138, now running 100312. Please use mysql_upgrade to fix this error
+
+It means that the Slurm DB was created with an older version of mariadb/mysql.
+
+Update the existing databases:
+    sudo mysql_upgrade
+
+Now things should work!
+
+
+If you get something like:
+
+    ERROR 1529  Plugin 'unix_socket' is not loaded
+    FATAL ERROR: upgrade failes
+
+then add the following (with sudo) to _/etc/mysql/mariadb.conf.d/50-server.cnf_
+under `[mysqld]`
+
+    plugin-load-add = auth_cocket.so
+
+And rerun `sudo mysql_upgrade`.
