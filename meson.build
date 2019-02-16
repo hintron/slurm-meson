@@ -7,19 +7,18 @@ cc = meson.get_compiler('c')
 # For porting from autotools, see:
 # https://wiki.gnome.org/Initiatives/GnomeGoals/MesonPorting
 # http://mesonbuild.com/Porting-from-autotools.html
+# force libdir to be 'lib' to match current Slurm build behavior
+# See https://mesonbuild.com/Builtin-options.html#page-description
 
 prefix = get_option('prefix')
 sysconfdir = join_paths(prefix, get_option('sysconfdir'))
-# force libdir to be 'lib' to match current Slurm build behavior
-# See https://mesonbuild.com/Builtin-options.html#page-description
 libdir = join_paths(prefix, 'lib')
-
 pkglibdir = join_paths(libdir, 'slurm')
-
 message('prefix: @0@'.format(prefix))
 message('sysconfdir: @0@'.format(sysconfdir))
 message('libdir: @0@'.format(libdir))
 message('pkglibdfir: @0@'.format(pkglibdir))
+
 
 ##########################
 # Configure Section
@@ -51,7 +50,7 @@ conf_data.set('SLURM_API_MAJOR', api_major, description: 'API current major')
 conf_data.set('SLURM_API_AGE', api_age, description: 'API current age')
 conf_data.set('SLURM_API_REVISION', api_revision, description: 'API current rev')
 
-
+# TODO: Is there a way to not depend on perl here or make this simpler?
 version = run_command('perl', '-ne', 'print,exit if s/^\\s*VERSION:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
 slurm_major = run_command('perl', '-ne', 'print,exit if s/^\\s*MAJOR:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
 slurm_minor = run_command('perl', '-ne', 'print,exit if s/^\\s*MINOR:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
@@ -557,8 +556,9 @@ slurm_inc = include_directories('.')
 
 subdir('slurm')
 subdir('src')
-# TODO: Build contribs
-#subdir('contribs')
+if get_option('contribs')
+    subdir('contribs')
+endif
 
 # Finished compiling
 
