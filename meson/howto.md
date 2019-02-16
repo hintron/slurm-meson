@@ -107,6 +107,11 @@ Build with Meson:
 
 And that's it!
 
+## Reconfiguring
+
+In the _meson-build/build_, simply do `ninja reconfigure` or `meson --reconfigure`
+to rerun the configuration.
+
 ## Configuring Meson to statically link libslurm:
 
 Add the `-Dstatic_libslurm=true` option to the Meson configure command.
