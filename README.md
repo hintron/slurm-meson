@@ -9,20 +9,22 @@ standalone patches for existing Slurm installations to become Meson-compatible.
 This will be done for each major release starting for Slurm 19.05 and
 continuing until Meson is adopted into the Slurm codebase.
 
-This project was started because Autotools is a nightmare to maintain and use;
-Meson isn't.
+This project was started because ~I hate Autotools with a burning, fiery
+passion and wish it would die a horrible, painful death~ Autotools is _slightly_
+less dev-friendly than Meson.
 
 ## Quickstart (Ubuntu 18.04)
 
     sudo apt-get install python3 python3-pip ninja-build
     pip3 install --user meson
     git clone git@github.com:hintron/slurm-meson.git ~/slurm-meson/slurm
-    cd ~/slurm-meson/slurm
-    meson ../meson-build/build --prefix=$HOME/slurm-meson/meson-build
-    cd ../meson-build/build
-    ninja install
+    cd ~/slurm-meson
+    meson setup meson-build/build slurm --prefix=$HOME/slurm-meson/meson-build
+    ninja -C meson-build/build install
 
-And that's it! For more details, see [meson/howto.md](meson/howto.md).
+And that's it! On my laptop, the configure stage (`meson setup`) takes about 5
+seconds and the build stage (`ninja install`) less than 30. For more details,
+see [meson/howto.md](meson/howto.md).
 
 ## Contributing
 
