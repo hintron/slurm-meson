@@ -19,6 +19,8 @@ If meson is not installed, make sure to add pip packages to your PATH
         PATH="$HOME/.local/bin:$PATH"
     fi
 
+
+
 # How to get the Slurm Meson source code
 
 ## Git Repo
@@ -41,6 +43,8 @@ Once downloaded, extract it:
     tar xvf <tarfile>
     mkdir -p ~/slurm-meson
     mv slurm-meson-<tag> ~/slurm-meson/slurm
+
+
 
 # How to patch an existing Slurm installation
 
@@ -90,23 +94,31 @@ To undo a patch applied with the second method, you can simply do:
     # or...
     curl <patch-url> | patch -p1 -R
 
+
+
 # How to build Slurm with Meson
 
 Configure with Meson:
 
-    cd ~/slurm-meson/slurm
-    meson ../meson-build/build --prefix=$HOME/slurm-meson/meson-build
+    cd ~/slurm-meson
+    meson setup meson-build/build slurm --prefix=$HOME/slurm-meson/meson-build
 
 You can optionally add developer options like `-Dmultiple-slurmd=true` and
 `--werror`:
-    meson ../meson-build/build --prefix=$HOME/slurm-meson/meson-build --werror -Dmultiple-slurmd=true
+    meson setup meson-build/build slurm --prefix=$HOME/slurm-meson/meson-build --werror -Dmultiple-slurmd=true
+
+The syntax is either `meson setup <builddir> <srcdir> [options]` or, if the
+current working directory is already at  _slurm/_, do
+`meson <builddir> [options]`.
 
 Build with Meson:
 
+    ninja -C meson-build/build install
+    # or
     cd ../meson-build/build
     ninja install
 
-And that's it!
+And that's it! The build should take less than 30 seconds.
 
 ## Reconfiguring
 

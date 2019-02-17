@@ -6,7 +6,7 @@ enabled as the build system.
 
 The goal is to provide both a Meson-enabled Slurm fork as well as
 standalone patches for existing Slurm installations to become Meson-compatible.
-This will be done for each major release starting for Slurm 19.05 and
+This will be done for each major release starting from Slurm 19.05 and
 continuing until Meson is adopted into the Slurm codebase.
 
 This project was started because ~I hate Autotools with a burning, fiery
@@ -17,6 +17,7 @@ less dev-friendly than Meson.
 
     sudo apt-get install python3 python3-pip ninja-build
     pip3 install --user meson
+    export PATH="$HOME/.local/bin:$PATH"
     git clone git@github.com:hintron/slurm-meson.git ~/slurm-meson/slurm
     cd ~/slurm-meson
     meson setup meson-build/build slurm --prefix=$HOME/slurm-meson/meson-build
