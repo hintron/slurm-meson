@@ -516,11 +516,8 @@ endif
 
 if get_option('multiple-slurmd')
     conf_data.set('MULTIPLE_SLURMD', true, description: 'Enable multiple slurmd on one node')
-    multiple_slurmd_msg = 'YES'
-else
-    multiple_slurmd_msg = 'NO'
+    message('Multiple slurmd enabled')
 endif
-message('Checking whether to enable multiple slurmd support... @0@'.format(multiple_slurmd_msg))
 
 # TODO: Check explicitly for openpty?
 
@@ -557,6 +554,7 @@ slurm_inc = include_directories('.')
 subdir('slurm')
 subdir('src')
 if get_option('contribs')
+    message('Building contribs/')
     subdir('contribs')
 endif
 

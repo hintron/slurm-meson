@@ -4760,7 +4760,7 @@ proc copy_conf { config_path cwd } {
 #
 # See https://stackoverflow.com/questions/10372155/tcl-exec-egrep-child-process-exited-abnormally
 ################################################################
-proc built_with_meson { } {
+proc built_with_meson { {verbose 0} } {
 	global bin_grep build_dir number
 	set built_with_meson 0
 	log_user 0
@@ -4775,7 +4775,7 @@ proc built_with_meson { } {
 		}
 	}
 	log_user 1
-	if {$built_with_meson == 1} {
+	if {$verbose == 1 && $built_with_meson == 1} {
 		send_user "Built with MESON!\n"
 	}
 	return $built_with_meson

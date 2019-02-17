@@ -45,6 +45,13 @@ https://stackoverflow.com/a/17083153
 (-Wl,--export-dynamic flag)
 https://mesonbuild.com/Reference-manual.html#shared_module
 
+So, shared_module means it will ONLY be `dlopen()`ed. On Linux, you can
+statically link to a shared module (e.g. `lhwloc`) AND `dlopen` it. But on
+MacOS, if you try to statically link a shared module, it will fail.
+So just make sure that if any non-plugin .so files are linked to, don't make it
+a shared module.
+See https://stackoverflow.com/questions/4845984/difference-between-modules-and-shared-libraries
+
 # Dependencies
 
 For whatever reason, using dependency() didn't work for me. So I instead did
@@ -78,23 +85,22 @@ There is a default 'lib' prefix to all libraries. To get rid of it, specify
 
 # libslurm, libslurmfull, libcommon
 
-libcommon is the library from src/common.
+libcommon includes all the code in src/common.
 
-libslurmfull and libslurm are what is considered the "Slurm API." They are built
+libslurm is what is considered the "Slurm API." It is built
 using the code in src/api, as well as linking in libcommon, libspank, and
 libeio.
 
 libslurm and libslurmfull are the same thing, except that libslurmfull has ALL
-symbols, where as libslurm ONLY should have the Slurm API symbols.
-I think this means that libslurmfull also should expose all symbols from
-libcommon, libspank, and libeio.
+symbols, including from libcommon, where as libslurm ONLY exposes Slurm API
+symbols from src/api/.
 
 I was having a bunch of problems during compile time linking executables that
 used libslurmfull only when libslurmfull was set as a shared library.
 The reason was that the symbols in libcommon, etc. were not exposed properly.
 Cutting out the middle-man libslurmhelper and using `link_whole` instead of
 `link_with` for libcommon, etc. solved the issue. This copied all the right
-objects into the .so file.
+symbols into the .so file.
 
 In cutting out libslurmhelper, I also set the src
 files. Without that, the .so files were almost completely empty. I debugged this
@@ -102,10 +108,46 @@ with `nm -g src/api/libslurmfull.so`. I could also see that the file size was
 suspiciously small, which implied that symbols were being optimized out or
 simply not being put in.
 
+For history of libslurmhelper, see commit bf26d99230ef1bcd6af5155f715a28ee7934e88b:
+
+"Make a convenience library libslurmhelper.la which has the same contents
+as libslurm.  However, libslurmhelper exports ALL symbols, not just the
+ones in the SLURM API.  This can be used by slurm commands that want to
+use both libcommon and libslurm functions."
+
+I don't get what this means... Isn't libcommon in libslurm? libslurmhelper
+sounds exactly like libslurmfull. It sounds like slibslurmfull was made without
+realizing that libslurmhelper was the same thing.
+
+From _src/api/Makefile.am_:
+```
+# Note that libslurmhelper is mostly the same as libslurm, except that
+# it exports ALL symbols used by the process, libcommon, libeio, etc.
+# Only link with libslurmhelper if you are sure you are not going to be
+# loading a plugin that could use something you yourself are not
+# calling from here.
+# libslurm.o only contains all the api symbols and will export
+# them to plugins that are loaded.
+# Also, libslurmhelper, libslurm.o are for convenience, they are not installed.
+```
+
+## Symbol Visibility
 TODO: As of this writing, libslurm and libslurmfull are the same. I need to
 limit the symbols in libslurm to only those found in the src/api source files.
-I think this just requires not using link_whole when it comes to libslurm.
 
+`readelf -s ../lib/slurm/libslurm.so`
+
+https://blogs.oracle.com/solaris/inside-elf-symbol-tables-v2
+
+The `link_whole` argument to libslurm and libslurmfull causes Ninja to create a
+.symbols file that can be accessed in a location like
+_inspiron/build/src/api/ad4d739%40%40slurm%40sha/libslurm.so.symbols_.
+
+
+slurm_xlator.h and strong_alias()
+http://www.valvers.com/programming/c/gcc-weak-function-attributes/
+A strong alias (which is the default alias unless specified as 'weak') is
+saying that
 
 # Math library
 
