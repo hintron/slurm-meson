@@ -1,11 +1,8 @@
-
 # TODO: Use vcs_tag() to get vcs commit info easily!
-
 
 # Generate a file on the fly
 # Seee https://mesonbuild.com/Generating-sources.html#generating-sources
 # https://mesonbuild.com/Reference-manual.html#custom_target
-
 
 generate_global_defaults = join_paths(meson.current_source_dir(), 'generate_global_defaults_c.sh')
 global_defaults_src = custom_target(
@@ -14,8 +11,6 @@ global_defaults_src = custom_target(
     command : [generate_global_defaults, pkglibdir, sysconfdir],
     capture: true
 )
-
-
 
 libcommon_src = [
     'assoc_mgr.c', 'assoc_mgr.h',

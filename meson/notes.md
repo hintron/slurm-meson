@@ -147,7 +147,11 @@ _inspiron/build/src/api/ad4d739%40%40slurm%40sha/libslurm.so.symbols_.
 slurm_xlator.h and strong_alias()
 http://www.valvers.com/programming/c/gcc-weak-function-attributes/
 A strong alias (which is the default alias unless specified as 'weak') is
-saying that
+saying that even if e.g. fatal() gets defined by the user's program and then
+links the Slurm API in, we don't care because we aliased our fatal() to point to
+slurm_fatal(). It's still unclear exactly how this is done.
+
+https://stackoverflow.com/questions/30186256/what-is-the-difference-between-o-a-and-so-files
 
 # Math library
 

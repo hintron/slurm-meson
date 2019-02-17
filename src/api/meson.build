@@ -1,5 +1,4 @@
 # TODO: WITH_GNU_LD trickery
-
 slurmdbapi_src = [
     'account_functions.c',
     'archive_functions.c',
@@ -74,6 +73,7 @@ slurmapi_src = [
 
 # TODO: Add in API version info to this library
 # TODO: Only let symbols defined in src/api show up? e.g. no libcommon symbols
+
 libslurm = build_target(
     'slurm', # name
     [slurmapi_src], # source files
@@ -86,14 +86,21 @@ libslurm = build_target(
     install_dir: pkglibdir,
 )
 
-libslurmfull = build_target(
+# Build both shared AND static libraries, so tests can link against either one
+# See https://mesonbuild.com/Reference-manual.html#both_libraries
+libslurmfull = both_libraries(
     'slurmfull', # name
     [slurmapi_src], # source files
     include_directories: [slurm_inc],
     dependencies: [pthread_lib, dl_lib],
-    # link_with: [libslurmhelper],
     link_whole: [libcommon, libeio, libspank],
-    target_type: libslurm_type,
     install: libslurm_install,
     install_dir: pkglibdir,
 )
+# The returned build target is always the shared library. Get the static library
+libslurmfull_a = libslurmfull.get_static_lib()
+if libslurm_type == 'static_library'
+    # Change the build target pointer to the static lib
+    libslurmfull = libslurmfull_a
+    # We don't care about losing the handle to the shared lib
+endif
