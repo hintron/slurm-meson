@@ -1,4 +1,5 @@
 # TODO: WITH_GNU_LD trickery
+# If not GNU LD (MacOS), then don't do version script to restrict symbols
 slurmdbapi_src = [
     'account_functions.c',
     'archive_functions.c',
@@ -62,24 +63,20 @@ slurmapi_src = [
     slurmdbapi_src,
 ]
 
-# TODO: Use middle-man libslurmhelper?
-# libslurmhelper = static_library(
-#     'slurmhelper', # name
-#     [slurmapi_src], # source files
-#     include_directories: [slurm_inc],
-#     dependencies: [pthread_lib],
-#     link_with: [libcommon, libeio, libspank],
-# )
+# TODO: Add in API version info to this library and to .so outputs
 
-# TODO: Add in API version info to this library
-# TODO: Only let symbols defined in src/api show up? e.g. no libcommon symbols
-
+# See https://github.com/mesonbuild/meson/issues/3047#issue-296332081
+libslurm_mapfile = 'meson.libslurm.map'
+vflag = '-Wl,--version-script,@0@/@1@'.format(meson.current_source_dir(), libslurm_mapfile)
 libslurm = build_target(
     'slurm', # name
     [slurmapi_src], # source files
     include_directories: [slurm_inc],
     dependencies: [pthread_lib, dl_lib],
-    # link_with: [libslurmhelper],
+    # Specify a version script to limit visibility of symbols
+    link_args: [vflag],
+    # This says that if the sym vis map string changes, relink (but not recompile)
+    link_depends: [libslurm_mapfile],
     link_whole: [libcommon, libeio, libspank],
     target_type: libslurm_type,
     install: libslurm_install,

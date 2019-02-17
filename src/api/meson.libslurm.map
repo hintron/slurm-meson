@@ -1,0 +1,16 @@
+{
+	global:
+		islurm_*;
+		slurm_*;
+		slurmdb_*;
+		plugin_context_*;
+		working_cluster_rec;
+	local: *;
+};
+
+# The full version script is completely redundant, as it says that all symbols
+# are global, which is already the default.
+
+# To specify a version script, do `-Wl,--version-script,meson.libslurm.map`
+
+# To see what dynamic symbols are in a .so file, do `nm -D <file>`
