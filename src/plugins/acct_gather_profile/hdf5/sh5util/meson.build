@@ -7,7 +7,7 @@ sh5util = executable(
     sh5util_src, # source files
     include_directories: [slurm_inc],
     dependencies: [dl_lib, hdf5_libs],
-    link_with: [libslurmfull, libhdf5_api],
+    link_with: [libslurm, libhdf5_api],
     install: true,
     install_dir: get_option('bindir'),
     export_dynamic: true,

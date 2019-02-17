@@ -41,9 +41,12 @@ of the executable to be available for use, and this isn't the default. This
 basically just sets the `-export-dynamic` linker flag, as can be seen in the
 corresponding Makefile.am.
 
+https://mesonbuild.com/Reference-manual.html#shared_module
+Use shared_module() over shared_library(), because that allows this .so to
+access the caller's symbols (if the caller has export-dynamic set).
 https://stackoverflow.com/a/17083153
 (-Wl,--export-dynamic flag)
-https://mesonbuild.com/Reference-manual.html#shared_module
+
 
 So, shared_module means it will ONLY be `dlopen()`ed. On Linux, you can
 statically link to a shared module (e.g. `lhwloc`) AND `dlopen` it. But on
