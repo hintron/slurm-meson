@@ -63,7 +63,6 @@ if {[built_with_meson 1] == 1} {
 } else {
 	set objects "${build_dir}/src/api/libslurm.o ${build_dir}/src/slurmctld/locks.o  ${build_dir}/src/sshare/process.o"
 }
-
 set cmd "$bin_cc ${test_prog}.c -g -pthread -o ${test_prog} -I${build_dir} -I${src_dir} ${objects} -ldl -lm -export-dynamic"
 send_user "$cmd\n"
 eval exec $cmd
