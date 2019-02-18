@@ -41,7 +41,6 @@ print_header $test_id
 #
 file delete $test_prog
 
-# Build test program
 if {[built_with_meson 1] == 1} {
 	# Use libslurmfull.so so gres plugins can access exported symbols and
 	# and set rpath so test prog can find libslurmfull.so
@@ -53,7 +52,6 @@ if {[built_with_meson 1] == 1} {
 set cmd "$bin_cc ${test_prog}.c -g -pthread -export-dynamic -o ${test_prog} -I${src_dir} -I${build_dir} ${libslurm} -ldl"
 send_user "$cmd\n"
 eval exec $cmd
-
 exec $bin_chmod 700 $test_prog
 
 send_user "\n====test7.17.1====\n"
