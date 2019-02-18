@@ -41,7 +41,16 @@ print_header $test_id
 #
 file delete $test_prog
 
-set cmd "$bin_cc ${test_prog}.c -g -pthread -export-dynamic -o ${test_prog} -I${src_dir} -I${build_dir} ${build_dir}/src/api/libslurm.o -ldl"
+# Build test program
+if {[built_with_meson 1] == 1} {
+	# Use libslurmfull.so so gres plugins can access exported symbols and
+	# and set rpath so test prog can find libslurmfull.so
+	set libslurm "${build_dir}/src/api/libslurmfull.so -Wl,-rpath,${build_dir}/src/api"
+} else {
+	set libslurm "${build_dir}/src/api/libslurm.o"
+}
+
+set cmd "$bin_cc ${test_prog}.c -g -pthread -export-dynamic -o ${test_prog} -I${src_dir} -I${build_dir} ${libslurm} -ldl"
 send_user "$cmd\n"
 eval exec $cmd
 

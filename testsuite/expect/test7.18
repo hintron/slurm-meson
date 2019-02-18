@@ -44,13 +44,21 @@ print_header $test_id
 exec $bin_rm -f $test_prog
 
 send_user "slurm_dir is $slurm_dir\n"
-if [file exists ${slurm_dir}/lib64/libslurm.so] {
-	send_user "$bin_cc ${test_prog}.c -g -pthread -o ${test_prog} -I${slurm_dir}/include -Wl,-rpath=${slurm_dir}/lib64 -L${slurm_dir}/lib64 -lslurm\n"
-	exec       $bin_cc ${test_prog}.c -g -pthread -o ${test_prog} -I${slurm_dir}/include -Wl,-rpath=${slurm_dir}/lib64 -L${slurm_dir}/lib64 -lslurm
+if {[built_with_meson 1] == 1} {
+	set libslurm "${build_dir}/src/api/libslurm.so"
+	set libslurm_rpath "${build_dir}/src/api"
 } else {
-	send_user "$bin_cc ${test_prog}.c -g -pthread -o ${test_prog} -I${slurm_dir}/include -Wl,-rpath=${slurm_dir}/lib -L${slurm_dir}/lib -lslurm\n"
-	exec       $bin_cc ${test_prog}.c -g -pthread -o ${test_prog} -I${slurm_dir}/include -Wl,-rpath=${slurm_dir}/lib -L${slurm_dir}/lib -lslurm
+	if [file exists ${slurm_dir}/lib64/libslurm.so] {
+		set bit "lib64"
+	} else {
+		set bit "lib"
+	}
+	set libslurm "-L${slurm_dir}/${bit} -lslurm"
+	set libslurm_rpath "${slurm_dir}/${bit}"
 }
+set build_cmd "$bin_cc ${test_prog}.c -g -pthread -o ${test_prog} ${libslurm} -Wl,-rpath,${libslurm_rpath} -I${slurm_dir}/include"
+send_user "$build_cmd\n"
+eval exec $build_cmd
 exec $bin_chmod 700 $test_prog
 
 spawn ./$test_prog
