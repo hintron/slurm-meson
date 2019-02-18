@@ -42,9 +42,9 @@ api_current = run_command('perl', '-ne', 'print,exit if s/^\\s*API_CURRENT:\\s*(
 api_age = run_command('perl', '-ne', 'print,exit if s/^\\s*API_AGE:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
 api_revision = run_command('perl', '-ne', 'print,exit if s/^\\s*API_REVISION:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
 api_major = api_current.to_int() - api_age.to_int()
-api_version = run_command('printf', '0x%02x%02x%02x', api_major.to_string(), api_age, api_revision).stdout().strip()
+api_version_hex = run_command('printf', '0x%02x%02x%02x', api_major.to_string(), api_age, api_revision).stdout().strip()
 
-conf_data.set('SLURM_API_VERSION', api_version, description: 'Define the API\'s version')
+conf_data.set('SLURM_API_VERSION', api_version_hex, description: 'Define the API\'s version')
 conf_data.set('SLURM_API_CURRENT', api_current, description: 'API current version')
 conf_data.set('SLURM_API_MAJOR', api_major, description: 'API current major')
 conf_data.set('SLURM_API_AGE', api_age, description: 'API current age')
@@ -366,11 +366,9 @@ endif
 
 if get_option('static-libslurm')
     libslurm_type = 'static_library'
-    libslurm_install = false
     message('libslurm and libslurmfull will be STATICALLY linked (static library)')
 else
     libslurm_type = 'shared_library'
-    libslurm_install = true
     message('libslurm and libslurmfull will be DYNAMICALLY linked (shared library)')
 endif
 

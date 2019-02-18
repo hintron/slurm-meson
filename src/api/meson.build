@@ -63,12 +63,36 @@ slurmapi_src = [
     slurmdbapi_src,
 ]
 
-# TODO: Add in API version info to this library and to .so outputs
+# libslurm version information :
+#
+# Update META file information before a public release only!
+#
+# Note that Meson builds libslurm.so.<major>.<age>.<rev>
+# where major = API_MAJOR = (API_CURRENT - API_AGE)
+# and   age   = API_AGE
+# and   rev   = API_REVISION
+#
+# The following examples are based upon initial values of API_CURRENT = 6,
+# API_AGE = 4, API_REVISION = 6.
+#
+# If any interfaces have been added: increment API_CURRENT, increment API_AGE,
+# and set API_REVISION = 0 (e.g. libslurm.so.2.4.6 -> libslurm.so.2.5.0)
+#
+# If any interfaces have been removed: increment API_CURRENT, set API_AGE = 0,
+# and set API_REVISION = 0 (e.g. libslurm.so.2.4.6 -> libslurm.so.7.0.0)
+#
+# If any interfaces have changed: increment API_CURRENT only
+# (e.g. libslurm.so.2.4.6 -> libslurm.so.3.4.6)
+#
+# If the interfaces have not changed, but underlying code has changed at all:
+# increment API_REVISION only (e.g. libslurm.so.2.4.6 -> libslurm.so.2.4.7)
+
+# See the top-level meson.build for how api_version is created
 
 # See https://github.com/mesonbuild/meson/issues/3047#issue-296332081
 libslurm_mapfile = 'meson.libslurm.map'
 vflag = '-Wl,--version-script,@0@/@1@'.format(meson.current_source_dir(), libslurm_mapfile)
-libslurm = build_target(
+libslurm = both_libraries(
     'slurm', # name
     [slurmapi_src], # source files
     include_directories: [slurm_inc],
@@ -78,9 +102,9 @@ libslurm = build_target(
     # This says that if the sym vis map string changes, relink (but not recompile)
     link_depends: [libslurm_mapfile],
     link_whole: [libcommon, libeio, libspank],
-    target_type: libslurm_type,
-    install: libslurm_install,
-    install_dir: pkglibdir,
+    install: true,
+    install_dir: libdir,
+    version: api_major.to_string() + '.' + api_age + '.' + api_revision,
 )
 
 # Build both shared AND static libraries, so tests can link against either one
@@ -91,13 +115,13 @@ libslurmfull = both_libraries(
     include_directories: [slurm_inc],
     dependencies: [pthread_lib, dl_lib],
     link_whole: [libcommon, libeio, libspank],
-    install: libslurm_install,
+    install: true,
     install_dir: pkglibdir,
 )
-# The returned build target is always the shared library. Get the static library
-libslurmfull_a = libslurmfull.get_static_lib()
 if libslurm_type == 'static_library'
+    # The returned build target is always the shared library.
     # Change the build target pointer to the static lib
-    libslurmfull = libslurmfull_a
-    # We don't care about losing the handle to the shared lib
+    libslurmfull = libslurmfull.get_static_lib()
+    libslurm = libslurm.get_static_lib()
+    # We don't care about losing the handle to the shared libs
 endif
