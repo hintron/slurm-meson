@@ -55,13 +55,22 @@ exec $bin_cc -O -o $io_prog ${io_prog}.c
 exec $bin_chmod 700 $io_prog
 
 send_user "slurm_dir is $slurm_dir\n"
-if [file exists ${slurm_dir}/lib64/slurm/libslurmfull.so] {
-	send_user "$bin_cc ${test_prog}.c -g -pthread -o ${test_prog} -I${slurm_dir}/include -Wl,-rpath=${slurm_dir}/lib64/slurm -L${slurm_dir}/lib64/slurm -lslurmfull\n"
-	exec       $bin_cc ${test_prog}.c -g -pthread -o ${test_prog} -I${slurm_dir}/include -Wl,-rpath=${slurm_dir}/lib64/slurm -L${slurm_dir}/lib64/slurm -lslurmfull
+
+if {[built_with_meson 1] == 1} {
+	set libslurm "${build_dir}/src/api/libslurmfull.so"
+	set libslurm_rpath "${build_dir}/src/api"
 } else {
-	send_user "$bin_cc ${test_prog}.c -g -pthread -o ${test_prog} -I${slurm_dir}/include -Wl,-rpath=${slurm_dir}/lib/slurm -L${slurm_dir}/lib/slurm -lslurmfull\n"
-	exec       $bin_cc ${test_prog}.c -g -pthread -o ${test_prog} -I${slurm_dir}/include -Wl,-rpath=${slurm_dir}/lib/slurm -L${slurm_dir}/lib/slurm -lslurmfull
+	if [file exists ${slurm_dir}/lib64/slurm/libslurmfull.so] {
+		set bit "lib64"
+	} else {
+		set bit "lib"
+	}
+	set libslurm "-L${slurm_dir}/${bit}/slurm -lslurmfull"
+	set libslurm_rpath "${slurm_dir}/${bit}/slurm"
 }
+set build_cmd "$bin_cc ${test_prog}.c -g -pthread -o ${test_prog} ${libslurm} -Wl,-rpath,${libslurm_rpath} -I${slurm_dir}/include"
+send_user "$build_cmd\n"
+eval exec $build_cmd
 exec $bin_chmod 700 $test_prog
 
 #
