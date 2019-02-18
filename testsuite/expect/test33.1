@@ -87,13 +87,15 @@ proc run_config { test_config } {
 #
 file delete $test_prog
 
-if [file exists ${slurm_dir}/lib64/libslurm.so] {
-	send_user "$bin_cc ${test_prog}.c -g -pthread -export-dynamic -o ${test_prog} -I${src_dir} -I${build_dir} ${build_dir}/src/api/libslurm.o  -ldl\n"
-	exec       $bin_cc ${test_prog}.c -g -pthread -export-dynamic -o ${test_prog} -I${src_dir} -I${build_dir} ${build_dir}/src/api/libslurm.o  -ldl
+if {[built_with_meson 1] == 1} {
+	set libslurm "${build_dir}/src/api/libslurmfull.so -Wl,-rpath,${build_dir}/src/api/"
 } else {
-	send_user "$bin_cc ${test_prog}.c -g -pthread -export-dynamic -o ${test_prog} -I${src_dir} -I${build_dir} ${build_dir}/src/api/libslurm.o  -ldl\n"
-	exec       $bin_cc ${test_prog}.c -g -pthread -export-dynamic -o ${test_prog} -I${src_dir} -I${build_dir} ${build_dir}/src/api/libslurm.o  -ldl
+	set libslurm "${build_dir}/src/api/libslurm.o"
 }
+set build_cmd "$bin_cc ${test_prog}.c -g -pthread -export-dynamic -o ${test_prog} -I${src_dir} -I${build_dir} ${libslurm} -ldl"
+send_user "$build_cmd\n"
+eval exec $build_cmd
+
 exec $bin_chmod 700 $test_prog
 
 log_user 0
