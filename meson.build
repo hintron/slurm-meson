@@ -555,6 +555,7 @@ if get_option('contribs')
     message('Building contribs/')
     subdir('contribs')
 endif
+subdir('doc')
 
 # Finished compiling
 
