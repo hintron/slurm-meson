@@ -27,6 +27,9 @@ And that's it! On my laptop, the configure stage (`meson setup`) takes about 5
 seconds and the build stage (`ninja install`) less than 30. For more details,
 see [meson/howto.md](meson/howto.md).
 
+For details on how to get started with Meson, see
+https://mesonbuild.com/Quick-guide.html.
+
 ## Contributing
 
 If you are interested in the project, let us know! We are looking for help to

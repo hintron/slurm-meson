@@ -119,7 +119,7 @@ ones in the SLURM API.  This can be used by slurm commands that want to
 use both libcommon and libslurm functions."
 
 I don't get what this means... Isn't libcommon in libslurm? libslurmhelper
-sounds exactly like libslurmfull. It sounds like slibslurmfull was made without
+sounds exactly like libslurmfull. It sounds like libslurmfull was made without
 realizing that libslurmhelper was the same thing.
 
 From _src/api/Makefile.am_:
@@ -133,6 +133,9 @@ From _src/api/Makefile.am_:
 # them to plugins that are loaded.
 # Also, libslurmhelper, libslurm.o are for convenience, they are not installed.
 ```
+
+More info on libslurmfull vs. liblsurm:
+https://bugs.schedmd.com/show_bug.cgi?id=4449
 
 ## Symbol Visibility
 TODO: As of this writing, libslurm and libslurmfull are the same. I need to
