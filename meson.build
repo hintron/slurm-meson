@@ -54,14 +54,23 @@ conf_data.set('SLURM_API_REVISION', api_revision, description: 'API current rev'
 version = run_command('perl', '-ne', 'print,exit if s/^\\s*VERSION:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
 slurm_major = run_command('perl', '-ne', 'print,exit if s/^\\s*MAJOR:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
 slurm_minor = run_command('perl', '-ne', 'print,exit if s/^\\s*MINOR:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
+slurm_major_minor = slurm_major + '.' + slurm_minor
 slurm_micro = run_command('perl', '-ne', 'print,exit if s/^\\s*MICRO:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
 release = run_command('perl', '-ne', 'print,exit if s/^\\s*RELEASE:\\s*(\\S*).*/\\1/i', 'META').stdout().strip()
+# TODO: Is this good enough for slurm_release?
+if release.startswith('0pre') or release.to_int() > 1
+    slurm_release = release
+else
+    slurm_release = ''
+endif
+slurm_version_string = version + '-' + release
 
 conf_data.set_quoted('VERSION', version, description: 'Define the project\'s version')
 conf_data.set_quoted('SLURM_MAJOR', slurm_major, description: 'Define the project\'s major version')
 conf_data.set_quoted('SLURM_MINOR', slurm_minor, description: 'Define the project\'s minor version')
 conf_data.set_quoted('SLURM_MICRO', slurm_micro, description: 'Define the project\'s micro version')
 conf_data.set_quoted('RELEASE', release, description: 'Define the project\'s release')
+conf_data.set_quoted('SLURM_VERSION_STRING', slurm_version_string, description: 'Define the project\'s version string')
 
 slurm_version_number = run_command('printf', '0x%02x%02x%02x', slurm_major, slurm_minor, slurm_micro).stdout().strip()
 conf_data.set('SLURM_VERSION_NUMBER', slurm_version_number, description: 'Slurm Version Number')
@@ -69,8 +78,6 @@ conf_data.set('SLURM_VERSION_NUMBER', slurm_version_number, description: 'Slurm 
 if slurm_major + '.' + slurm_minor + '.' + slurm_micro != version
     error('META information is inconsistent: $VERSION != $SLURM_MAJOR.$SLURM_MINOR.$SLURM_MICRO!')
 endif
-
-conf_data.set_quoted('SLURM_VERSION_STRING', '19.05.0-0pre0', description: 'Define the project\'s version string')
 
 
 # AC_INIT and PACKAGE_* shenanigans

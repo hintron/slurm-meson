@@ -65,8 +65,15 @@ def version_rewrite(matchobj):
 # Make sure all of the files on the command line have the .shtml extension.
 version = sys.argv[1]
 
+start = 2
+output_dir = None
+if sys.argv[2] == 'output_dir':
+    output_dir = sys.argv[3]
+    start = 4
+
 files = []
-for f in sys.argv[2:]:
+keep_in_same_dir = False
+for f in sys.argv[start:]:
     if f[-6:] == '.shtml':
         files.append(f)
     else:
@@ -76,6 +83,8 @@ for f in sys.argv[2:]:
 for filename in files:
     dirname, basefilename = os.path.split(filename)
     newfilename = basefilename[:-6] + '.html'
+    if output_dir:
+        newfilename = os.path.join(output_dir, newfilename)
     print('Converting', filename, '->', newfilename)
     shtml = codecs.open(filename, 'r', encoding='utf-8')
     html = codecs.open(newfilename, 'w', encoding='utf-8')

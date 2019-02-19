@@ -1,4 +1,3 @@
-# TODO: Install HTML pages
-# subdir('html')
+subdir('html')
 subdir('man')
 

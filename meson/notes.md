@@ -166,6 +166,17 @@ is specified.
 See https://stackoverflow.com/questions/1033898/why-do-you-have-to-link-the-math-library-in-c
 See https://mesonbuild.com/howtox.html#add-math-library-lm-portably
 
+# `$<` and SUFFIXES in html/man Makefiles
+
+`.shtml.html:` means that a new Autotools rule is being defined that changes
+any .shtml files it sees to .html files. SUFFIXES simply helps autotools parse
+that rule correctly.
+https://www.gnu.org/software/automake/manual/html_node/Suffixes.html
+
+`$<` Means the first prerequisite of a rule, which in this case means the .html
+file that was matched.
+https://stackoverflow.com/questions/924652/what-do-and-represent-in-a-makefile
+
 # Test Code Compilation
 
 For test code compilation:
