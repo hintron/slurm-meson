@@ -3,8 +3,8 @@
 # Meson doesn't do shell commands, so call this shell script via run_command()
 
 # Get args
-pkglibdir=$1
-sysconfdir=$2
+pkglibdir="$1"
+sysconfdir="$2"
 
 # The `capture: true` option of custom_target() tells meson to write stdout to
 # output file for us. So do that!
