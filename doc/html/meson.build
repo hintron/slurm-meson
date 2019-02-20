@@ -106,44 +106,6 @@ html_files = [
 	'wckey',
 ]
 
-# html_data = [
-# 	generated_html,
-# 	'allocation_pies.gif',
-# 	'arch.gif',
-# 	'coding_style.pdf',
-# 	'configurator.html',
-# 	'configurator.easy.html',
-# 	'entities.gif',
-# 	'example_usage.gif',
-# 	'fonts.css',
-# 	'fonts.ttf',
-# 	'hdf5_task_attr.png',
-# 	'hdf5_job_outline.png',
-# 	'ibm_pe_fig1.png',
-# 	'ibm_pe_fig2.png',
-# 	'jquery.min.js',
-# 	'k_function.gif',
-# 	'mc_support.gif',
-# 	'plane_ex1.gif',
-# 	'plane_ex2.gif',
-# 	'plane_ex3.gif',
-# 	'plane_ex4.gif',
-# 	'plane_ex5.gif',
-# 	'plane_ex6.gif',
-# 	'plane_ex7.gif',
-# 	'reset.css',
-# 	'slurm_logo.png',
-# 	'schedmd.png',
-# 	'slurm.css',
-# 	'Slurm_Entity.pdf',
-# 	'Slurm_Individual.pdf',
-# 	'squeue_color.png',
-# 	'style.css',
-# 	'topo_ex1.gif',
-# 	'topo_ex2.gif',
-# 	'tutorial_intro_files.tar',
-# 	'usage_pies.gif',
-# ]
 
 html_dir = join_paths(get_option('datadir'), package + '-' + slurm_version_string, 'html')
 shtml2html_py = join_paths(meson.current_source_dir(), 'shtml2html.py')
@@ -153,7 +115,15 @@ foreach item : html_files
 	html = item + '.html'
 	custom_target(
 		html,
-		command : [shtml2html_py, slurm_major_minor, 'output_dir', meson.current_build_dir(), shtml_full],
+		command : [
+			shtml2html_py,
+			slurm_major_minor,
+			# Pass in current build dir (build/doc/html) to shtml2html_py so
+			# it can create the file where the install command can find it later
+			'output_dir',
+			meson.current_build_dir(),
+			shtml_full
+		],
 		input: [shtml],
 		output : [html],
 		install: true,
@@ -161,4 +131,42 @@ foreach item : html_files
 	)
 endforeach
 
-# TODO: Instead, run script with all the input files passed in at once?
+html_data = [
+	'allocation_pies.gif',
+	'arch.gif',
+	'coding_style.pdf',
+	# TODO: Figure out what needs to happen for configurator.[easy.]html.in
+	# 'configurator.html',
+	# 'configurator.easy.html',
+	'entities.gif',
+	'example_usage.gif',
+	'fonts.css',
+	'fonts.ttf',
+	'hdf5_task_attr.png',
+	'hdf5_job_outline.png',
+	'ibm_pe_fig1.png',
+	'ibm_pe_fig2.png',
+	'jquery.min.js',
+	'k_function.gif',
+	'mc_support.gif',
+	'plane_ex1.gif',
+	'plane_ex2.gif',
+	'plane_ex3.gif',
+	'plane_ex4.gif',
+	'plane_ex5.gif',
+	'plane_ex6.gif',
+	'plane_ex7.gif',
+	'reset.css',
+	'slurm_logo.png',
+	'schedmd.png',
+	'slurm.css',
+	'Slurm_Entity.pdf',
+	'Slurm_Individual.pdf',
+	'squeue_color.png',
+	'style.css',
+	'topo_ex1.gif',
+	'topo_ex2.gif',
+	'tutorial_intro_files.tar',
+	'usage_pies.gif',
+]
+install_data(html_data, install_dir: html_dir)

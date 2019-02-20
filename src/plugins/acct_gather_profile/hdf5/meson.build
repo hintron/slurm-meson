@@ -6,7 +6,7 @@ libhdf5_api = static_library(
     'hdf5_api', # name
     libhdf5_api_src, # source files
     include_directories: [slurm_inc],
-    dependencies: [hdf5_libs],
+    dependencies: [hdf5_lib],
 )
 
 acct_gather_profile_hdf5_src = [
@@ -17,7 +17,7 @@ acct_gather_profile_hdf5 = shared_module(
     'acct_gather_profile_hdf5', # name
     acct_gather_profile_hdf5_src, # source files
     include_directories: [slurm_inc],
-    dependencies: [hdf5_libs],
+    dependencies: [hdf5_lib],
     install: true,
     install_dir: pkglibdir,
     name_prefix: '',

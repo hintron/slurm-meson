@@ -177,7 +177,14 @@ def version_rewrite(matchobj):
 
 files = []
 version = sys.argv[1]
-for f in sys.argv[4:]:
+
+start = 4
+output_dir = None
+if sys.argv[4] == 'output_dir':
+    output_dir = sys.argv[5]
+    start = 6
+
+for f in sys.argv[start:]:
     posLastDot = f.rfind(".")
     mhtmlname = f[:posLastDot] + ".mhtml"
     cmd = "man2html < " + f + "> " + mhtmlname
@@ -188,6 +195,8 @@ for f in sys.argv[4:]:
 for filename in files:
     dirname, basefilename = os.path.split(filename)
     newfilename = basefilename[:-6] + '.html'
+    if output_dir:
+        newfilename = os.path.join(output_dir, newfilename)
     print('Converting', filename, '->', newfilename)
     shtml = codecs.open(filename, 'r', encoding='utf-8')
     html = codecs.open(newfilename, 'w', encoding='utf-8')

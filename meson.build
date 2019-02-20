@@ -139,6 +139,9 @@ glib_lib = dependency('glib-2.0', required: false)
 gtk_lib = dependency('gtk2.0-0', required: false)
 # gtk_lib = cc.find_library(gtk_string, required: false)
 # TODO: gthread module
+# TODO: Get hdf5 dependency working
+hdf5_lib = dependency('hdf5', required: false)
+hdf5_hl_lib = cc.find_library('hdf5_hl', required: false)
 hwloc_lib = cc.find_library('hwloc', required: false)
 lz4_lib = cc.find_library('lz4', required: false)
 math_lib = cc.find_library('m', required: false)
@@ -170,6 +173,7 @@ check_headers = [
     ['HAVE_HWLOC_H', 'hwloc.h'],
     ['HAVE_INTTYPES_H', 'inttypes.h'],
     ['HAVE_KSTAT_H', 'kstat.h'],
+    ['HAVE_LIBCR_H', 'libcr.h'],
     ['HAVE_LINUX_SCHED_H', 'linux/sched.h'],
     ['HAVE_LIMITS_H', 'limits.h'],
     ['HAVE_MCHECK_H', 'mcheck.h'],
@@ -215,6 +219,7 @@ endforeach
 #####################################
 # Derived from the helper script ac_converter.py
 check_functions = [
+  ['HAVE_CR_INIT', 'cr_init', '#include <libcr.h>'],
   ['HAVE_FACCESSAT', 'faccessat', '#include<unistd.h>'],
   ['HAVE_FDATASYNC', 'fdatasync', '#include<unistd.h>'],
   ['HAVE_HSTRERROR', 'hstrerror', '#include<netdb.h>'],
@@ -238,6 +243,33 @@ foreach f : check_functions
     conf_data.set(f.get(0), 1)
   endif
 endforeach
+
+#####################################
+# Check programs
+#####################################
+
+if find_program('sleep').found()
+    conf_data.set_quoted('SLEEP_CMD', '/bin/sleep', description: 'Define path to sleep command')
+endif
+
+sucmd_desc = 'Define path to su command'
+if find_program('su').found()
+    conf_data.set_quoted('SUCMD', '/bin/su', description: sucmd_desc)
+endif
+
+man2html = find_program('man2html', required : false)
+
+
+
+#####################################
+# Other
+#####################################
+
+# TODO: Finish all the hdf5 stuff
+build_hdf5 = false
+if hdf5_lib.found() and hdf5_hl_lib.found()
+    build_hdf5 = true
+endif
 
 
 # X_AC_DATABASES
@@ -496,14 +528,6 @@ conf_data.set('SLURMCTLD_PORT_COUNT', 1, description: 'Define the default port c
 # Add SLURM_PREFIX to config.h
 conf_data.set_quoted('SLURM_PREFIX', prefix, description: 'Define Slurm installation prefix')
 
-if find_program('sleep').found()
-    conf_data.set_quoted('SLEEP_CMD', '/bin/sleep', description: 'Define path to sleep command')
-endif
-
-sucmd_desc = 'Define path to su command'
-if find_program('su').found()
-    conf_data.set_quoted('SUCMD', '/bin/su', description: sucmd_desc)
-endif
 
 # X_AC_NRT
 # X_AC_SGI_JOB
@@ -527,18 +551,9 @@ endif
 # TODO: Check explicitly for openpty?
 
 build_srun_cr = false
-if blcr_lib.found()
-    if not cc.has_header('libcr.h')
-        warning('Unable to find the libcr.h header file for the BLCR (cr) library; cannot build srun_cr')
-    elif not cc.has_function('cr_init', prefix: '#include <libcr.h>')
-        # TODO: For some reason, the libcr .so files have no symbols when I install the libcr-dev package...
-        warning('Unable to find the cr_init function in the BLCR (cr) library; cannot build srun_cr')
-    else
-        conf_data.set_quoted('BLCR_HOME', '/usr/lib', description: 'Define BLCR installation home')
-        build_srun_cr = true
-    endif
-else
-    warning('Unable to find the BLCR (cr) library; cannot build srun_cr')
+if blcr_lib.found() and conf_data.get('HAVE_LIBCR_H', 0) == 1 and conf_data.get('HAVE_CR_INIT', 0) == 1
+    conf_data.set_quoted('BLCR_HOME', '/usr/lib', description: 'Define BLCR installation home')
+    build_srun_cr = true
 endif
 
 # LIBCURL_CHECK_CONFIG

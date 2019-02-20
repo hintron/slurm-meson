@@ -1,7 +1,7 @@
-if conf_data.get('BUILD_HDF5', 0) == 1
+if build_hdf5
     subdir('hdf5')
 else
-    warning('Unable to build acct_gather_profile/hdf5: BUILD_HDF5 != 1')
+    warning('Unable to build acct_gather_profile/hdf5: build_hdf5 was false')
 endif
 if conf_data.get('WITH_CURL', 0) == 1
     subdir('influxdb')

@@ -72,7 +72,6 @@ if sys.argv[2] == 'output_dir':
     start = 4
 
 files = []
-keep_in_same_dir = False
 for f in sys.argv[start:]:
     if f[-6:] == '.shtml':
         files.append(f)
