@@ -13,12 +13,19 @@ Make sure meson is installed and the version is >= 0.46:
     meson --version
 
 If meson is not installed, make sure to add pip packages to your PATH
-(e.g. in ~/.bashrc):
+(e.g. in _~/.bashrc_):
 
     if [ -d "$HOME/.local/bin" ] ; then
         PATH="$HOME/.local/bin:$PATH"
     fi
 
+If pip isn't working for you for whatever reason, you can simply download and
+install Meson manually from https://github.com/mesonbuild/meson/releases, like
+so:
+
+    wget https://github.com/mesonbuild/meson/releases/download/0.49.2/meson-0.49.2.tar.gz
+    tar xvf meson-0.49.2.tar.gz
+    ln -s /abs/path/to/meson-0.49.2/meson.py /dir/in/PATH/meson
 
 
 # How to get the Slurm Meson source code
